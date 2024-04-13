@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,6 +32,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var Collection<int, PositionBet>
+     */
+    #[ORM\OneToMany(targetEntity: PositionBet::class, mappedBy: 'user')]
+    private Collection $positionBets;
+
+    /**
+     * @var Collection<int, PunishmentPoints>
+     */
+    #[ORM\OneToMany(targetEntity: PunishmentPoints::class, mappedBy: 'user')]
+    private Collection $punishmentPoints;
+
+    /**
+     * @var Collection<int, WorldChampionBet>
+     */
+    #[ORM\OneToMany(targetEntity: WorldChampionBet::class, mappedBy: 'user')]
+    private Collection $worldChampionBets;
+
+    public function __construct()
+    {
+        $this->positionBets = new ArrayCollection();
+        $this->punishmentPoints = new ArrayCollection();
+        $this->worldChampionBets = new ArrayCollection();
+    }
 
     final public const ROLE_USER = 'ROLE_USER';
     final public const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -107,5 +134,95 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, PositionBet>
+     */
+    public function getPositionBets(): Collection
+    {
+        return $this->positionBets;
+    }
+
+    public function addPositionBet(PositionBet $positionBet): static
+    {
+        if (!$this->positionBets->contains($positionBet)) {
+            $this->positionBets->add($positionBet);
+            $positionBet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePositionBet(PositionBet $positionBet): static
+    {
+        if ($this->positionBets->removeElement($positionBet)) {
+            // set the owning side to null (unless already changed)
+            if ($positionBet->getUser() === $this) {
+                $positionBet->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PunishmentPoints>
+     */
+    public function getPunishmentPoints(): Collection
+    {
+        return $this->punishmentPoints;
+    }
+
+    public function addPunishmentPoint(PunishmentPoints $punishmentPoint): static
+    {
+        if (!$this->punishmentPoints->contains($punishmentPoint)) {
+            $this->punishmentPoints->add($punishmentPoint);
+            $punishmentPoint->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePunishmentPoint(PunishmentPoints $punishmentPoint): static
+    {
+        if ($this->punishmentPoints->removeElement($punishmentPoint)) {
+            // set the owning side to null (unless already changed)
+            if ($punishmentPoint->getUser() === $this) {
+                $punishmentPoint->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WorldChampionBet>
+     */
+    public function getWorldChampionBets(): Collection
+    {
+        return $this->worldChampionBets;
+    }
+
+    public function addWorldChampionBet(WorldChampionBet $worldChampionBet): static
+    {
+        if (!$this->worldChampionBets->contains($worldChampionBet)) {
+            $this->worldChampionBets->add($worldChampionBet);
+            $worldChampionBet->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorldChampionBet(WorldChampionBet $worldChampionBet): static
+    {
+        if ($this->worldChampionBets->removeElement($worldChampionBet)) {
+            // set the owning side to null (unless already changed)
+            if ($worldChampionBet->getUser() === $this) {
+                $worldChampionBet->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
