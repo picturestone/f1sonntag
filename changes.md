@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Updated dev install instructions. [#9]
 -   Added races. [#8]
 -   Added season. [#7]
 -   Added driver admin. [#6]
