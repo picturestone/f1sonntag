@@ -6,7 +6,16 @@
 
     <div>
         <a class="btn btn-primary" href="{{ path('app_seasons_new') }}">Hinzufügen</a>
-        <a class="btn btn-secondary" href="{{ path('app_seasons_edit_active_season') }}">Aktive Saison ändern</a>
+
+        {# This case shouldnt exist. #}
+        {% set isSingleInactiveSeason = false %}
+        {% if seasons|length == 1 and (seasons|first).isActive == false %}
+            {% set isSingleInactiveSeason = true %}
+        {% endif %}
+
+        {% if seasons|length > 2 or isSingleInactiveSeason %}
+            <a class="btn btn-secondary" href="{{ path('app_seasons_edit_active_season') }}">Aktive Saison ändern</a>
+        {% endif %}
     </div>
 
     <div class="table-responsive">

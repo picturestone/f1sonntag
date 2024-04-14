@@ -1,0 +1,55 @@
+{% extends 'adminbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Rennen - {{ season.name }}</h1>
+
+    <div>
+        <a class="btn btn-primary" href="{{ path('app_races_new') }}">Hinzufügen</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+            <thead>
+                <tr>
+                    <th class="col--icon-button" scope="col"></th>
+                    <th class="col--icon-button" scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Ort</th>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Uhrzeit</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for race in races %}
+                    <tr>
+                        <td class="col--icon-button">
+                            <a class="btn btn-danger" href="{{ path('app_races_delete', {id: race.id}) }}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                        <td class="col--icon-button">
+                            <a class="btn btn-primary" href="{{ path('app_races_edit', {id: race.id}) }}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <span>{{ race.name }}</span>
+                        </td>
+                        <td>
+                            <span>{{ race.place }}</span>
+                        </td>
+                        <td>
+                            <span>{{ race.startDate|date('d.m.Y') }}</span>
+                        </td>
+                        <td>
+                            <span>{{ race.startTime|date('H:i') }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
