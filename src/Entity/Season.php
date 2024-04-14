@@ -30,6 +30,9 @@ class Season
     #[ORM\OneToMany(targetEntity: Race::class, mappedBy: 'season')]
     private Collection $races;
 
+    #[ORM\Column]
+    private ?bool $isActive = false;
+
     public function __construct()
     {
         $this->worldChampionBets = new ArrayCollection();
@@ -109,6 +112,18 @@ class Season
                 $race->setSeason(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

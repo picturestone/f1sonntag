@@ -1,0 +1,62 @@
+{% extends 'adminbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Saisonen</h1>
+
+    <div>
+        <a class="btn btn-primary" href="{{ path('app_seasons_new') }}">Hinzufügen</a>
+        <a class="btn btn-secondary" href="{{ path('app_seasons_edit_active_season') }}">Aktive Saison ändern</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+            <thead>
+                <tr>
+                    <th class="col--icon-button" scope="col"></th>
+                    <th class="col--icon-button" scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Aktiv</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for season in seasons %}
+                    <tr>
+                        <td class="col--icon-button">
+                            {% if season.isActive %}
+                                <div data-bs-toggle="tooltip"
+                                     data-bs-placement="right"
+                                     title="Die aktive Saison kann nicht gelöscht werden.">
+                                    <button class="btn btn-danger" disabled>
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <a class="btn btn-danger" href="{{ path('app_seasons_delete', {id: season.id}) }}">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td class="col--icon-button">
+                            <a class="btn btn-primary" href="{{ path('app_seasons_edit', {id: season.id}) }}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <span>{{ season.name }}</span>
+                        </td>
+                        <td>
+                            {% set iconClass = 'bi-x' %}
+                            {% if season.isActive %}
+                                {% set iconClass = 'bi-check-lg' %}
+                            {% endif %}
+                            <i class="bi {{ iconClass }}"></i>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'adminbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Aktive Saison ändern</h1>
+
+    <div>
+        {{ form(form, { method: 'POST' }) }}
+    </div>
+</div>
+{% endblock %}
