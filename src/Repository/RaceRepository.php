@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Race;
+use App\Entity\Season;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,20 +22,18 @@ class RaceRepository extends ServiceEntityRepository
         parent::__construct($registry, Race::class);
     }
 
-    //    /**
-    //     * @return Race[] Returns an array of Race objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+         * @return Race[] Returns an array of Race objects.
+         */
+        public function findRacesBySeason(Season $season): array
+        {
+            return $this->createQueryBuilder('r')
+                ->where('r.season = :season')
+                ->setParameter('season', $season)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
     //    public function findOneBySomeField($value): ?Race
     //    {

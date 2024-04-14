@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added races. [#8]
 -   Added season. [#7]
 -   Added driver admin. [#6]
 -   Added nav. [#5]
