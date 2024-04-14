@@ -2,10 +2,10 @@
 
 {% block body %}
 <div class="container-xl">
-    <h1>Teams</h1>
+    <h1>Fahrer</h1>
 
     <div>
-        <a class="btn btn-primary" href="{{ path('app_teams_new') }}">Hinzufügen</a>
+        <a class="btn btn-primary" href="{{ path('app_drivers_new') }}">Hinzufügen</a>
     </div>
 
     <div class="table-responsive">
@@ -14,25 +14,33 @@
                 <tr>
                     <th class="col--icon-button" scope="col"></th>
                     <th class="col--icon-button" scope="col"></th>
-                    <th scope="col">Name</th>
+                    <th scope="col">Vorname</th>
+                    <th scope="col">Nachname</th>
+                    <th scope="col">Team</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for team in teams %}
+                {% for driver in drivers %}
                     <tr>
                         <td class="col--icon-button">
-                            <a class="btn btn-danger" href="{{ path('app_teams_delete', {id: team.id}) }}">
+                            <a class="btn btn-danger" href="{{ path('app_drivers_delete', {id: driver.id}) }}">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
                         <td class="col--icon-button">
-                            <a class="btn btn-primary" href="{{ path('app_teams_edit', {id: team.id}) }}">
+                            <a class="btn btn-primary" href="{{ path('app_drivers_edit', {id: driver.id}) }}">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>
                         <td>
-                            <span>{{ team.name }}</span>
+                            <span>{{ driver.firstName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ driver.lastName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ driver.team.name }}</span>
                         </td>
                     </tr>
                 {% endfor %}
