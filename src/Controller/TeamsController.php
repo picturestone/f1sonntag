@@ -73,7 +73,7 @@ class TeamsController extends AbstractController
             return $this->redirectToRoute('app_teams_list');
         }
 
-        return $this->render('teams/new.html.twig', [
+        return $this->render('teams/edit.html.twig', [
             'form' => $form,
         ]);
     }

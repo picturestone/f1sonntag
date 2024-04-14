@@ -73,7 +73,7 @@ class DriversController extends AbstractController
             return $this->redirectToRoute('app_drivers_list');
         }
 
-        return $this->render('drivers/new.html.twig', [
+        return $this->render('drivers/edit.html.twig', [
             'form' => $form,
         ]);
     }
