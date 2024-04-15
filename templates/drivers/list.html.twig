@@ -17,6 +17,7 @@
                     <th scope="col">Vorname</th>
                     <th scope="col">Nachname</th>
                     <th scope="col">Team</th>
+                    <th scope="col">Aktiv</th>
                 </tr>
             </thead>
 
@@ -41,6 +42,9 @@
                         </td>
                         <td>
                             <span>{{ driver.team.name }}</span>
+                        </td>
+                        <td>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': driver.isActive } %}
                         </td>
                     </tr>
                 {% endfor %}
