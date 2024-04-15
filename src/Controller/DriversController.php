@@ -65,7 +65,6 @@ class DriversController extends AbstractController
         $form = $this->createForm(DriverType::class, $driver, [
             'action' => $this->generateUrl('app_drivers_edit', ['id' => $id]),
         ]);
-//        $this->addIsActiveIfMissing($request);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -93,15 +92,5 @@ class DriversController extends AbstractController
         $this->entityManager->flush();
 
         return $this->redirectToRoute('app_drivers_list');
-    }
-
-    private function addIsActiveIfMissing(Request &$request) {
-        $requestData = $request->request->all();
-
-        if (isset($requestData['driver']) && !isset($requestData['driver']['isActive'])) {
-            $driver = $requestData['driver'];
-            $driver['isActive'] = '0';
-            $request->request->set('driver', $driver);
-        }
     }
 }

@@ -43,7 +43,7 @@ class Driver
     private Collection $worldChampionBets;
 
     #[ORM\Column]
-    private ?bool $isActive = false;
+    private ?bool $isActive = true;
 
     public function __construct()
     {
