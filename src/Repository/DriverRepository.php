@@ -21,6 +21,32 @@ class DriverRepository extends ServiceEntityRepository
         parent::__construct($registry, Driver::class);
     }
 
+    /**
+     * @return Driver[] Returns an array of Driver objects ordered by isActive DESC and lastName ASC.
+     */
+    public function findAllOrderByIsActiveAndLastName(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->addOrderBy('d.isActive', 'DESC')
+            ->addOrderBy('d.lastName', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Driver[] Returns an array of Driver objects.
+     */
+    public function findActiveDrivers(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     //    /**
     //     * @return Driver[] Returns an array of Driver objects
     //     */
