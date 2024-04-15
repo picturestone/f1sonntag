@@ -23,7 +23,7 @@ class TeamsController extends AbstractController
     ) {
     }
 
-    #[Route('/teams', name: 'app_teams_list', methods: ['GET', 'POST'])]
+    #[Route('/teams', name: 'app_teams_list', methods: ['GET'])]
     public function list(): Response
     {
         $teams = $this->teamRepository->findAll();

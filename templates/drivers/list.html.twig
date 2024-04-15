@@ -4,6 +4,8 @@
 <div class="container-xl">
     <h1>Fahrer</h1>
 
+    <p>Die aktiven Fahrer sind die, die in der aktuellen Saison mitfahren. Nur auf diese kann getippt werden, und nur für diese kann ein Rennergebnis eingetragen werden. Dadurch können Fahrer, die eine Pause eingelegt haben (z.B. Daniel Ricciardo), weiter im System bleiben, ohne dass die Liste zu lange wird.</p>
+
     <div>
         <a class="btn btn-primary" href="{{ path('app_drivers_new') }}">Hinzufügen</a>
     </div>
@@ -17,6 +19,7 @@
                     <th scope="col">Vorname</th>
                     <th scope="col">Nachname</th>
                     <th scope="col">Team</th>
+                    <th scope="col">Aktiv</th>
                 </tr>
             </thead>
 
@@ -41,6 +44,9 @@
                         </td>
                         <td>
                             <span>{{ driver.team.name }}</span>
+                        </td>
+                        <td>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': driver.isActive } %}
                         </td>
                     </tr>
                 {% endfor %}

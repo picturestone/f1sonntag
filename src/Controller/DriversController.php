@@ -23,10 +23,10 @@ class DriversController extends AbstractController
     ) {
     }
 
-    #[Route('/drivers', name: 'app_drivers_list', methods: ['GET', 'POST'])]
-    public function list(): Response
+    #[Route('/drivers', name: 'app_drivers_list', methods: ['GET'])]
+    public function listActive(): Response
     {
-        $drivers = $this->driverRepository->findAll();
+        $drivers = $this->driverRepository->findAllOrderByIsActiveAndLastName();
 
         return $this->render('drivers/list.html.twig', [
             'drivers' => $drivers

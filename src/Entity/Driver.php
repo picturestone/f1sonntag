@@ -42,6 +42,9 @@ class Driver
     #[ORM\OneToMany(targetEntity: WorldChampionBet::class, mappedBy: 'driver')]
     private Collection $worldChampionBets;
 
+    #[ORM\Column]
+    private ?bool $isActive = true;
+
     public function __construct()
     {
         $this->raceResults = new ArrayCollection();
@@ -176,6 +179,18 @@ class Driver
                 $worldChampionBet->setDriver(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

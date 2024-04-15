@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added active state for driver. [#10]
 -   Updated dev install instructions. [#9]
 -   Added races. [#8]
 -   Added season. [#7]

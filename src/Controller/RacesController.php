@@ -26,7 +26,7 @@ class RacesController extends AbstractController
     ) {
     }
 
-    #[Route('/races', name: 'app_races_list', methods: ['GET', 'POST'])]
+    #[Route('/races', name: 'app_races_list', methods: ['GET'])]
     public function list(): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);

@@ -1,0 +1,5 @@
+{% set iconClass = 'bi-x' %}
+{% if isActive %}
+    {% set iconClass = 'bi-check-lg' %}
+{% endif %}
+<i class="bi {{ iconClass }}"></i>

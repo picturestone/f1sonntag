@@ -21,6 +21,7 @@ class DriverType extends AbstractType
                 'class' => Team::class,
                 'choice_label' => 'name',
             ])
+            ->add('isActive')
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'
             ])

@@ -4,6 +4,10 @@
 <div class="container-xl">
     <h1>Saisonen</h1>
 
+    <p>Für jede neue Formel 1 Saison kann hier eine neue Saison angelegt werden. Alle Rennen, Wetten, Weltmeistertipps und Strafpunkte gehören zu einer Saison. Dadurch können historische Daten aufbewahrt werden.</p>
+
+    <p>Die Rennen, Wetten, Weltmeistertipps und Strafpunkte werden immer für die aktive Saison eingetragen. Es kann immer nur eine Saison aktiv sein. Der "Aktive Saison ändern" dient zum Ändern der aktiven Saison. Dieser ist erst sichtbar, sobald es mehrere Saisonen gibt.</p>
+
     <div>
         <a class="btn btn-primary" href="{{ path('app_seasons_new') }}">Hinzufügen</a>
 
@@ -56,11 +60,7 @@
                             <span>{{ season.name }}</span>
                         </td>
                         <td>
-                            {% set iconClass = 'bi-x' %}
-                            {% if season.isActive %}
-                                {% set iconClass = 'bi-check-lg' %}
-                            {% endif %}
-                            <i class="bi {{ iconClass }}"></i>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': season.isActive } %}
                         </td>
                     </tr>
                 {% endfor %}

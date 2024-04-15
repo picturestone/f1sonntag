@@ -25,7 +25,7 @@ class SeasonsController extends AbstractController
     ) {
     }
 
-    #[Route('/seasons', name: 'app_seasons_list', methods: ['GET', 'POST'])]
+    #[Route('/seasons', name: 'app_seasons_list', methods: ['GET'])]
     public function list(): Response
     {
         $seasons = $this->seasonRepository->findAll();
@@ -136,7 +136,7 @@ class SeasonsController extends AbstractController
         $seasons = $this->seasonRepository->findAll();
 
         foreach ($seasons as $season) {
-            $season->setActive($season->getId() === $id);
+            $season->setIsActive($season->getId() === $id);
         }
     }
 }
