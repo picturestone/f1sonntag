@@ -24,7 +24,7 @@ class DriversController extends AbstractController
     }
 
     #[Route('/drivers', name: 'app_admin_drivers_list', methods: ['GET'])]
-    public function listActive(): Response
+    public function list(): Response
     {
         $drivers = $this->driverRepository->findAllOrderByIsActiveAndLastName();
 
