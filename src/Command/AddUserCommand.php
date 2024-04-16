@@ -152,7 +152,11 @@ final class AddUserCommand extends Command
         // create the user and hash its password
         $user = new User();
         $user->setEmail($email);
-        $user->setRoles([$isAdmin ? User::ROLE_ADMIN : User::ROLE_USER]);
+        $roles = [User::ROLE_USER];
+        if ($isAdmin) {
+            $roles[] = [User::ROLE_ADMIN];
+        }
+        $user->setRoles($roles);
 
         // See https://symfony.com/doc/5.4/security.html#registering-the-user-hashing-passwords
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
