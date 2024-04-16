@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added user admin. [#12]
 -   Added race results admin. [#11]
 -   Added active state for driver. [#10]
 -   Updated dev install instructions. [#9]

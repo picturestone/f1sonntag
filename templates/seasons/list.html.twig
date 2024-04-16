@@ -21,7 +21,7 @@
             {% set isSingleInactiveSeason = true %}
         {% endif %}
 
-        {% if seasons|length > 2 or isSingleInactiveSeason %}
+        {% if seasons|length > 1 or isSingleInactiveSeason %}
             <a class="btn btn-secondary" href="{{ path('app_seasons_edit_active_season') }}">Aktive Saison ändern</a>
         {% endif %}
     </div>
