@@ -32,13 +32,13 @@ class RacesController extends AbstractController
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('races/createSeason.html.twig');
+            return $this->render('admin/races/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
         $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
-        return $this->render('races/list.html.twig', [
+        return $this->render('admin/races/list.html.twig', [
             'races' => $races,
             'season' => $season
         ]);
@@ -70,7 +70,7 @@ class RacesController extends AbstractController
             return $this->redirectToRoute('app_races_list');
         }
 
-        return $this->render('races/new.html.twig', [
+        return $this->render('admin/races/new.html.twig', [
             'form' => $form,
             'season' => $activeSeason
         ]);
@@ -101,7 +101,7 @@ class RacesController extends AbstractController
             return $this->redirectToRoute('app_races_list');
         }
 
-        return $this->render('races/edit.html.twig', [
+        return $this->render('admin/races/edit.html.twig', [
             'form' => $form,
             'season' => $season
         ]);

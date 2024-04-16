@@ -28,7 +28,7 @@ class DriversController extends AbstractController
     {
         $drivers = $this->driverRepository->findAllOrderByIsActiveAndLastName();
 
-        return $this->render('drivers/list.html.twig', [
+        return $this->render('admin/drivers/list.html.twig', [
             'drivers' => $drivers
         ]);
     }
@@ -50,7 +50,7 @@ class DriversController extends AbstractController
             return $this->redirectToRoute('app_drivers_list');
         }
 
-        return $this->render('drivers/new.html.twig', [
+        return $this->render('admin/drivers/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -73,7 +73,7 @@ class DriversController extends AbstractController
             return $this->redirectToRoute('app_drivers_list');
         }
 
-        return $this->render('drivers/edit.html.twig', [
+        return $this->render('admin/drivers/edit.html.twig', [
             'form' => $form,
         ]);
     }

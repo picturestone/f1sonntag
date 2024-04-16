@@ -28,7 +28,7 @@ class TeamsController extends AbstractController
     {
         $teams = $this->teamRepository->findAll();
 
-        return $this->render('teams/list.html.twig', [
+        return $this->render('admin/teams/list.html.twig', [
             'teams' => $teams
         ]);
     }
@@ -50,7 +50,7 @@ class TeamsController extends AbstractController
             return $this->redirectToRoute('app_teams_list');
         }
 
-        return $this->render('teams/new.html.twig', [
+        return $this->render('admin/teams/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -73,7 +73,7 @@ class TeamsController extends AbstractController
             return $this->redirectToRoute('app_teams_list');
         }
 
-        return $this->render('teams/edit.html.twig', [
+        return $this->render('admin/teams/edit.html.twig', [
             'form' => $form,
         ]);
     }

@@ -33,7 +33,7 @@ class UsersController extends AbstractController
     {
         $users = $this->userRepository->findAll();
 
-        return $this->render('users/list.html.twig', [
+        return $this->render('admin/users/list.html.twig', [
             'users' => $users
         ]);
     }
@@ -62,7 +62,7 @@ class UsersController extends AbstractController
             return $this->redirectToRoute('app_users_list');
         }
 
-        return $this->render('users/new.html.twig', [
+        return $this->render('admin/users/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -91,7 +91,7 @@ class UsersController extends AbstractController
             return $this->redirectToRoute('app_users_list');
         }
 
-        return $this->render('users/edit.html.twig', [
+        return $this->render('admin/users/edit.html.twig', [
             'form' => $form,
         ]);
     }
@@ -122,7 +122,7 @@ class UsersController extends AbstractController
             return $this->redirectToRoute('app_users_list');
         }
 
-        return $this->render('users/changePassword.html.twig', [
+        return $this->render('admin/users/changePassword.html.twig', [
             'form' => $form,
             'user' => $user
         ]);

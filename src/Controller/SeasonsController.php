@@ -30,7 +30,7 @@ class SeasonsController extends AbstractController
     {
         $seasons = $this->seasonRepository->findAll();
 
-        return $this->render('seasons/list.html.twig', [
+        return $this->render('admin/seasons/list.html.twig', [
             'seasons' => $seasons
         ]);
     }
@@ -57,7 +57,7 @@ class SeasonsController extends AbstractController
             return $this->redirectToRoute('app_seasons_list');
         }
 
-        return $this->render('seasons/new.html.twig', [
+        return $this->render('admin/seasons/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -79,7 +79,7 @@ class SeasonsController extends AbstractController
             return $this->redirectToRoute('app_seasons_list');
         }
 
-        return $this->render('seasons/editActiveSeason.html.twig', [
+        return $this->render('admin/seasons/editActiveSeason.html.twig', [
             'form' => $form,
         ]);
     }
@@ -102,7 +102,7 @@ class SeasonsController extends AbstractController
             return $this->redirectToRoute('app_seasons_list');
         }
 
-        return $this->render('seasons/edit.html.twig', [
+        return $this->render('admin/seasons/edit.html.twig', [
             'form' => $form,
         ]);
     }
