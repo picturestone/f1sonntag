@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PunishmentPoints;
+use App\Entity\Race;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,19 @@ class PunishmentPointsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, PunishmentPoints::class);
+    }
+
+    /**
+     * @return PunishmentPoints[] Returns an array of PunishmentPoints objects.
+     */
+    public function findPunihsmentPointsByRace(Race $race): array
+    {
+        return $this->createQueryBuilder('pp')
+            ->where('pp.race = :race')
+            ->setParameter('race', $race)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     //    /**

@@ -23,7 +23,7 @@ class RaceResultRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return RaceResult[] Returns an array of Race objects.
+     * @return RaceResult[] Returns an array of RaceResult objects.
      */
     public function findRaceResultsByRace(Race $race): array
     {

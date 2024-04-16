@@ -1,0 +1,63 @@
+{% extends 'adminbase.html.twig' %}
+
+{% form_theme form 'bootstrap_5_horizontal_layout.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Strafpunkte bearbeiten - {{ race.name}} - {{ season.name }}</h1>
+
+    <p>Hier können die Strafpunkte für die Benutzer eingetragen werden.</p>
+
+    {% set formId = 'punishmentPointsForm' %}
+
+    {{ form_start(form, {
+        'method': 'POST',
+        'attr': { 'id': formId }
+    }) }}
+    {{ form_end(form, {render_rest: false}) }}
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Vorname</th>
+                    <th scope="col">Nachname</th>
+                    <th scope="col">Strafpunkte</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for punishmentPoints in racePunishmentPoints %}
+                <tr>
+                    <td>
+                        <span>{{ punishmentPoints.user.firstName }}</span>
+                    </td>
+                    <td>
+                        <span>{{ punishmentPoints.user.lastName }}</span>
+                    </td>
+                    <td>
+                        {{ form_widget(form[punishmentPoints.user.id], {
+                            'attr': {
+                                'form': formId
+                            }
+                        }) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {{ form_row(form['_token'], {
+        'attr': {
+            'form': formId
+        }
+    }) }}
+
+    {{ form_widget(form['submit'], {
+        'attr': {
+            'form': formId
+        }
+    }) }}
+</div>
+{% endblock %}
