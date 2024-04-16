@@ -19,6 +19,7 @@
                     <th scope="col">Nachname</th>
                     <th scope="col">E-Mail</th>
                     <th scope="col">Administrator</th>
+                    <th scope="col">Aktiv</th>
                 </tr>
             </thead>
 
@@ -51,6 +52,9 @@
                         </td>
                         <td>
                             {% include 'includes/isActiveIcon.html.twig' with { 'isActive': ROLE_ADMIN in user.roles } %}
+                        </td>
+                        <td>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': user.isActive } %}
                         </td>
                     </tr>
                 {% endfor %}

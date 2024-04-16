@@ -171,6 +171,7 @@ class UsersController extends AbstractController
             ->add('email')
             ->add('firstName')
             ->add('lastName')
+            ->add('isActive')
             ->add('isAdmin', CheckboxType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -199,6 +200,7 @@ class UsersController extends AbstractController
             ])
             ->add('firstName')
             ->add('lastName')
+            ->add('isActive')
             ->add('isAdmin', CheckboxType::class, [
                 'mapped' => false,
                 'required' => false,
