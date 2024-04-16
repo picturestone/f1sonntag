@@ -21,7 +21,7 @@ class Driver
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-    #[ORM\ManyToOne(inversedBy: 'drivers')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'drivers')]
     private ?Team $team = null;
 
     /**

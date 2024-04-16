@@ -14,7 +14,7 @@ class RaceResult
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $position = null;
+    private ?int $position = 0;
 
     #[ORM\ManyToOne(inversedBy: 'raceResults')]
     private ?Driver $driver = null;

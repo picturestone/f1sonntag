@@ -1,0 +1,69 @@
+{% extends 'adminbase.html.twig' %}
+
+{% form_theme form 'bootstrap_5_horizontal_layout.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Rennergebnisse bearbeiten - {{ race.name}} - {{ season.name }}</h1>
+
+    <p>Hier können die Rennergebnisse für die aktiven Fahrer in die Teilnehmerliste eingetragen werden. Falls Fahrer in der Ergebnisliste fehlen oder zu viele Fahrer aufgelistet sind kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
+
+    {# TODO Teilnehmerliste bearbeiten: List all drivers (active and inactive) in table with a checkbox for "hat teilgenommen". Race title and season are in the title. #}
+
+    {% set formId = 'raceResultForm' %}
+
+    {{ form_start(form, {
+        'method': 'POST',
+        'attr': { 'id': formId }
+    }) }}
+    {{ form_end(form, {render_rest: false}) }}
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+            <tr>
+                <th scope="col">Vorname</th>
+                <th scope="col">Nachname</th>
+                <th scope="col">Team</th>
+                <th scope="col">Position</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for raceResult in raceResults %}
+                <tr>
+                    <td>
+                        <span>{{ raceResult.driver.firstName }}</span>
+                    </td>
+                    <td>
+                        <span>{{ raceResult.driver.lastName }}</span>
+                    </td>
+                    <td>
+                        <span>{{ raceResult.driver.team.name }}</span>
+                    </td>
+                    <td>
+                        {{ form_widget(form[raceResult.driver.id], {
+                            'attr': {
+                                'form': formId
+                            }
+                        }) }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {{ form_row(form['_token'], {
+        'attr': {
+            'form': formId
+        }
+    }) }}
+
+    {{ form_widget(form['submit'], {
+        'attr': {
+            'form': formId
+        }
+    }) }}
+</div>
+{% endblock %}
