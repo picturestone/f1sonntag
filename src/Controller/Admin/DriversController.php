@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Driver;
 use App\Entity\User;
-use App\Form\DriverType;
+use App\Form\Admin\DriverType;
 use App\Repository\DriverRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

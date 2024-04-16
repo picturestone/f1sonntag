@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Race;
 use App\Entity\User;
-use App\Form\RaceType;
+use App\Form\Admin\RaceType;
 use App\Repository\RaceRepository;
 use App\Repository\SeasonRepository;
 use Doctrine\ORM\EntityManagerInterface;

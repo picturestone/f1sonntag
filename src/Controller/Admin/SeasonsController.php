@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Season;
 use App\Entity\User;
-use App\Form\SeasonActiveType;
-use App\Form\SeasonType;
+use App\Form\Admin\SeasonActiveType;
+use App\Form\Admin\SeasonType;
 use App\Repository\SeasonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
