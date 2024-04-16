@@ -35,13 +35,13 @@ class RaceResultsController extends AbstractController
     ) {
     }
 
-    #[Route('/race-results', name: 'app_race_results_list', methods: ['GET'])]
+    #[Route('/race-results', name: 'app_admin_race_results_list', methods: ['GET'])]
     public function list(): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/racesResults/createSeason.html.twig');
+            return $this->render('admin/raceResults/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
@@ -53,13 +53,13 @@ class RaceResultsController extends AbstractController
         ]);
     }
 
-    #[Route('/race-results/{id}', name: 'app_races_results', methods: ['GET', 'POST'])]
+    #[Route('/race-results/{id}', name: 'app_admin_race_results', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/racesResults/createSeason.html.twig');
+            return $this->render('admin/raceResults/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
@@ -86,7 +86,7 @@ class RaceResultsController extends AbstractController
 
         // Build form.
         $formBuilder = $this->generateFormBuilder($raceResults);
-        $formBuilder->setAction($this->generateUrl('app_races_results', ['id' => $id]));
+        $formBuilder->setAction($this->generateUrl('app_admin_race_results', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
@@ -106,7 +106,7 @@ class RaceResultsController extends AbstractController
 
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_race_results_list');
+            return $this->redirectToRoute('app_admin_race_results_list');
         }
 
         return $this->render('admin/raceResults/edit.html.twig', [

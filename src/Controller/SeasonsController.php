@@ -25,7 +25,7 @@ class SeasonsController extends AbstractController
     ) {
     }
 
-    #[Route('/seasons', name: 'app_seasons_list', methods: ['GET'])]
+    #[Route('/seasons', name: 'app_admin_seasons_list', methods: ['GET'])]
     public function list(): Response
     {
         $seasons = $this->seasonRepository->findAll();
@@ -35,12 +35,12 @@ class SeasonsController extends AbstractController
         ]);
     }
 
-    #[Route('/seasons/new', name: 'app_seasons_new', methods: ['GET', 'POST'])]
+    #[Route('/seasons/new', name: 'app_admin_seasons_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $season = new Season();
         $form = $this->createForm(SeasonType::class, $season, [
-            'action' => $this->generateUrl('app_seasons_new'),
+            'action' => $this->generateUrl('app_admin_seasons_new'),
         ]);
         $form->handleRequest($request);
 
@@ -54,7 +54,7 @@ class SeasonsController extends AbstractController
             $this->setSeasonToActive($season->getId());
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_seasons_list');
+            return $this->redirectToRoute('app_admin_seasons_list');
         }
 
         return $this->render('admin/seasons/new.html.twig', [
@@ -62,11 +62,11 @@ class SeasonsController extends AbstractController
         ]);
     }
 
-    #[Route('/seasons/edit-active-season', name: 'app_seasons_edit_active_season', methods: ['GET', 'POST'])]
+    #[Route('/seasons/edit-active-season', name: 'app_admin_seasons_edit_active_season', methods: ['GET', 'POST'])]
     public function editActiveSeason(Request $request): Response
     {
         $form = $this->createForm(SeasonActiveType::class, null, [
-            'action' => $this->generateUrl('app_seasons_edit_active_season'),
+            'action' => $this->generateUrl('app_admin_seasons_edit_active_season'),
         ]);
         $form->handleRequest($request);
 
@@ -76,7 +76,7 @@ class SeasonsController extends AbstractController
             $this->setSeasonToActive($id);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_seasons_list');
+            return $this->redirectToRoute('app_admin_seasons_list');
         }
 
         return $this->render('admin/seasons/editActiveSeason.html.twig', [
@@ -84,7 +84,7 @@ class SeasonsController extends AbstractController
         ]);
     }
 
-    #[Route('/seasons/edit/{id}', name: 'app_seasons_edit', methods: ['GET', 'POST'])]
+    #[Route('/seasons/edit/{id}', name: 'app_admin_seasons_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $season = $this->seasonRepository->find($id);
@@ -92,14 +92,14 @@ class SeasonsController extends AbstractController
             return throw $this->createNotFoundException('This season does not exist');
         }
         $form = $this->createForm(SeasonType::class, $season, [
-            'action' => $this->generateUrl('app_seasons_edit', ['id' => $id]),
+            'action' => $this->generateUrl('app_admin_seasons_edit', ['id' => $id]),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_seasons_list');
+            return $this->redirectToRoute('app_admin_seasons_list');
         }
 
         return $this->render('admin/seasons/edit.html.twig', [
@@ -107,7 +107,7 @@ class SeasonsController extends AbstractController
         ]);
     }
 
-    #[Route('/seasons/delete/{id}', name: 'app_seasons_delete', methods: ['GET'])]
+    #[Route('/seasons/delete/{id}', name: 'app_admin_seasons_delete', methods: ['GET'])]
     public function delete(Request $request, $id): Response
     {
         $season = $this->seasonRepository->find($id);
@@ -123,7 +123,7 @@ class SeasonsController extends AbstractController
         $this->entityManager->remove($season);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_seasons_list');
+        return $this->redirectToRoute('app_admin_seasons_list');
     }
 
     /**

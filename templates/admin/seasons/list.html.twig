@@ -13,7 +13,7 @@
     {# TODO implement cancel button for all add and edit screen. #}
 
     <div>
-        <a class="btn btn-primary" href="{{ path('app_seasons_new') }}">Hinzufügen</a>
+        <a class="btn btn-primary" href="{{ path('app_admin_seasons_new') }}">Hinzufügen</a>
 
         {# This case shouldnt exist. #}
         {% set isSingleInactiveSeason = false %}
@@ -22,7 +22,7 @@
         {% endif %}
 
         {% if seasons|length > 1 or isSingleInactiveSeason %}
-            <a class="btn btn-secondary" href="{{ path('app_seasons_edit_active_season') }}">Aktive Saison ändern</a>
+            <a class="btn btn-secondary" href="{{ path('app_admin_seasons_edit_active_season') }}">Aktive Saison ändern</a>
         {% endif %}
     </div>
 
@@ -50,13 +50,13 @@
                                     </button>
                                 </div>
                             {% else %}
-                                <a class="btn btn-danger" href="{{ path('app_seasons_delete', {id: season.id}) }}">
+                                <a class="btn btn-danger" href="{{ path('app_admin_seasons_delete', {id: season.id}) }}">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             {% endif %}
                         </td>
                         <td class="col--icon-button">
-                            <a class="btn btn-primary" href="{{ path('app_seasons_edit', {id: season.id}) }}">
+                            <a class="btn btn-primary" href="{{ path('app_admin_seasons_edit', {id: season.id}) }}">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>

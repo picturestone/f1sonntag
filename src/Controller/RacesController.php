@@ -26,7 +26,7 @@ class RacesController extends AbstractController
     ) {
     }
 
-    #[Route('/races', name: 'app_races_list', methods: ['GET'])]
+    #[Route('/races', name: 'app_admin_races_list', methods: ['GET'])]
     public function list(): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
@@ -44,7 +44,7 @@ class RacesController extends AbstractController
         ]);
     }
 
-    #[Route('/races/new', name: 'app_races_new', methods: ['GET', 'POST'])]
+    #[Route('/races/new', name: 'app_admin_races_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
@@ -56,7 +56,7 @@ class RacesController extends AbstractController
         $activeSeason = $activeSeasons[0];
         $race = new Race();
         $form = $this->createForm(RaceType::class, $race, [
-            'action' => $this->generateUrl('app_races_new'),
+            'action' => $this->generateUrl('app_admin_races_new'),
         ]);
         $form->handleRequest($request);
 
@@ -67,7 +67,7 @@ class RacesController extends AbstractController
             $this->entityManager->persist($race);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_races_list');
+            return $this->redirectToRoute('app_admin_races_list');
         }
 
         return $this->render('admin/races/new.html.twig', [
@@ -76,7 +76,7 @@ class RacesController extends AbstractController
         ]);
     }
 
-    #[Route('/races/edit/{id}', name: 'app_races_edit', methods: ['GET', 'POST'])]
+    #[Route('/races/edit/{id}', name: 'app_admin_races_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
@@ -91,14 +91,14 @@ class RacesController extends AbstractController
             return throw $this->createNotFoundException('This race does not exist');
         }
         $form = $this->createForm(RaceType::class, $race, [
-            'action' => $this->generateUrl('app_races_edit', ['id' => $id]),
+            'action' => $this->generateUrl('app_admin_races_edit', ['id' => $id]),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_races_list');
+            return $this->redirectToRoute('app_admin_races_list');
         }
 
         return $this->render('admin/races/edit.html.twig', [
@@ -107,7 +107,7 @@ class RacesController extends AbstractController
         ]);
     }
 
-    #[Route('/races/delete/{id}', name: 'app_races_delete', methods: ['GET'])]
+    #[Route('/races/delete/{id}', name: 'app_admin_races_delete', methods: ['GET'])]
     public function delete(Request $request, $id): Response
     {
         $race = $this->raceRepository->find($id);
@@ -120,6 +120,6 @@ class RacesController extends AbstractController
         $this->entityManager->remove($race);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_races_list');
+        return $this->redirectToRoute('app_admin_races_list');
     }
 }

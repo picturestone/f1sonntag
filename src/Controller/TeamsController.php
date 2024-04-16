@@ -23,7 +23,7 @@ class TeamsController extends AbstractController
     ) {
     }
 
-    #[Route('/teams', name: 'app_teams_list', methods: ['GET'])]
+    #[Route('/teams', name: 'app_admin_teams_list', methods: ['GET'])]
     public function list(): Response
     {
         $teams = $this->teamRepository->findAll();
@@ -33,12 +33,12 @@ class TeamsController extends AbstractController
         ]);
     }
 
-    #[Route('/teams/new', name: 'app_teams_new', methods: ['GET', 'POST'])]
+    #[Route('/teams/new', name: 'app_admin_teams_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $team = new Team();
         $form = $this->createForm(TeamType::class, $team, [
-            'action' => $this->generateUrl('app_teams_new'),
+            'action' => $this->generateUrl('app_admin_teams_new'),
         ]);
         $form->handleRequest($request);
 
@@ -47,7 +47,7 @@ class TeamsController extends AbstractController
             $this->entityManager->persist($team);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_teams_list');
+            return $this->redirectToRoute('app_admin_teams_list');
         }
 
         return $this->render('admin/teams/new.html.twig', [
@@ -55,7 +55,7 @@ class TeamsController extends AbstractController
         ]);
     }
 
-    #[Route('/teams/edit/{id}', name: 'app_teams_edit', methods: ['GET', 'POST'])]
+    #[Route('/teams/edit/{id}', name: 'app_admin_teams_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $team = $this->teamRepository->find($id);
@@ -63,14 +63,14 @@ class TeamsController extends AbstractController
             return throw $this->createNotFoundException('This team does not exist');
         }
         $form = $this->createForm(TeamType::class, $team, [
-            'action' => $this->generateUrl('app_teams_edit', ['id' => $id]),
+            'action' => $this->generateUrl('app_admin_teams_edit', ['id' => $id]),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_teams_list');
+            return $this->redirectToRoute('app_admin_teams_list');
         }
 
         return $this->render('admin/teams/edit.html.twig', [
@@ -78,7 +78,7 @@ class TeamsController extends AbstractController
         ]);
     }
 
-    #[Route('/teams/delete/{id}', name: 'app_teams_delete', methods: ['GET'])]
+    #[Route('/teams/delete/{id}', name: 'app_admin_teams_delete', methods: ['GET'])]
     public function delete(Request $request, $id): Response
     {
         $team = $this->teamRepository->find($id);
@@ -91,6 +91,6 @@ class TeamsController extends AbstractController
         $this->entityManager->remove($team);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_teams_list');
+        return $this->redirectToRoute('app_admin_teams_list');
     }
 }

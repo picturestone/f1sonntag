@@ -23,7 +23,7 @@ class DriversController extends AbstractController
     ) {
     }
 
-    #[Route('/drivers', name: 'app_drivers_list', methods: ['GET'])]
+    #[Route('/drivers', name: 'app_admin_drivers_list', methods: ['GET'])]
     public function listActive(): Response
     {
         $drivers = $this->driverRepository->findAllOrderByIsActiveAndLastName();
@@ -33,12 +33,12 @@ class DriversController extends AbstractController
         ]);
     }
 
-    #[Route('/drivers/new', name: 'app_drivers_new', methods: ['GET', 'POST'])]
+    #[Route('/drivers/new', name: 'app_admin_drivers_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $driver = new Driver();
         $form = $this->createForm(DriverType::class, $driver, [
-            'action' => $this->generateUrl('app_drivers_new'),
+            'action' => $this->generateUrl('app_admin_drivers_new'),
         ]);
         $form->handleRequest($request);
 
@@ -47,7 +47,7 @@ class DriversController extends AbstractController
             $this->entityManager->persist($driver);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_drivers_list');
+            return $this->redirectToRoute('app_admin_drivers_list');
         }
 
         return $this->render('admin/drivers/new.html.twig', [
@@ -55,7 +55,7 @@ class DriversController extends AbstractController
         ]);
     }
 
-    #[Route('/drivers/edit/{id}', name: 'app_drivers_edit', methods: ['GET', 'POST'])]
+    #[Route('/drivers/edit/{id}', name: 'app_admin_drivers_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $driver = $this->driverRepository->find($id);
@@ -63,14 +63,14 @@ class DriversController extends AbstractController
             return throw $this->createNotFoundException('This driver does not exist');
         }
         $form = $this->createForm(DriverType::class, $driver, [
-            'action' => $this->generateUrl('app_drivers_edit', ['id' => $id]),
+            'action' => $this->generateUrl('app_admin_drivers_edit', ['id' => $id]),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_drivers_list');
+            return $this->redirectToRoute('app_admin_drivers_list');
         }
 
         return $this->render('admin/drivers/edit.html.twig', [
@@ -78,7 +78,7 @@ class DriversController extends AbstractController
         ]);
     }
 
-    #[Route('/drivers/delete/{id}', name: 'app_drivers_delete', methods: ['GET'])]
+    #[Route('/drivers/delete/{id}', name: 'app_admin_drivers_delete', methods: ['GET'])]
     public function delete(Request $request, $id): Response
     {
         $driver = $this->driverRepository->find($id);
@@ -91,6 +91,6 @@ class DriversController extends AbstractController
         $this->entityManager->remove($driver);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_drivers_list');
+        return $this->redirectToRoute('app_admin_drivers_list');
     }
 }
