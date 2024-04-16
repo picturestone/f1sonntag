@@ -65,6 +65,8 @@ final class AddUserCommand extends Command
             // see https://symfony.com/doc/current/components/console/console_arguments.html
             ->addArgument('email', InputArgument::OPTIONAL, 'The email of the new user')
             ->addArgument('password', InputArgument::OPTIONAL, 'The plain password of the new user')
+            ->addArgument('firstName', InputArgument::OPTIONAL, 'The first name of the new user')
+            ->addArgument('lastName', InputArgument::OPTIONAL, 'The last name of the new user')
             ->addOption('admin', null, InputOption::VALUE_NONE, 'If set, the user is created as an administrator')
         ;
     }
@@ -93,7 +95,12 @@ final class AddUserCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (null !== $input->getArgument('email') && null !== $input->getArgument('password')) {
+        if (
+            null !== $input->getArgument('email')
+            && null !== $input->getArgument('password')
+            && null !== $input->getArgument('firstName')
+            && null !== $input->getArgument('lastName')
+        ) {
             return;
         }
 
@@ -102,7 +109,7 @@ final class AddUserCommand extends Command
             'If you prefer to not use this interactive wizard, provide the',
             'arguments required by this command as follows:',
             '',
-            ' $ php bin/console app:add-user email@example.com password',
+            ' $ php bin/console app:add-user email@example.com password firstName lastName',
             '',
             'Now we\'ll ask you for the value of all the missing command arguments.',
         ]);
@@ -127,6 +134,26 @@ final class AddUserCommand extends Command
             $password = $this->io->ask('password', null);
             $input->setArgument('password', $password);
         }
+
+        // Ask for the first name if it's not defined
+        $firstName = $input->getArgument('firstName');
+
+        if (null !== $firstName) {
+            $this->io->text(' > <info>First name</info>: '.$firstName);
+        } else {
+            $firstName = $this->io->ask('firstName', null);
+            $input->setArgument('firstName', $firstName);
+        }
+
+        // Ask for the first name if it's not defined
+        $lastName = $input->getArgument('lastName');
+
+        if (null !== $lastName) {
+            $this->io->text(' > <info>Last name</info>: '.$lastName);
+        } else {
+            $lastName = $this->io->ask('lastName', null);
+            $input->setArgument('lastName', $lastName);
+        }
     }
 
     /**
@@ -144,6 +171,12 @@ final class AddUserCommand extends Command
         /** @var string $plainPassword */
         $plainPassword = $input->getArgument('password');
 
+        /** @var string $firstName */
+        $firstName = $input->getArgument('firstName');
+
+        /** @var string $lastName */
+        $lastName = $input->getArgument('lastName');
+
         $isAdmin = $input->getOption('admin');
 
         // make sure to validate the user data is correct
@@ -152,9 +185,10 @@ final class AddUserCommand extends Command
         // create the user and hash its password
         $user = new User();
         $user->setEmail($email);
-        $roles = [User::ROLE_USER];
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
         if ($isAdmin) {
-            $roles[] = [User::ROLE_ADMIN];
+            $roles[] = User::ROLE_ADMIN;
         }
         $user->setRoles($roles);
 
@@ -196,12 +230,12 @@ final class AddUserCommand extends Command
         return <<<'HELP'
             The <info>%command.name%</info> command creates new users and saves them in the database:
 
-              <info>php %command.full_name%</info> <comment>email password</comment>
+              <info>php %command.full_name%</info> <comment>email password firstName lastName</comment>
 
             By default the command creates regular users. To create administrator users,
             add the <comment>--admin</comment> option:
 
-              <info>php %command.full_name%</info> email password <comment>--admin</comment>
+              <info>php %command.full_name%</info> email password firstName lastName <comment>--admin</comment>
             HELP;
     }
 }
