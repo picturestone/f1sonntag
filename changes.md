@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Renamed admin routes, changed admin template paths. [#13]
 -   Added user admin. [#12]
 -   Added race results admin. [#11]
 -   Added active state for driver. [#10]
