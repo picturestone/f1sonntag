@@ -7,7 +7,7 @@
     <p>Rennen für die Saison "{{ season.name }}"</p>
 
     <div>
-        <a class="btn btn-primary" href="{{ path('app_races_new') }}">Hinzufügen</a>
+        <a class="btn btn-primary" href="{{ path('app_admin_races_new') }}">Hinzufügen</a>
     </div>
 
     <div class="table-responsive">
@@ -27,12 +27,12 @@
                 {% for race in races %}
                     <tr>
                         <td class="col--icon-button">
-                            <a class="btn btn-danger" href="{{ path('app_races_delete', {id: race.id}) }}">
+                            <a class="btn btn-danger" href="{{ path('app_admin_races_delete', {id: race.id}) }}">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
                         <td class="col--icon-button">
-                            <a class="btn btn-primary" href="{{ path('app_races_edit', {id: race.id}) }}">
+                            <a class="btn btn-primary" href="{{ path('app_admin_races_edit', {id: race.id}) }}">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>

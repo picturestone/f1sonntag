@@ -2,12 +2,10 @@
 
 {% block body %}
 <div class="container-xl">
-    <h1>Fahrer</h1>
-
-    <p>Die aktiven Fahrer sind die, die in der aktuellen Saison mitfahren. Nur auf diese kann getippt werden, und nur für diese kann ein Rennergebnis eingetragen werden. Dadurch können Fahrer, die eine Pause eingelegt haben (z.B. Daniel Ricciardo), weiter im System bleiben, ohne dass die Liste zu lange wird.</p>
+    <h1>Benutzer</h1>
 
     <div>
-        <a class="btn btn-primary" href="{{ path('app_drivers_new') }}">Hinzufügen</a>
+        <a class="btn btn-primary" href="{{ path('app_admin_users_new') }}">Hinzufügen</a>
     </div>
 
     <div class="table-responsive">
@@ -16,37 +14,43 @@
                 <tr>
                     <th class="col--icon-button" scope="col"></th>
                     <th class="col--icon-button" scope="col"></th>
+                    <th class="col--icon-button" scope="col"></th>
                     <th scope="col">Vorname</th>
                     <th scope="col">Nachname</th>
-                    <th scope="col">Team</th>
-                    <th scope="col">Aktiv</th>
+                    <th scope="col">E-Mail</th>
+                    <th scope="col">Ist Administrator</th>
                 </tr>
             </thead>
 
             <tbody>
-                {% for driver in drivers %}
+                {% for user in users %}
                     <tr>
                         <td class="col--icon-button">
-                            <a class="btn btn-danger" href="{{ path('app_drivers_delete', {id: driver.id}) }}">
+                            <a class="btn btn-danger" href="{{ path('app_admin_users_delete', {id: user.id}) }}">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
                         <td class="col--icon-button">
-                            <a class="btn btn-primary" href="{{ path('app_drivers_edit', {id: driver.id}) }}">
+                            <a class="btn btn-primary" href="{{ path('app_admin_users_edit', {id: user.id}) }}">
                                 <i class="bi bi-pencil"></i>
                             </a>
                         </td>
-                        <td>
-                            <span>{{ driver.firstName }}</span>
+                        <td class="col--icon-button">
+                            <a class="btn btn-secondary" href="{{ path('app_admin_users_change_password', {id: user.id}) }}">
+                                <i class="bi bi-lock"></i>
+                            </a>
                         </td>
                         <td>
-                            <span>{{ driver.lastName }}</span>
+                            <span>{{ user.firstName }}</span>
                         </td>
                         <td>
-                            <span>{{ driver.team.name }}</span>
+                            <span>{{ user.lastName }}</span>
                         </td>
                         <td>
-                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': driver.isActive } %}
+                            <span>{{ user.email }}</span>
+                        </td>
+                        <td>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': ROLE_ADMIN in user.roles } %}
                         </td>
                     </tr>
                 {% endfor %}

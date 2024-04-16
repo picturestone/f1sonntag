@@ -21,7 +21,7 @@ security:
                 check_path: app_login
                 enable_csrf: true
                 # TODO change this to the score list once it is implemented.
-                default_target_path: app_race_results_list
+                default_target_path: app_admin_race_results_list
             logout:
                 path: app_logout
                 # where to redirect after logout

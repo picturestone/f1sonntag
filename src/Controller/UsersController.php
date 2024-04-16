@@ -28,24 +28,24 @@ class UsersController extends AbstractController
     ) {
     }
 
-    #[Route('/users', name: 'app_users_list', methods: ['GET'])]
+    #[Route('/users', name: 'app_admin_users_list', methods: ['GET'])]
     public function list(): Response
     {
         $users = $this->userRepository->findAll();
 
-        return $this->render('users/list.html.twig', [
+        return $this->render('admin/users/list.html.twig', [
             'users' => $users
         ]);
     }
 
-    #[Route('/users/new', name: 'app_users_new', methods: ['GET', 'POST'])]
+    #[Route('/users/new', name: 'app_admin_users_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $user = new User();
 
         // Build form.
         $formBuilder = $this->generateUserAddFormBuilder($user);
-        $formBuilder->setAction($this->generateUrl('app_users_new'));
+        $formBuilder->setAction($this->generateUrl('app_admin_users_new'));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
@@ -59,15 +59,15 @@ class UsersController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_users_list');
+            return $this->redirectToRoute('app_admin_users_list');
         }
 
-        return $this->render('users/new.html.twig', [
+        return $this->render('admin/users/new.html.twig', [
             'form' => $form,
         ]);
     }
 
-    #[Route('/users/edit/{id}', name: 'app_users_edit', methods: ['GET', 'POST'])]
+    #[Route('/users/edit/{id}', name: 'app_admin_users_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $user = $this->userRepository->find($id);
@@ -78,7 +78,7 @@ class UsersController extends AbstractController
 
         // Build form.
         $formBuilder = $this->generateUserEditFormBuilder($user);
-        $formBuilder->setAction($this->generateUrl('app_users_edit', ['id' => $id]));
+        $formBuilder->setAction($this->generateUrl('app_admin_users_edit', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
@@ -88,15 +88,15 @@ class UsersController extends AbstractController
             $user->setRoles($this->getRolesFromRequestData($requestData));
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_users_list');
+            return $this->redirectToRoute('app_admin_users_list');
         }
 
-        return $this->render('users/edit.html.twig', [
+        return $this->render('admin/users/edit.html.twig', [
             'form' => $form,
         ]);
     }
 
-    #[Route('/users/password/{id}', name: 'app_users_change_password', methods: ['GET', 'POST'])]
+    #[Route('/users/password/{id}', name: 'app_admin_users_change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, $id): Response
     {
         $user = $this->userRepository->find($id);
@@ -107,7 +107,7 @@ class UsersController extends AbstractController
 
         // Build form.
         $formBuilder = $this->generateChangePasswordFormBuilder();
-        $formBuilder->setAction($this->generateUrl('app_users_change_password', ['id' => $id]));
+        $formBuilder->setAction($this->generateUrl('app_admin_users_change_password', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
@@ -119,16 +119,16 @@ class UsersController extends AbstractController
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_users_list');
+            return $this->redirectToRoute('app_admin_users_list');
         }
 
-        return $this->render('users/changePassword.html.twig', [
+        return $this->render('admin/users/changePassword.html.twig', [
             'form' => $form,
             'user' => $user
         ]);
     }
 
-    #[Route('/users/delete/{id}', name: 'app_users_delete', methods: ['GET'])]
+    #[Route('/users/delete/{id}', name: 'app_admin_users_delete', methods: ['GET'])]
     public function delete(Request $request, $id): Response
     {
         $user = $this->userRepository->find($id);
@@ -141,7 +141,7 @@ class UsersController extends AbstractController
         $this->entityManager->remove($user);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('app_users_list');
+        return $this->redirectToRoute('app_admin_users_list');
     }
 
     /**
