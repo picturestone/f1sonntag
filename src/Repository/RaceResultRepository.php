@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Race;
 use App\Entity\RaceResult;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,6 +21,20 @@ class RaceResultRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, RaceResult::class);
     }
+
+    /**
+     * @return RaceResult[] Returns an array of Race objects.
+     */
+    public function findRaceResultsByRace(Race $race): array
+    {
+        return $this->createQueryBuilder('rr')
+            ->where('rr.race = :race')
+            ->setParameter('race', $race)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 
     //    /**
     //     * @return RaceResult[] Returns an array of RaceResult objects

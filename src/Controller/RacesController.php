@@ -36,7 +36,7 @@ class RacesController extends AbstractController
         }
 
         $season = $activeSeasons[0];
-        $races = $this->raceRepository->findRacesBySeason($season);
+        $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
         return $this->render('races/list.html.twig', [
             'races' => $races,

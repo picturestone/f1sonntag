@@ -35,6 +35,35 @@ class RaceRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * @return Race[] Returns an array of Race objects.
+     */
+    public function findRacesBySeasonOrderByStartDateAndStartTime(Season $season): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.season = :season')
+            ->setParameter('season', $season)
+            ->addOrderBy('r.startDate', 'ASC')
+            ->addOrderBy('r.startTime', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * @return Race[] Returns an array of Race objects.
+     */
+    public function findRacesOfActiveSeason(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->join('r.season', 's')
+            ->where('s.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     //    public function findOneBySomeField($value): ?Race
     //    {
     //        return $this->createQueryBuilder('r')
