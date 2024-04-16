@@ -4,13 +4,13 @@
 
 {% block body %}
 <div class="container-xl">
-    <h1>Rennergebnisse bearbeiten - {{ race.name}} - {{ season.name }}</h1>
+    <h1>Strafpunkte bearbeiten - {{ race.name}} - {{ season.name }}</h1>
 
-    <p>Hier können die Rennergebnisse eingetragen werden. Falls Fahrer in der Teilnehmerliste fehlen oder Fahrer aufgelistet sind, die nicht am Rennen teilgenommen haben, kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
+    <p>Hier können die Strafpunkte eingetragen werden. Falls Benutzer in der Teilnehmerliste fehlen oder Benutzer aufgelistet sind, die für dieses Rennen nicht relevant sind, kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
 
     {# TODO Teilnehmerliste bearbeiten: List all drivers (active and inactive) in table with a checkbox for "hat teilgenommen". Race title and season are in the title. #}
 
-    {% set formId = 'raceResultForm' %}
+    {% set formId = 'punishmentPointsForm' %}
 
     {{ form_start(form, {
         'method': 'POST',
@@ -21,28 +21,24 @@
     <div class="table-responsive">
         <table class="table table-sm align-middle">
             <thead>
-            <tr>
-                <th scope="col">Vorname</th>
-                <th scope="col">Nachname</th>
-                <th scope="col">Team</th>
-                <th scope="col">Position</th>
-            </tr>
+                <tr>
+                    <th scope="col">Vorname</th>
+                    <th scope="col">Nachname</th>
+                    <th scope="col">Strafpunkte</th>
+                </tr>
             </thead>
 
             <tbody>
-            {% for raceResult in raceResults %}
+            {% for punishmentPoints in racePunishmentPoints %}
                 <tr>
                     <td>
-                        <span>{{ raceResult.driver.firstName }}</span>
+                        <span>{{ punishmentPoints.user.firstName }}</span>
                     </td>
                     <td>
-                        <span>{{ raceResult.driver.lastName }}</span>
+                        <span>{{ punishmentPoints.user.lastName }}</span>
                     </td>
                     <td>
-                        <span>{{ raceResult.driver.team.name }}</span>
-                    </td>
-                    <td>
-                        {{ form_widget(form[raceResult.driver.id], {
+                        {{ form_widget(form[punishmentPoints.user.id], {
                             'attr': {
                                 'form': formId
                             }

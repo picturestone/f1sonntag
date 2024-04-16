@@ -4,6 +4,8 @@
 <div class="container-xl">
     <h1>Benutzer</h1>
 
+    <p>Die aktiven Benutzer sind die, die aktuell mitwetten. Indem Benutzer nicht gelöscht, sondern stattdessen deaktiviert werden, kann die Wetthistorie bewahrt werden.</p>
+
     <div>
         <a class="btn btn-primary" href="{{ path('app_admin_users_new') }}">Hinzufügen</a>
     </div>
@@ -18,7 +20,8 @@
                     <th scope="col">Vorname</th>
                     <th scope="col">Nachname</th>
                     <th scope="col">E-Mail</th>
-                    <th scope="col">Ist Administrator</th>
+                    <th scope="col">Administrator</th>
+                    <th scope="col">Aktiv</th>
                 </tr>
             </thead>
 
@@ -51,6 +54,9 @@
                         </td>
                         <td>
                             {% include 'includes/isActiveIcon.html.twig' with { 'isActive': ROLE_ADMIN in user.roles } %}
+                        </td>
+                        <td>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': user.isActive } %}
                         </td>
                     </tr>
                 {% endfor %}

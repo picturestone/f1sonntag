@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
+use App\Entity\PunishmentPoints;
 use App\Entity\RaceResult;
-use App\Entity\Team;
 use App\Entity\User;
-use App\Form\TeamType;
 use App\Repository\DriverRepository;
+use App\Repository\PunishmentPointsRepository;
 use App\Repository\RaceRepository;
-use App\Repository\RaceResultRepository;
 use App\Repository\SeasonRepository;
-use App\Repository\TeamRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -24,42 +23,42 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
 #[IsGranted(User::ROLE_ADMIN)]
-class RaceResultsController extends AbstractController
+class PunishmentPointsController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly SeasonRepository $seasonRepository,
-        private readonly RaceResultRepository $raceResultRepository,
+        private readonly PunishmentPointsRepository $punishmentPointsRepository,
         private readonly RaceRepository $raceRepository,
-        private readonly DriverRepository $driverRepository
+        private readonly UserRepository $userRepository
     ) {
     }
 
-    #[Route('/race-results', name: 'app_admin_race_results_list', methods: ['GET'])]
+    #[Route('/punishment-points', name: 'app_admin_punishment_points_list', methods: ['GET'])]
     public function list(): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/raceResults/createSeason.html.twig');
+            return $this->render('admin/punishmentPoints/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
         $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
-        return $this->render('admin/raceResults/list.html.twig', [
+        return $this->render('admin/punishmentPoints/list.html.twig', [
             'races' => $races,
             'season' => $season
         ]);
     }
 
-    #[Route('/race-results/{id}', name: 'app_admin_race_results', methods: ['GET', 'POST'])]
+    #[Route('/punishment-points/{id}', name: 'app_admin_punishment_points', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/raceResults/createSeason.html.twig');
+            return $this->render('admin/punishmentPoints/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
@@ -69,63 +68,63 @@ class RaceResultsController extends AbstractController
             return throw $this->createNotFoundException('This race does not exist');
         }
 
-        // Find results for the race if results exists.
-        $raceResults = $this->raceResultRepository->findRaceResultsByRace($race);
+        // Find punishment points for the race if punishment points exists.
+        $racePunishmentPoints = $this->punishmentPointsRepository->findPunihsmentPointsByRace($race);
 
-        // If no results have been entered yet, add all the active racers for race results as default.
-        if (count($raceResults) === 0) {
-            $activeDrivers = $this->driverRepository->findActiveDrivers();
+        // If no punishment points have been entered yet, add punishment points for all active users as default.
+        if (count($racePunishmentPoints) === 0) {
+            $activeUsers = $this->userRepository->findActiveUsers();
 
-            foreach ($activeDrivers as $activeDriver) {
-                $raceResult = new RaceResult();
-                $raceResult->setRace($race);
-                $raceResult->setDriver($activeDriver);
-                $raceResults[] = $raceResult;
+            foreach ($activeUsers as $activeUser) {
+                $punishmentPoints = new PunishmentPoints();
+                $punishmentPoints->setRace($race);
+                $punishmentPoints->setUser($activeUser);
+                $racePunishmentPoints[] = $punishmentPoints;
             }
         }
 
         // Build form.
-        $formBuilder = $this->generateFormBuilder($raceResults);
-        $formBuilder->setAction($this->generateUrl('app_admin_race_results', ['id' => $id]));
+        $formBuilder = $this->generateFormBuilder($racePunishmentPoints);
+        $formBuilder->setAction($this->generateUrl('app_admin_punishment_points', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
-            foreach ($raceResults as $raceResult) {
-                $driverId = $raceResult->getDriver()->getId();
-                $position = $formData[$driverId];
+            foreach ($racePunishmentPoints as $punishmentPoints) {
+                $userId = $punishmentPoints->getUser()->getId();
+                $points = $formData[$userId];
 
-                if ($position) {
-                    $raceResult->setPosition($position);
+                if ($points) {
+                    $punishmentPoints->setPunishmentPoints($points);
                 }
 
-                $this->entityManager->persist($raceResult);
+                $this->entityManager->persist($punishmentPoints);
             }
 
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_admin_race_results_list');
+            return $this->redirectToRoute('app_admin_punishment_points_list');
         }
 
-        return $this->render('admin/raceResults/edit.html.twig', [
+        return $this->render('admin/punishmentPoints/edit.html.twig', [
             'form' => $form,
-            'raceResults' => $raceResults,
+            'racePunishmentPoints' => $racePunishmentPoints,
             'race' => $race,
             'season' => $season
         ]);
     }
 
     /**
-     * @param RaceResult[] $raceResults
+     * @param PunishmentPoints[] $racePunishmentPoints
      * @return FormInterface
      */
-    private function generateFormBuilder(array $raceResults): FormBuilderInterface
+    private function generateFormBuilder(array $racePunishmentPoints): FormBuilderInterface
     {
         $formBuilder = $this->createFormBuilder();
 
-        foreach ($raceResults as $raceResult) {
+        foreach ($racePunishmentPoints as $punishmentPoints) {
             $options = [
                 'scale' => 0,
                 'empty_data' => 0,
@@ -133,15 +132,15 @@ class RaceResultsController extends AbstractController
                     'min' => 0
                 ]
             ];
-            $position = $raceResult->getPosition();
+            $points = $punishmentPoints->getPunishmentPoints();
 
-            if ($position) {
-                $options['data'] = $position;
+            if ($points) {
+                $options['data'] = $points;
             } else {
                 $options['data'] = 0;
             }
 
-            $formBuilder->add($raceResult->getDriver()->getId(), NumberType::class, $options);
+            $formBuilder->add($punishmentPoints->getUser()->getId(), NumberType::class, $options);
         }
 
         $formBuilder->add('submit', SubmitType::class, [

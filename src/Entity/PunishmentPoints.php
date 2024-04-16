@@ -14,7 +14,7 @@ class PunishmentPoints
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $punishmentPoints = null;
+    private ?int $punishmentPoints = 0;
 
     #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
     private ?User $user = null;

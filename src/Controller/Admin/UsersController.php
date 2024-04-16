@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -171,6 +171,7 @@ class UsersController extends AbstractController
             ->add('email')
             ->add('firstName')
             ->add('lastName')
+            ->add('isActive')
             ->add('isAdmin', CheckboxType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -199,6 +200,7 @@ class UsersController extends AbstractController
             ])
             ->add('firstName')
             ->add('lastName')
+            ->add('isActive')
             ->add('isAdmin', CheckboxType::class, [
                 'mapped' => false,
                 'required' => false,
