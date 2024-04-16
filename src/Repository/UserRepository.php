@@ -38,6 +38,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @return User[] Returns an array of Driver objects.
+     */
+    public function findActiveUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

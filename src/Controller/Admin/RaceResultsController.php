@@ -69,7 +69,7 @@ class RaceResultsController extends AbstractController
         // Find results for the race if results exists.
         $raceResults = $this->raceResultRepository->findRaceResultsByRace($race);
 
-        // If no results have been entered yet, add all the active racers for race results as default.
+        // If no results have been entered yet, add results for all active drivers as default.
         if (count($raceResults) === 0) {
             $activeDrivers = $this->driverRepository->findActiveDrivers();
 

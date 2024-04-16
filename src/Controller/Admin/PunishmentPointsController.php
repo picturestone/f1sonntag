@@ -71,20 +71,17 @@ class PunishmentPointsController extends AbstractController
         // Find punishment points for the race if punishment points exists.
         $racePunishmentPoints = $this->punishmentPointsRepository->findPunihsmentPointsByRace($race);
 
-        // If no punishment points have been entered yet for the race, add punishment points for all users as default.
+        // If no punishment points have been entered yet, add punishment points for all active users as default.
         if (count($racePunishmentPoints) === 0) {
-            $users = $this->userRepository->findAll();
+            $activeUsers = $this->userRepository->findActiveUsers();
 
-            foreach ($users as $user) {
+            foreach ($activeUsers as $activeUser) {
                 $punishmentPoints = new PunishmentPoints();
                 $punishmentPoints->setRace($race);
-                $punishmentPoints->setUser($user);
+                $punishmentPoints->setUser($activeUser);
                 $racePunishmentPoints[] = $punishmentPoints;
             }
         }
-
-        // TODO either make users inactive or add punishmentPoints for users which dont have them yet for the race.
-        // Pretty much do the same as for raceResults.
 
         // Build form.
         $formBuilder = $this->generateFormBuilder($racePunishmentPoints);
