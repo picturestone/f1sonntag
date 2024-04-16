@@ -147,7 +147,7 @@ class RaceResultsController extends AbstractController
         $formBuilder->add('submit', SubmitType::class, [
             'label' => 'Speichern'
         ]);
-        
+
         return $formBuilder;
     }
 }
