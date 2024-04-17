@@ -7,6 +7,8 @@ class ToastDto
     private string $text;
     private string $state;
 
+    final public const FLASH_TYPE = 'TOAST';
+
     final public const STATE_SUCCESS = 'SUCCESS';
     final public const STATE_ERROR = 'ERROR';
     final public const STATE_WARNING = 'WARNING';

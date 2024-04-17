@@ -2,11 +2,13 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\Race;
 use App\Entity\User;
 use App\Form\Admin\RaceType;
 use App\Repository\RaceRepository;
 use App\Repository\SeasonRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,6 +68,7 @@ class RacesController extends AbstractController
             $race->setSeason($activeSeason);
             $this->entityManager->persist($race);
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_races_list');
         }
@@ -97,6 +100,7 @@ class RacesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_races_list');
         }
@@ -119,6 +123,7 @@ class RacesController extends AbstractController
 
         $this->entityManager->remove($race);
         $this->entityManager->flush();
+        $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateDeleteSuccessfulToast());
 
         return $this->redirectToRoute('app_admin_races_list');
     }

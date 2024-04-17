@@ -1,7 +1,8 @@
-{% if toasts|default([])|length %}
+{% set toasts = app.flashes(TOAST['FLASH_TYPE']) %}
+{% if toasts|length > 0 %}
     <div class="toast-container position-fixed m-5 top-0 end-0">
         {% for toast in toasts %}
-            {{ _self.toast(toast.text, toast.state) }}
+            {{ _self.toast(toast.text|default(''), toast.state|default('')) }}
         {% endfor %}
     </div>
 {% endif %}
@@ -9,11 +10,11 @@
 {% macro toast(text, state) %}
     {% if text|default('') and state|default('') %}
         {% set stateBackgroundClass = '' %}
-        {% if state == TOAST_STATE['SUCCESS'] %}
+        {% if state == TOAST['STATE_SUCCESS'] %}
             {% set stateBackgroundClass = 'bg-success' %}
-        {% elseif state == TOAST_STATE['ERROR'] %}
+        {% elseif state == TOAST['STATE_ERROR'] %}
             {% set stateBackgroundClass = 'bg-danger' %}
-        {% elseif state == TOAST_STATE['WARNING'] %}
+        {% elseif state == TOAST['STATE_WARNING'] %}
             {% set stateBackgroundClass = 'bg-warning' %}
         {% endif %}
 

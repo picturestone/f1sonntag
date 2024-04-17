@@ -5,10 +5,11 @@ twig:
         ROLE:
             USER: 'ROLE_USER'
             ADMIN: 'ROLE_ADMIN'
-        TOAST_STATE:
-            SUCCESS: 'SUCCESS'
-            ERROR: 'ERROR'
-            WARNING: 'WARNING'
+        TOAST:
+            FLASH_TYPE: 'TOAST'
+            STATE_SUCCESS: 'SUCCESS'
+            STATE_ERROR: 'ERROR'
+            STATE_WARNING: 'WARNING'
 
 when@test:
     twig:

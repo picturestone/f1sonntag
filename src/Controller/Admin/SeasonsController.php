@@ -2,11 +2,13 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\Season;
 use App\Entity\User;
 use App\Form\Admin\SeasonActiveType;
 use App\Form\Admin\SeasonType;
 use App\Repository\SeasonRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,6 +55,7 @@ class SeasonsController extends AbstractController
             // Set newly created season to active.
             $this->setSeasonToActive($season->getId());
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_seasons_list');
         }
@@ -75,6 +78,7 @@ class SeasonsController extends AbstractController
             $id = $formValues['season_active']['activeSeasonId'];
             $this->setSeasonToActive($id);
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_seasons_list');
         }
@@ -98,6 +102,7 @@ class SeasonsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_seasons_list');
         }
@@ -122,6 +127,7 @@ class SeasonsController extends AbstractController
 
         $this->entityManager->remove($season);
         $this->entityManager->flush();
+        $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateDeleteSuccessfulToast());
 
         return $this->redirectToRoute('app_admin_seasons_list');
     }

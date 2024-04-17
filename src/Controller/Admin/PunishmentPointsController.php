@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\PunishmentPoints;
 use App\Entity\Race;
 use App\Entity\RaceResult;
@@ -11,6 +12,7 @@ use App\Repository\PunishmentPointsRepository;
 use App\Repository\RaceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -93,6 +95,7 @@ class PunishmentPointsController extends AbstractController
             }
 
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_punishment_points_list');
         }
