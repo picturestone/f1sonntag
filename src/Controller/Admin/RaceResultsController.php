@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Race;
 use App\Entity\RaceResult;
 use App\Entity\User;
 use App\Repository\DriverRepository;
@@ -10,6 +11,7 @@ use App\Repository\RaceResultRepository;
 use App\Repository\SeasonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -66,23 +68,10 @@ class RaceResultsController extends AbstractController
             return throw $this->createNotFoundException('This race does not exist');
         }
 
-        // Find results for the race if results exists.
-        $raceResults = $this->raceResultRepository->findRaceResultsByRace($race);
-
-        // If no results have been entered yet, add results for all active drivers as default.
-        if (count($raceResults) === 0) {
-            $activeDrivers = $this->driverRepository->findActiveDrivers();
-
-            foreach ($activeDrivers as $activeDriver) {
-                $raceResult = new RaceResult();
-                $raceResult->setRace($race);
-                $raceResult->setDriver($activeDriver);
-                $raceResults[] = $raceResult;
-            }
-        }
+        $raceResults = $this->getRaceResults($race);
 
         // Build form.
-        $formBuilder = $this->generateFormBuilder($raceResults);
+        $formBuilder = $this->generateRaceResultsEditFormBuilder($raceResults);
         $formBuilder->setAction($this->generateUrl('app_admin_race_results', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
@@ -114,11 +103,127 @@ class RaceResultsController extends AbstractController
         ]);
     }
 
+    #[Route('/race-results/{id}/entries', name: 'app_admin_race_results_entries', methods: ['GET', 'POST'])]
+    public function entryList(Request $request, $id): Response
+    {
+        $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
+
+        if (!$activeSeasons) {
+            return $this->render('admin/raceResults/createSeason.html.twig');
+        }
+
+        $season = $activeSeasons[0];
+        $race = $this->raceRepository->find($id);
+
+        if (!$race) {
+            return throw $this->createNotFoundException('This race does not exist');
+        }
+
+        $raceResults = $this->getRaceResults($race);
+        $entries = $this->getEntries($raceResults);
+
+        // Build form.
+        $formBuilder = $this->generateRaceResultsEntriesFormBuilder($entries);
+        $formBuilder->setAction($this->generateUrl('app_admin_race_results_entries', ['id' => $id]));
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+
+            foreach ($formData as $driverId => $isEntry) {
+                $driverRaceResults = array_filter($raceResults, function(RaceResult $raceResult) use ($driverId) {
+                    return $raceResult->getDriver()->getId() === $driverId;
+                });
+
+                // TODO change id of RaceResult to be composite. https://www.doctrine-project.org/projects/doctrine-orm/en/3.1/tutorials/composite-primary-keys.html#use-case-3-join-table-with-metadata
+
+                if ($isEntry && count($driverRaceResults) === 0) {
+                    // An entry for this driver should exist, but non exist right now. Create one.
+                    $raceResult = new RaceResult();
+                    $raceResult->setRace($race);
+                    $raceResult->setDriver($entries[$driverId]['driver']);
+                    $this->entityManager->persist($raceResult);
+                } else if (!$isEntry && count($driverRaceResults) > 0) {
+                    // An entry for this driver exists, even though it should not. Delete it.
+                    foreach($driverRaceResults as $resultToDelete) {
+                        $this->entityManager->remove($resultToDelete);
+                    }
+                } else if ($isEntry && count($driverRaceResults) > 0) {
+                    // An entry for this driver should exist and we have one. However, if the user clicked on the edit
+                    // entries button without saving any entries first, the entries we show are the default ones from
+                    // active drivers which are not persisted yet. We must make sure to persist those entries.
+                    foreach($driverRaceResults as $resultToPersist) {
+                        $this->entityManager->persist($resultToPersist);
+                    }
+                }
+            }
+
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_race_results', ['id' => $id]);
+        }
+
+        return $this->render('admin/raceResults/entries.html.twig', [
+            'form' => $form,
+            'entries' => $entries,
+            'race' => $race,
+            'season' => $season
+        ]);
+    }
+
+    /**
+     * @param Race $race
+     * @return RaceResult[]
+     */
+    private function getRaceResults(Race $race): array
+    {
+        // Find results for the race if results exists.
+        $raceResults = $this->raceResultRepository->findRaceResultsByRace($race);
+
+        // If no results have been entered yet, add results for all active drivers as default.
+        if (count($raceResults) === 0) {
+            $activeDrivers = $this->driverRepository->findActiveDrivers();
+
+            foreach ($activeDrivers as $activeDriver) {
+                $raceResult = new RaceResult();
+                $raceResult->setRace($race);
+                $raceResult->setDriver($activeDriver);
+                $raceResults[] = $raceResult;
+            }
+        }
+
+        return $raceResults;
+    }
+
+    /**
+     * @param RaceResult[] $raceResults
+     * @return array
+     */
+    private function getEntries(array $raceResults): array
+    {
+        $drivers = $this->driverRepository->findAll();
+        $entries = [];
+
+        foreach ($drivers as $driver) {
+            $driverRaceResults = array_filter($raceResults, function(RaceResult $raceResult) use ($driver) {
+                return $raceResult->getDriver()->getId() === $driver->getId();
+            });
+            $entry = [
+                'driver' => $driver,
+                'isEntry' => count($driverRaceResults) > 0
+            ];
+            $entries[$driver->getId()] = $entry;
+        }
+
+        return $entries;
+    }
+
     /**
      * @param RaceResult[] $raceResults
      * @return FormInterface
      */
-    private function generateFormBuilder(array $raceResults): FormBuilderInterface
+    private function generateRaceResultsEditFormBuilder(array $raceResults): FormBuilderInterface
     {
         $formBuilder = $this->createFormBuilder();
 
@@ -139,6 +244,29 @@ class RaceResultsController extends AbstractController
             }
 
             $formBuilder->add($raceResult->getDriver()->getId(), NumberType::class, $options);
+        }
+
+        $formBuilder->add('submit', SubmitType::class, [
+            'label' => 'Speichern'
+        ]);
+
+        return $formBuilder;
+    }
+
+    /**
+     * @param array[] $entries
+     * @return FormInterface
+     */
+    private function generateRaceResultsEntriesFormBuilder(array $entries): FormBuilderInterface
+    {
+        $formBuilder = $this->createFormBuilder();
+
+        foreach ($entries as $entryKey => $entryValue) {
+            $formBuilder->add($entryKey, CheckboxType::class, [
+                'required' => false,
+                'data' => $entryValue['isEntry'],
+                'label' => false
+            ]);
         }
 
         $formBuilder->add('submit', SubmitType::class, [
