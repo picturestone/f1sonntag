@@ -45,7 +45,7 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownSettings">
                         <li><a class="dropdown-item" href="#">Passwort ändern</a></li>
-                        {% if app.user is defined and ROLE_USER in app.user.roles %}
+                        {% if app.user is defined and ROLE['USER'] in app.user.roles %}
                             <li><a class="dropdown-item" href="#">User-Modus</a></li>
                         {% endif %}
                         <li><hr class="dropdown-divider"></li>

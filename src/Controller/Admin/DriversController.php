@@ -2,10 +2,12 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\Driver;
 use App\Entity\User;
 use App\Form\Admin\DriverType;
 use App\Repository\DriverRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,6 +48,7 @@ class DriversController extends AbstractController
             $driver = $form->getData();
             $this->entityManager->persist($driver);
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_drivers_list');
         }
@@ -69,6 +72,7 @@ class DriversController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_drivers_list');
         }
@@ -90,6 +94,7 @@ class DriversController extends AbstractController
 
         $this->entityManager->remove($driver);
         $this->entityManager->flush();
+        $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateDeleteSuccessfulToast());
 
         return $this->redirectToRoute('app_admin_drivers_list');
     }

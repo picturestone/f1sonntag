@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\Race;
 use App\Entity\RaceResult;
 use App\Entity\User;
@@ -9,13 +10,13 @@ use App\Repository\DriverRepository;
 use App\Repository\RaceRepository;
 use App\Repository\RaceResultRepository;
 use App\Repository\SeasonRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -91,6 +92,7 @@ class RaceResultsController extends AbstractController
             }
 
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_race_results_list');
         }

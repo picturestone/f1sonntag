@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -58,6 +60,7 @@ class UsersController extends AbstractController
             $user->setPassword($hashedPassword);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_users_list');
         }
@@ -87,6 +90,7 @@ class UsersController extends AbstractController
             // Set admin role if admin checkbox is set.
             $user->setRoles($this->getRolesFromRequestData($requestData));
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_users_list');
         }
@@ -118,6 +122,7 @@ class UsersController extends AbstractController
             $user->setPassword($hashedPassword);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_users_list');
         }
@@ -135,11 +140,11 @@ class UsersController extends AbstractController
 
         if (!$user) {
             return throw $this->createNotFoundException('This user does not exist');
-
         }
 
         $this->entityManager->remove($user);
         $this->entityManager->flush();
+        $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateDeleteSuccessfulToast());
 
         return $this->redirectToRoute('app_admin_users_list');
     }

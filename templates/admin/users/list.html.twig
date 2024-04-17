@@ -53,7 +53,7 @@
                             <span>{{ user.email }}</span>
                         </td>
                         <td>
-                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': ROLE_ADMIN in user.roles } %}
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': ROLE['ADMIN'] in user.roles } %}
                         </td>
                         <td>
                             {% include 'includes/isActiveIcon.html.twig' with { 'isActive': user.isActive } %}

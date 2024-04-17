@@ -2,10 +2,12 @@
 
 namespace App\Controller\Admin;
 
+use App\Dto\ToastDto;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\Admin\TeamType;
 use App\Repository\TeamRepository;
+use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,6 +48,7 @@ class TeamsController extends AbstractController
             $team = $form->getData();
             $this->entityManager->persist($team);
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_teams_list');
         }
@@ -69,6 +72,7 @@ class TeamsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
             return $this->redirectToRoute('app_admin_teams_list');
         }
@@ -90,6 +94,7 @@ class TeamsController extends AbstractController
 
         $this->entityManager->remove($team);
         $this->entityManager->flush();
+        $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateDeleteSuccessfulToast());
 
         return $this->redirectToRoute('app_admin_teams_list');
     }

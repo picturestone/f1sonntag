@@ -1,0 +1,33 @@
+{% set toasts = app.flashes(TOAST['FLASH_TYPE']) %}
+{% if toasts|length > 0 %}
+    <div class="toast-container position-fixed m-5 top-0 end-0">
+        {% for toast in toasts %}
+            {{ _self.toast(toast.text|default(''), toast.state|default('')) }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% macro toast(text, state) %}
+    {% if text|default('') and state|default('') %}
+        {% set stateBackgroundClass = '' %}
+        {% if state == TOAST['STATE_SUCCESS'] %}
+            {% set stateBackgroundClass = 'bg-success' %}
+        {% elseif state == TOAST['STATE_ERROR'] %}
+            {% set stateBackgroundClass = 'bg-danger' %}
+        {% elseif state == TOAST['STATE_WARNING'] %}
+            {% set stateBackgroundClass = 'bg-warning' %}
+        {% endif %}
+
+        <div class="toast bg-light show align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-white">
+                <div style="align-self: stretch; width: 8px;" class="rounded me-2 {{ stateBackgroundClass }}"></div>
+                <strong class="me-auto">F1Sonntag</strong>
+                <small class="text-muted">Vor wenigen Sekunden</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ text }}
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}
