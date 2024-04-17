@@ -52,10 +52,16 @@
         }
     }) }}
 
-    {{ form_widget(form['submit'], {
-        'attr': {
-            'form': formId
-        }
-    }) }}
+    <div class="d-flex justify-content-between">
+        <a class="btn btn-secondary" href="{{ path('app_admin_punishment_points' with {'id': race.id}) }}">
+            Zurück
+        </a>
+
+        {{ form_widget(form['submit'], {
+            'attr': {
+                'form': formId
+            }
+        }) }}
+    </div>
 </div>
 {% endblock %}
