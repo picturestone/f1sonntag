@@ -4,13 +4,7 @@
 
 {% block body %}
 <div class="container-xl">
-    <h1>Rennergebnisse bearbeiten - {{ race.name}} - {{ season.name }}</h1>
-
-    <p>Hier können die Rennergebnisse eingetragen werden. Falls Fahrer in der Teilnehmerliste fehlen oder Fahrer aufgelistet sind, die nicht am Rennen teilgenommen haben, kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
-
-    {# TODO Teilnehmerliste bearbeiten: List all drivers (active and inactive) in table with a checkbox for "hat teilgenommen". Race title and season are in the title. #}
-
-    <a class="btn btn-secondary" href="{{ path('app_admin_race_results_entries', {id: race.id}) }}">Teilnehmerliste bearbeiten</a>
+    <h1>Teilnehmerliste bearbeiten - {{ race.name}} - {{ season.name }}</h1>
 
     {% set formId = 'raceResultForm' %}
 
@@ -27,24 +21,24 @@
                 <th scope="col">Vorname</th>
                 <th scope="col">Nachname</th>
                 <th scope="col">Team</th>
-                <th scope="col">Position</th>
+                <th scope="col">Teilnehmer</th>
             </tr>
             </thead>
 
             <tbody>
-            {% for raceResult in raceResults %}
+            {% for entry in entries %}
                 <tr>
                     <td>
-                        <span>{{ raceResult.driver.firstName }}</span>
+                        <span>{{ entry.driver.firstName }}</span>
                     </td>
                     <td>
-                        <span>{{ raceResult.driver.lastName }}</span>
+                        <span>{{ entry.driver.lastName }}</span>
                     </td>
                     <td>
-                        <span>{{ raceResult.driver.team.name }}</span>
+                        <span>{{ entry.driver.team.name }}</span>
                     </td>
                     <td>
-                        {{ form_widget(form[raceResult.driver.id], {
+                        {{ form_widget(form[entry.driver.id], {
                             'attr': {
                                 'form': formId
                             }
