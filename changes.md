@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added punishment points entries editing in admin. [#16]
 -   Added race result entries editing in admin. [#15]
 -   Added punishment points admin. [#14]
 -   Renamed admin routes, changed admin template paths. [#13]
