@@ -8,9 +8,11 @@
 
     <p>Hier können die Strafpunkte eingetragen werden. Falls Benutzer in der Teilnehmerliste fehlen oder Benutzer aufgelistet sind, die für dieses Rennen nicht relevant sind, kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
 
-    {# TODO Teilnehmerliste bearbeiten: List all drivers (active and inactive) in table with a checkbox for "hat teilgenommen". Race title and season are in the title. #}
+    <a class="btn btn-secondary" href="{{ path('app_admin_punishment_points_entries', {id: race.id}) }}">Teilnehmerliste bearbeiten</a>
 
     {% set formId = 'punishmentPointsForm' %}
+
+    {# TODO for each post operation, redirect to the same screen with a toast that it was saved succesfully instead of back to the list. #}
 
     {{ form_start(form, {
         'method': 'POST',

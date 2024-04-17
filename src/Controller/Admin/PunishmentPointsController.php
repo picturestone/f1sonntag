@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PunishmentPoints;
+use App\Entity\Race;
 use App\Entity\RaceResult;
 use App\Entity\User;
 use App\Repository\DriverRepository;
@@ -12,6 +13,7 @@ use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,23 +70,10 @@ class PunishmentPointsController extends AbstractController
             return throw $this->createNotFoundException('This race does not exist');
         }
 
-        // Find punishment points for the race if punishment points exists.
-        $racePunishmentPoints = $this->punishmentPointsRepository->findPunihsmentPointsByRace($race);
-
-        // If no punishment points have been entered yet, add punishment points for all active users as default.
-        if (count($racePunishmentPoints) === 0) {
-            $activeUsers = $this->userRepository->findActiveUsers();
-
-            foreach ($activeUsers as $activeUser) {
-                $punishmentPoints = new PunishmentPoints();
-                $punishmentPoints->setRace($race);
-                $punishmentPoints->setUser($activeUser);
-                $racePunishmentPoints[] = $punishmentPoints;
-            }
-        }
+        $racePunishmentPoints = $this->getPunishmentPoints($race);
 
         // Build form.
-        $formBuilder = $this->generateFormBuilder($racePunishmentPoints);
+        $formBuilder = $this->generatePunishmentPointsEditFormBuilder($racePunishmentPoints);
         $formBuilder->setAction($this->generateUrl('app_admin_punishment_points', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
@@ -116,11 +105,127 @@ class PunishmentPointsController extends AbstractController
         ]);
     }
 
+    #[Route('/punishment-points/{id}/entries', name: 'app_admin_punishment_points_entries', methods: ['GET', 'POST'])]
+    public function entryList(Request $request, $id): Response
+    {
+        $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
+
+        if (!$activeSeasons) {
+            return $this->render('admin/punishmentPoints/createSeason.html.twig');
+        }
+
+        $season = $activeSeasons[0];
+        $race = $this->raceRepository->find($id);
+
+        if (!$race) {
+            return throw $this->createNotFoundException('This race does not exist');
+        }
+
+        $racePunishmentPoints = $this->getPunishmentPoints($race);
+        $entries = $this->getEntries($racePunishmentPoints);
+
+        // Build form.
+        $formBuilder = $this->generatePunishmentPointsEntriesFormBuilder($entries);
+        $formBuilder->setAction($this->generateUrl('app_admin_punishment_points_entries', ['id' => $id]));
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+
+            foreach ($formData as $userId => $isEntry) {
+                $userPunishmentPoints = array_filter($racePunishmentPoints, function(PunishmentPoints $punishmentPoints) use ($userId) {
+                    return $punishmentPoints->getUser()->getId() === $userId;
+                });
+
+                // TODO change id of PunishmentPoints to be composite. https://www.doctrine-project.org/projects/doctrine-orm/en/3.1/tutorials/composite-primary-keys.html#use-case-3-join-table-with-metadata
+
+                if ($isEntry && count($userPunishmentPoints) === 0) {
+                    // An entry for this user should exist, but non exist right now. Create one.
+                    $punishmentPoints = new PunishmentPoints();
+                    $punishmentPoints->setRace($race);
+                    $punishmentPoints->setUser($entries[$userId]['user']);
+                    $this->entityManager->persist($punishmentPoints);
+                } else if (!$isEntry && count($userPunishmentPoints) > 0) {
+                    // An entry for this user exists, even though it should not. Delete it.
+                    foreach($userPunishmentPoints as $resultToDelete) {
+                        $this->entityManager->remove($resultToDelete);
+                    }
+                } else if ($isEntry && count($userPunishmentPoints) > 0) {
+                    // An entry for this user should exist and we have one. However, if the admin clicked on the edit
+                    // entries button without saving any entries first, the entries we show are the default ones from
+                    // active users which are not persisted yet. We must make sure to persist those entries.
+                    foreach($userPunishmentPoints as $resultToPersist) {
+                        $this->entityManager->persist($resultToPersist);
+                    }
+                }
+            }
+
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('app_admin_punishment_points', ['id' => $id]);
+        }
+
+        return $this->render('admin/punishmentPoints/entries.html.twig', [
+            'form' => $form,
+            'entries' => $entries,
+            'race' => $race,
+            'season' => $season
+        ]);
+    }
+
+    /**
+     * @param Race $race
+     * @return PunishmentPoints[]
+     */
+    private function getPunishmentPoints(Race $race): array
+    {
+        // Find punishment points for the race if punishment points exists.
+        $racePunishmentPoints = $this->punishmentPointsRepository->findPunihsmentPointsByRace($race);
+
+        // If no punishment points have been entered yet, add punishment points for all active users as default.
+        if (count($racePunishmentPoints) === 0) {
+            $activeUsers = $this->userRepository->findActiveUsers();
+
+            foreach ($activeUsers as $activeUser) {
+                $punishmentPoints = new PunishmentPoints();
+                $punishmentPoints->setRace($race);
+                $punishmentPoints->setUser($activeUser);
+                $racePunishmentPoints[] = $punishmentPoints;
+            }
+        }
+
+        return $racePunishmentPoints;
+    }
+
     /**
      * @param PunishmentPoints[] $racePunishmentPoints
-     * @return FormInterface
+     * @return array
      */
-    private function generateFormBuilder(array $racePunishmentPoints): FormBuilderInterface
+    private function getEntries(array $racePunishmentPoints): array
+    {
+        $users = $this->userRepository->findAll();
+        $entries = [];
+
+        foreach ($users as $user) {
+            $userPunishmentPoints = array_filter($racePunishmentPoints, function(PunishmentPoints $punishmentPoints) use ($user) {
+                return $punishmentPoints->getUser()->getId() === $user->getId();
+            });
+            $entry = [
+                'user' => $user,
+                'isEntry' => count($userPunishmentPoints) > 0
+            ];
+            $entries[$user->getId()] = $entry;
+        }
+
+        return $entries;
+    }
+
+    /**
+     * @param PunishmentPoints[] $racePunishmentPoints
+     * @return FormBuilderInterface
+     */
+    private function generatePunishmentPointsEditFormBuilder(array $racePunishmentPoints): FormBuilderInterface
     {
         $formBuilder = $this->createFormBuilder();
 
@@ -141,6 +246,29 @@ class PunishmentPointsController extends AbstractController
             }
 
             $formBuilder->add($punishmentPoints->getUser()->getId(), NumberType::class, $options);
+        }
+
+        $formBuilder->add('submit', SubmitType::class, [
+            'label' => 'Speichern'
+        ]);
+
+        return $formBuilder;
+    }
+
+    /**
+     * @param array[] $entries
+     * @return FormBuilderInterface
+     */
+    private function generatePunishmentPointsEntriesFormBuilder(array $entries): FormBuilderInterface
+    {
+        $formBuilder = $this->createFormBuilder();
+
+        foreach ($entries as $entryKey => $entryValue) {
+            $formBuilder->add($entryKey, CheckboxType::class, [
+                'required' => false,
+                'data' => $entryValue['isEntry'],
+                'label' => false
+            ]);
         }
 
         $formBuilder->add('submit', SubmitType::class, [

@@ -150,7 +150,7 @@ class RaceResultsController extends AbstractController
                         $this->entityManager->remove($resultToDelete);
                     }
                 } else if ($isEntry && count($driverRaceResults) > 0) {
-                    // An entry for this driver should exist and we have one. However, if the user clicked on the edit
+                    // An entry for this driver should exist and we have one. However, if the admin clicked on the edit
                     // entries button without saving any entries first, the entries we show are the default ones from
                     // active drivers which are not persisted yet. We must make sure to persist those entries.
                     foreach($driverRaceResults as $resultToPersist) {
@@ -221,7 +221,7 @@ class RaceResultsController extends AbstractController
 
     /**
      * @param RaceResult[] $raceResults
-     * @return FormInterface
+     * @return FormBuilderInterface
      */
     private function generateRaceResultsEditFormBuilder(array $raceResults): FormBuilderInterface
     {
@@ -255,7 +255,7 @@ class RaceResultsController extends AbstractController
 
     /**
      * @param array[] $entries
-     * @return FormInterface
+     * @return FormBuilderInterface
      */
     private function generateRaceResultsEntriesFormBuilder(array $entries): FormBuilderInterface
     {
