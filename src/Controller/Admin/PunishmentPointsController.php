@@ -94,15 +94,7 @@ class PunishmentPointsController extends AbstractController
 
             $this->entityManager->flush();
 
-            return $this->render('admin/punishmentPoints/edit.html.twig', [
-                'form' => $form,
-                'racePunishmentPoints' => $racePunishmentPoints,
-                'race' => $race,
-                'season' => $season,
-                'isToastVisible' => true,
-                'toastText' => 'Speichern erfolgreich',
-                'toastState' => 'success'
-            ]);
+            return $this->redirectToRoute('app_admin_punishment_points_list');
         }
 
         return $this->render('admin/punishmentPoints/edit.html.twig', [
@@ -171,15 +163,7 @@ class PunishmentPointsController extends AbstractController
 
             $this->entityManager->flush();
 
-            return $this->render('admin/punishmentPoints/entries.html.twig', [
-                'form' => $form,
-                'entries' => $entries,
-                'race' => $race,
-                'season' => $season,
-                'isToastVisible' => true,
-                'toastText' => 'Speichern erfolgreich',
-                'toastState' => 'success'
-            ]);
+            return $this->redirectToRoute('app_admin_punishment_points', ['id' => $id]);
         }
 
         return $this->render('admin/punishmentPoints/entries.html.twig', [

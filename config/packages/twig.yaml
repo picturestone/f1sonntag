@@ -2,8 +2,13 @@ twig:
     file_name_pattern: '*.twig'
     form_themes: ['bootstrap_5_layout.html.twig']
     globals:
-        ROLE_USER: 'ROLE_USER'
-        ROLE_ADMIN: 'ROLE_ADMIN'
+        ROLE:
+            USER: 'ROLE_USER'
+            ADMIN: 'ROLE_ADMIN'
+        TOAST_STATE:
+            SUCCESS: 'SUCCESS'
+            ERROR: 'ERROR'
+            WARNING: 'WARNING'
 
 when@test:
     twig:

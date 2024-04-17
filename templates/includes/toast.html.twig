@@ -1,23 +1,32 @@
-{% if isVisible|default(false) %}
-    {{ _self.toast(text, state) }}
+{% if toasts|default([])|length %}
+    <div class="toast-container position-fixed m-5 top-0 end-0">
+        {% for toast in toasts %}
+            {{ _self.toast(toast.text, toast.state) }}
+        {% endfor %}
+    </div>
 {% endif %}
 
-{# TODO make toasts array with toasts which are just added. make toast container for multiple toast in case there are multiple. #}
-{% macro toast(text = 'Speichern erfolgreich', state = 'success') %}
-    {% set stateBackgroundClass = '' %}
-    {% if state == 'success' %}
-        {% set stateBackgroundClass = 'bg-success' %}
-    {% endif %}
+{% macro toast(text, state) %}
+    {% if text|default('') and state|default('') %}
+        {% set stateBackgroundClass = '' %}
+        {% if state == TOAST_STATE['SUCCESS'] %}
+            {% set stateBackgroundClass = 'bg-success' %}
+        {% elseif state == TOAST_STATE['ERROR'] %}
+            {% set stateBackgroundClass = 'bg-danger' %}
+        {% elseif state == TOAST_STATE['WARNING'] %}
+            {% set stateBackgroundClass = 'bg-warning' %}
+        {% endif %}
 
-    <div class="toast bg-light show align-items-center position-fixed m-5 top-0 end-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-white">
-            <div style="align-self: stretch; width: 8px;" class="rounded me-2 {{ stateBackgroundClass }}"></div>
-            <strong class="me-auto">F1Sonntag</strong>
-            <small class="text-muted">Vor wenigen Sekunden</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        <div class="toast bg-light show align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-white">
+                <div style="align-self: stretch; width: 8px;" class="rounded me-2 {{ stateBackgroundClass }}"></div>
+                <strong class="me-auto">F1Sonntag</strong>
+                <small class="text-muted">Vor wenigen Sekunden</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ text }}
+            </div>
         </div>
-        <div class="toast-body">
-            {{ text }}
-        </div>
-    </div>
+    {% endif %}
 {% endmacro %}

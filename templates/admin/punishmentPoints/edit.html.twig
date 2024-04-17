@@ -56,16 +56,10 @@
         }
     }) }}
 
-    <div class="d-flex justify-content-between">
-        <a class="btn btn-secondary" href="{{ path('app_admin_punishment_points_list') }}">
-            Zurück
-        </a>
-
-        {{ form_widget(form['submit'], {
-            'attr': {
-                'form': formId
-            }
-        }) }}
-    </div>
+    {{ form_widget(form['submit'], {
+        'attr': {
+            'form': formId
+        }
+    }) }}
 </div>
 {% endblock %}
