@@ -8,8 +8,6 @@
 
     <p>Die Rennen, Wetten, Weltmeistertipps und Strafpunkte werden immer für die aktive Saison eingetragen. Es kann immer nur eine Saison aktiv sein. Der "Aktive Saison ändern"-Button dient zum Ändern der aktiven Saison. Dieser ist erst sichtbar, sobald es mehrere Saisonen gibt.</p>
 
-    {# TODO implement modal for delete buttons according to https://getbootstrap.com/docs/5.0/components/modal/#live-demo - do that for all lists. #}
-
     <div>
         <a class="btn btn-primary" href="{{ path('app_admin_seasons_new') }}">Hinzufügen</a>
 
@@ -49,9 +47,10 @@
                                     </button>
                                 </div>
                             {% else %}
-                                <a class="btn btn-danger" href="{{ path('app_admin_seasons_delete', {id: season.id}) }}">
+                                {% set deleteModalId = 'season-delete-modal-' ~ season.id %}
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ deleteModalId }}">
                                     <i class="bi bi-trash"></i>
-                                </a>
+                                </button>
                             {% endif %}
                         </td>
                         <td class="col--icon-button">
@@ -78,5 +77,40 @@
             </tbody>
         </table>
     </div>
+
+    {% for season in seasons %}
+        {% set deleteModalId = 'season-delete-modal-' ~ season.id %}
+        {% set titleText = 'Saison "' ~ season.name ~ '" löschen?'  %}
+
+        {% set bodyHtml %}
+            <p>Soll die Saison <u>{{ season.name }}</u> wirklich gelöscht werden? Das Löschen <u>kann nicht rückgängig gemacht werden.</u></p>
+
+            <p>Dabei gehen alle Daten für diese Saison verloren:</p>
+
+            <ul>
+                <li>Rennen</li>
+                <li>Rennergebnisse und Wetten darauf</li>
+                <li>Weltmeister-Titel und Wetten darauf</li>
+                <li>Strafpunkte</li>
+                <li>Rangliste</li>
+            </ul>
+
+            <div class="alert alert-danger" role="alert">
+                Die <b>komplette Saison wird damit unwiederbringlich gelöscht</b> und <b>alle Wettdaten für diese Saison gehen verloren!</b>
+            </div>
+
+            <p>Falls eine neue Saison beginnnt muss die alte Saison nicht gelöscht werden. Stattdessen kann in der <a href="{{ path('app_admin_seasons_new') }}">"Neue Saison"-Oberfläche</a> einfach eine neue Saison erstellt werden.</p>
+
+            <p>Falls bereits eine neue Saison erstellt wurde kann diese in der <a href="{{ path('app_admin_seasons_edit_active_season') }}">"Aktive Saison ändern"-Oberfläche</a> aktiviert werden.</p>
+        {% endset %}
+
+        {% include 'includes/deleteConfirmModal.html.twig' with {
+            'id': deleteModalId,
+            'titleText': titleText,
+            'bodyHtml': bodyHtml,
+            'deleteHref': path('app_admin_seasons_delete', {id: season.id}),
+            'deleteText': 'Saison permanent löschen'
+        } %}
+    {% endfor %}
 </div>
 {% endblock %}
