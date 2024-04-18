@@ -8,24 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: RaceResultRepository::class)]
 class RaceResult
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column]
     private ?int $position = 0;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'raceResults')]
     private ?Driver $driver = null;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'raceResults')]
     private ?Race $race = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getPosition(): ?int
     {

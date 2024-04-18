@@ -141,8 +141,6 @@ class PunishmentPointsController extends AbstractController
                     return $punishmentPoints->getUser()->getId() === $userId;
                 });
 
-                // TODO change id of PunishmentPoints to be composite. https://www.doctrine-project.org/projects/doctrine-orm/en/3.1/tutorials/composite-primary-keys.html#use-case-3-join-table-with-metadata
-
                 if ($isEntry && count($userPunishmentPoints) === 0) {
                     // An entry for this user should exist, but non exist right now. Create one.
                     $punishmentPoints = new PunishmentPoints();

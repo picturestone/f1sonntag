@@ -8,24 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PunishmentPointsRepository::class)]
 class PunishmentPoints
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column]
     private ?int $punishmentPoints = 0;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
     private ?User $user = null;
 
+    #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
     private ?Race $race = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getPunishmentPoints(): ?int
     {
