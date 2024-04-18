@@ -33,7 +33,7 @@ class Season
     #[ORM\Column]
     private ?bool $isActive = false;
 
-    #[ORM\ManyToOne(inversedBy: 'worldChampionSeasons')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'worldChampionSeasons')]
     private ?Driver $worldChampion = null;
 
     public function __construct()
