@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Refactored entities, added WorldChampion entity. [#18]
 -   Added flash messages for user feedback in admin. [#17]
 -   Added punishment points entries editing in admin. [#16]
 -   Added race result entries editing in admin. [#15]

@@ -33,10 +33,17 @@ class Season
     #[ORM\Column]
     private ?bool $isActive = false;
 
+    /**
+     * @var Collection<int, WorldChampion>
+     */
+    #[ORM\OneToMany(targetEntity: WorldChampion::class, mappedBy: 'season')]
+    private Collection $worldChampions;
+
     public function __construct()
     {
         $this->worldChampionBets = new ArrayCollection();
         $this->races = new ArrayCollection();
+        $this->worldChampions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,6 +131,36 @@ class Season
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WorldChampion>
+     */
+    public function getWorldChampions(): Collection
+    {
+        return $this->worldChampions;
+    }
+
+    public function addWorldChampion(WorldChampion $worldChampion): static
+    {
+        if (!$this->worldChampions->contains($worldChampion)) {
+            $this->worldChampions->add($worldChampion);
+            $worldChampion->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorldChampion(WorldChampion $worldChampion): static
+    {
+        if ($this->worldChampions->removeElement($worldChampion)) {
+            // set the owning side to null (unless already changed)
+            if ($worldChampion->getSeason() === $this) {
+                $worldChampion->setSeason(null);
+            }
+        }
 
         return $this;
     }

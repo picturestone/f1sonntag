@@ -31,10 +31,10 @@ class Driver
     private Collection $raceResults;
 
     /**
-     * @var Collection<int, PositionBet>
+     * @var Collection<int, RaceResultBet>
      */
-    #[ORM\OneToMany(targetEntity: PositionBet::class, mappedBy: 'driver')]
-    private Collection $positionBets;
+    #[ORM\OneToMany(targetEntity: RaceResultBet::class, mappedBy: 'driver')]
+    private Collection $raceResultBets;
 
     /**
      * @var Collection<int, WorldChampionBet>
@@ -45,11 +45,18 @@ class Driver
     #[ORM\Column]
     private ?bool $isActive = true;
 
+    /**
+     * @var Collection<int, WorldChampion>
+     */
+    #[ORM\OneToMany(targetEntity: WorldChampion::class, mappedBy: 'driver')]
+    private Collection $worldChampions;
+
     public function __construct()
     {
         $this->raceResults = new ArrayCollection();
-        $this->positionBets = new ArrayCollection();
+        $this->raceResultBets = new ArrayCollection();
         $this->worldChampionBets = new ArrayCollection();
+        $this->worldChampions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,29 +131,29 @@ class Driver
     }
 
     /**
-     * @return Collection<int, PositionBet>
+     * @return Collection<int, RaceResultBet>
      */
-    public function getPositionBets(): Collection
+    public function getRaceResultBets(): Collection
     {
-        return $this->positionBets;
+        return $this->raceResultBets;
     }
 
-    public function addPositionBet(PositionBet $positionBet): static
+    public function addRaceResultBet(RaceResultBet $raceResultBet): static
     {
-        if (!$this->positionBets->contains($positionBet)) {
-            $this->positionBets->add($positionBet);
-            $positionBet->setDriver($this);
+        if (!$this->raceResultBets->contains($raceResultBet)) {
+            $this->raceResultBets->add($raceResultBet);
+            $raceResultBet->setDriver($this);
         }
 
         return $this;
     }
 
-    public function removePositionBet(PositionBet $positionBet): static
+    public function removeRaceResultBet(RaceResultBet $raceResultBet): static
     {
-        if ($this->positionBets->removeElement($positionBet)) {
+        if ($this->raceResultBets->removeElement($raceResultBet)) {
             // set the owning side to null (unless already changed)
-            if ($positionBet->getDriver() === $this) {
-                $positionBet->setDriver(null);
+            if ($raceResultBet->getDriver() === $this) {
+                $raceResultBet->setDriver(null);
             }
         }
 
@@ -191,6 +198,36 @@ class Driver
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WorldChampion>
+     */
+    public function getWorldChampions(): Collection
+    {
+        return $this->worldChampions;
+    }
+
+    public function addWorldChampion(WorldChampion $worldChampion): static
+    {
+        if (!$this->worldChampions->contains($worldChampion)) {
+            $this->worldChampions->add($worldChampion);
+            $worldChampion->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorldChampion(WorldChampion $worldChampion): static
+    {
+        if ($this->worldChampions->removeElement($worldChampion)) {
+            // set the owning side to null (unless already changed)
+            if ($worldChampion->getDriver() === $this) {
+                $worldChampion->setDriver(null);
+            }
+        }
 
         return $this;
     }

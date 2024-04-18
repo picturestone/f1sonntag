@@ -138,8 +138,6 @@ class RaceResultsController extends AbstractController
                     return $raceResult->getDriver()->getId() === $driverId;
                 });
 
-                // TODO change id of RaceResult to be composite. https://www.doctrine-project.org/projects/doctrine-orm/en/3.1/tutorials/composite-primary-keys.html#use-case-3-join-table-with-metadata
-
                 if ($isEntry && count($driverRaceResults) === 0) {
                     // An entry for this driver should exist, but non exist right now. Create one.
                     $raceResult = new RaceResult();

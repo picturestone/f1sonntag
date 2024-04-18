@@ -3,12 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Dto\ToastDto;
-use App\Entity\PunishmentPoints;
+use App\Entity\PenaltyPointsAward;
 use App\Entity\Race;
 use App\Entity\RaceResult;
 use App\Entity\User;
 use App\Repository\DriverRepository;
-use App\Repository\PunishmentPointsRepository;
+use App\Repository\PenaltyPointsAwardRepository;
 use App\Repository\RaceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
@@ -27,42 +27,42 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
 #[IsGranted(User::ROLE_ADMIN)]
-class PunishmentPointsController extends AbstractController
+class PenaltyPointsAwardsController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly SeasonRepository $seasonRepository,
-        private readonly PunishmentPointsRepository $punishmentPointsRepository,
+        private readonly PenaltyPointsAwardRepository $penaltyPointsAwardRepository,
         private readonly RaceRepository $raceRepository,
         private readonly UserRepository $userRepository
     ) {
     }
 
-    #[Route('/punishment-points', name: 'app_admin_punishment_points_list', methods: ['GET'])]
+    #[Route('/penalty-points-awards', name: 'app_admin_penalty_points_awards_list', methods: ['GET'])]
     public function list(): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/punishmentPoints/createSeason.html.twig');
+            return $this->render('admin/penaltyPointsAward/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
         $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
-        return $this->render('admin/punishmentPoints/list.html.twig', [
+        return $this->render('admin/penaltyPointsAward/list.html.twig', [
             'races' => $races,
             'season' => $season
         ]);
     }
 
-    #[Route('/punishment-points/{id}', name: 'app_admin_punishment_points', methods: ['GET', 'POST'])]
+    #[Route('/penalty-points-awards/{id}', name: 'app_admin_penalty_points_awards', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/punishmentPoints/createSeason.html.twig');
+            return $this->render('admin/penaltyPointsAward/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
@@ -72,49 +72,49 @@ class PunishmentPointsController extends AbstractController
             return throw $this->createNotFoundException('This race does not exist');
         }
 
-        $racePunishmentPoints = $this->getPunishmentPoints($race);
+        $penaltyPointsAwards = $this->getPenaltyPointsAward($race);
 
         // Build form.
-        $formBuilder = $this->generatePunishmentPointsEditFormBuilder($racePunishmentPoints);
-        $formBuilder->setAction($this->generateUrl('app_admin_punishment_points', ['id' => $id]));
+        $formBuilder = $this->generatePenaltyPointsAwardEditFormBuilder($penaltyPointsAwards);
+        $formBuilder->setAction($this->generateUrl('app_admin_penalty_points_awards', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
-            foreach ($racePunishmentPoints as $punishmentPoints) {
-                $userId = $punishmentPoints->getUser()->getId();
-                $points = $formData[$userId];
+            foreach ($penaltyPointsAwards as $penaltyPointsAward) {
+                $userId = $penaltyPointsAward->getUser()->getId();
+                $penaltyPoints = $formData[$userId];
 
-                if ($points) {
-                    $punishmentPoints->setPunishmentPoints($points);
+                if ($penaltyPoints) {
+                    $penaltyPointsAward->setPenaltyPoints($penaltyPoints);
                 }
 
-                $this->entityManager->persist($punishmentPoints);
+                $this->entityManager->persist($penaltyPointsAward);
             }
 
             $this->entityManager->flush();
             $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
 
-            return $this->redirectToRoute('app_admin_punishment_points_list');
+            return $this->redirectToRoute('app_admin_penalty_points_awards_list');
         }
 
-        return $this->render('admin/punishmentPoints/edit.html.twig', [
+        return $this->render('admin/penaltyPointsAward/edit.html.twig', [
             'form' => $form,
-            'racePunishmentPoints' => $racePunishmentPoints,
+            'penaltyPointsAwards' => $penaltyPointsAwards,
             'race' => $race,
             'season' => $season
         ]);
     }
 
-    #[Route('/punishment-points/{id}/entries', name: 'app_admin_punishment_points_entries', methods: ['GET', 'POST'])]
+    #[Route('/penalty-points-awards/{id}/entries', name: 'app_admin_penalty_points_awards_entries', methods: ['GET', 'POST'])]
     public function entryList(Request $request, $id): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
-            return $this->render('admin/punishmentPoints/createSeason.html.twig');
+            return $this->render('admin/penaltyPointsAward/createSeason.html.twig');
         }
 
         $season = $activeSeasons[0];
@@ -124,12 +124,12 @@ class PunishmentPointsController extends AbstractController
             return throw $this->createNotFoundException('This race does not exist');
         }
 
-        $racePunishmentPoints = $this->getPunishmentPoints($race);
-        $entries = $this->getEntries($racePunishmentPoints);
+        $penaltyPointsAwards = $this->getPenaltyPointsAward($race);
+        $entries = $this->getEntries($penaltyPointsAwards);
 
         // Build form.
-        $formBuilder = $this->generatePunishmentPointsEntriesFormBuilder($entries);
-        $formBuilder->setAction($this->generateUrl('app_admin_punishment_points_entries', ['id' => $id]));
+        $formBuilder = $this->generatePenaltyPointsAwardEntriesFormBuilder($entries);
+        $formBuilder->setAction($this->generateUrl('app_admin_penalty_points_awards_entries', ['id' => $id]));
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
@@ -137,28 +137,28 @@ class PunishmentPointsController extends AbstractController
             $formData = $form->getData();
 
             foreach ($formData as $userId => $isEntry) {
-                $userPunishmentPoints = array_filter($racePunishmentPoints, function(PunishmentPoints $punishmentPoints) use ($userId) {
-                    return $punishmentPoints->getUser()->getId() === $userId;
+                $userPenaltyPointsAwards = array_filter(
+                    $penaltyPointsAwards,
+                    function(PenaltyPointsAward $penaltyPointsAward) use ($userId) {
+                        return $penaltyPointsAward->getUser()->getId() === $userId;
                 });
 
-                // TODO change id of PunishmentPoints to be composite. https://www.doctrine-project.org/projects/doctrine-orm/en/3.1/tutorials/composite-primary-keys.html#use-case-3-join-table-with-metadata
-
-                if ($isEntry && count($userPunishmentPoints) === 0) {
+                if ($isEntry && count($userPenaltyPointsAwards) === 0) {
                     // An entry for this user should exist, but non exist right now. Create one.
-                    $punishmentPoints = new PunishmentPoints();
-                    $punishmentPoints->setRace($race);
-                    $punishmentPoints->setUser($entries[$userId]['user']);
-                    $this->entityManager->persist($punishmentPoints);
-                } else if (!$isEntry && count($userPunishmentPoints) > 0) {
+                    $penaltyPointsAward = new PenaltyPointsAward();
+                    $penaltyPointsAward->setRace($race);
+                    $penaltyPointsAward->setUser($entries[$userId]['user']);
+                    $this->entityManager->persist($penaltyPointsAward);
+                } else if (!$isEntry && count($userPenaltyPointsAwards) > 0) {
                     // An entry for this user exists, even though it should not. Delete it.
-                    foreach($userPunishmentPoints as $resultToDelete) {
+                    foreach($userPenaltyPointsAwards as $resultToDelete) {
                         $this->entityManager->remove($resultToDelete);
                     }
-                } else if ($isEntry && count($userPunishmentPoints) > 0) {
+                } else if ($isEntry && count($userPenaltyPointsAwards) > 0) {
                     // An entry for this user should exist and we have one. However, if the admin clicked on the edit
                     // entries button without saving any entries first, the entries we show are the default ones from
                     // active users which are not persisted yet. We must make sure to persist those entries.
-                    foreach($userPunishmentPoints as $resultToPersist) {
+                    foreach($userPenaltyPointsAwards as $resultToPersist) {
                         $this->entityManager->persist($resultToPersist);
                     }
                 }
@@ -166,10 +166,10 @@ class PunishmentPointsController extends AbstractController
 
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('app_admin_punishment_points', ['id' => $id]);
+            return $this->redirectToRoute('app_admin_penalty_points_awards', ['id' => $id]);
         }
 
-        return $this->render('admin/punishmentPoints/entries.html.twig', [
+        return $this->render('admin/penaltyPointsAward/entries.html.twig', [
             'form' => $form,
             'entries' => $entries,
             'race' => $race,
@@ -179,44 +179,46 @@ class PunishmentPointsController extends AbstractController
 
     /**
      * @param Race $race
-     * @return PunishmentPoints[]
+     * @return PenaltyPointsAward[]
      */
-    private function getPunishmentPoints(Race $race): array
+    private function getPenaltyPointsAward(Race $race): array
     {
-        // Find punishment points for the race if punishment points exists.
-        $racePunishmentPoints = $this->punishmentPointsRepository->findPunihsmentPointsByRace($race);
+        // Find penalty points awards for the race if penalty points awards exists.
+        $penaltyPointsAwards = $this->penaltyPointsAwardRepository->findPenaltyPointsAwardsByRace($race);
 
-        // If no punishment points have been entered yet, add punishment points for all active users as default.
-        if (count($racePunishmentPoints) === 0) {
+        // If no penalty points awards have been entered yet, add penalty points awards for all active users as default.
+        if (count($penaltyPointsAwards) === 0) {
             $activeUsers = $this->userRepository->findActiveUsers();
 
             foreach ($activeUsers as $activeUser) {
-                $punishmentPoints = new PunishmentPoints();
-                $punishmentPoints->setRace($race);
-                $punishmentPoints->setUser($activeUser);
-                $racePunishmentPoints[] = $punishmentPoints;
+                $penaltyPointsAward = new PenaltyPointsAward();
+                $penaltyPointsAward->setRace($race);
+                $penaltyPointsAward->setUser($activeUser);
+                $penaltyPointsAwards[] = $penaltyPointsAward;
             }
         }
 
-        return $racePunishmentPoints;
+        return $penaltyPointsAwards;
     }
 
     /**
-     * @param PunishmentPoints[] $racePunishmentPoints
+     * @param PenaltyPointsAward[] $penaltyPointsAwards
      * @return array
      */
-    private function getEntries(array $racePunishmentPoints): array
+    private function getEntries(array $penaltyPointsAwards): array
     {
         $users = $this->userRepository->findAll();
         $entries = [];
 
         foreach ($users as $user) {
-            $userPunishmentPoints = array_filter($racePunishmentPoints, function(PunishmentPoints $punishmentPoints) use ($user) {
-                return $punishmentPoints->getUser()->getId() === $user->getId();
+            $userPenaltyPointsAwards = array_filter(
+                $penaltyPointsAwards,
+                function(PenaltyPointsAward $penaltyPointsAward) use ($user) {
+                    return $penaltyPointsAward->getUser()->getId() === $user->getId();
             });
             $entry = [
                 'user' => $user,
-                'isEntry' => count($userPunishmentPoints) > 0
+                'isEntry' => count($userPenaltyPointsAwards) > 0
             ];
             $entries[$user->getId()] = $entry;
         }
@@ -225,14 +227,14 @@ class PunishmentPointsController extends AbstractController
     }
 
     /**
-     * @param PunishmentPoints[] $racePunishmentPoints
+     * @param PenaltyPointsAward[] $penaltyPointsAwards
      * @return FormBuilderInterface
      */
-    private function generatePunishmentPointsEditFormBuilder(array $racePunishmentPoints): FormBuilderInterface
+    private function generatePenaltyPointsAwardEditFormBuilder(array $penaltyPointsAwards): FormBuilderInterface
     {
         $formBuilder = $this->createFormBuilder();
 
-        foreach ($racePunishmentPoints as $punishmentPoints) {
+        foreach ($penaltyPointsAwards as $penaltyPointsAward) {
             $options = [
                 'scale' => 0,
                 'empty_data' => 0,
@@ -240,7 +242,7 @@ class PunishmentPointsController extends AbstractController
                     'min' => 0
                 ]
             ];
-            $points = $punishmentPoints->getPunishmentPoints();
+            $points = $penaltyPointsAward->getPenaltyPoints();
 
             if ($points) {
                 $options['data'] = $points;
@@ -248,7 +250,7 @@ class PunishmentPointsController extends AbstractController
                 $options['data'] = 0;
             }
 
-            $formBuilder->add($punishmentPoints->getUser()->getId(), NumberType::class, $options);
+            $formBuilder->add($penaltyPointsAward->getUser()->getId(), NumberType::class, $options);
         }
 
         $formBuilder->add('submit', SubmitType::class, [
@@ -262,7 +264,7 @@ class PunishmentPointsController extends AbstractController
      * @param array[] $entries
      * @return FormBuilderInterface
      */
-    private function generatePunishmentPointsEntriesFormBuilder(array $entries): FormBuilderInterface
+    private function generatePenaltyPointsAwardEntriesFormBuilder(array $entries): FormBuilderInterface
     {
         $formBuilder = $this->createFormBuilder();
 

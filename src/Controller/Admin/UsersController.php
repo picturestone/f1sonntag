@@ -122,7 +122,7 @@ class UsersController extends AbstractController
             $user->setPassword($hashedPassword);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateCustomSuccessToast('Password erfolgreich geändert'));
 
             return $this->redirectToRoute('app_admin_users_list');
         }

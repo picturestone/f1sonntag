@@ -8,9 +8,9 @@
 
     <p>Hier können die Strafpunkte eingetragen werden. Falls Benutzer in der Teilnehmerliste fehlen oder Benutzer aufgelistet sind, die für dieses Rennen nicht relevant sind, kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
 
-    <a class="btn btn-secondary" href="{{ path('app_admin_punishment_points_entries', {id: race.id}) }}">Teilnehmerliste bearbeiten</a>
+    <a class="btn btn-secondary" href="{{ path('app_admin_penalty_points_awards_entries', {id: race.id}) }}">Teilnehmerliste bearbeiten</a>
 
-    {% set formId = 'punishmentPointsForm' %}
+    {% set formId = 'penaltyPointsAwardForm' %}
 
     {{ form_start(form, {
         'method': 'POST',
@@ -29,16 +29,16 @@
             </thead>
 
             <tbody>
-            {% for punishmentPoints in racePunishmentPoints %}
+            {% for penaltyPointsAward in penaltyPointsAwards %}
                 <tr>
                     <td>
-                        <span>{{ punishmentPoints.user.firstName }}</span>
+                        <span>{{ penaltyPointsAward.user.firstName }}</span>
                     </td>
                     <td>
-                        <span>{{ punishmentPoints.user.lastName }}</span>
+                        <span>{{ penaltyPointsAward.user.lastName }}</span>
                     </td>
                     <td>
-                        {{ form_widget(form[punishmentPoints.user.id], {
+                        {{ form_widget(form[penaltyPointsAward.user.id], {
                             'attr': {
                                 'form': formId
                             }
