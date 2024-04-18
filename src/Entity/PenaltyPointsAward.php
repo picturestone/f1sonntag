@@ -2,21 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\PunishmentPointsRepository;
+use App\Repository\PenaltyPointsAwardRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PunishmentPointsRepository::class)]
-class PunishmentPoints
+#[ORM\Entity(repositoryClass: PenaltyPointsAwardRepository::class)]
+class PenaltyPointsAward
 {
     #[ORM\Column]
     private ?int $penaltyPoints = 0;
 
     #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
+    #[ORM\ManyToOne(inversedBy: 'penaltyPointsAward')]
     private ?User $user = null;
 
     #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
+    #[ORM\ManyToOne(inversedBy: 'penaltyPointsAward')]
     private ?Race $race = null;
 
     public function getPenaltyPoints(): ?int

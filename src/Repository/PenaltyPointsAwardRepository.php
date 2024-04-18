@@ -2,30 +2,30 @@
 
 namespace App\Repository;
 
-use App\Entity\PunishmentPoints;
+use App\Entity\PenaltyPointsAward;
 use App\Entity\Race;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PunishmentPoints>
+ * @extends ServiceEntityRepository<PenaltyPointsAward>
  *
- * @method PunishmentPoints|null find($id, $lockMode = null, $lockVersion = null)
- * @method PunishmentPoints|null findOneBy(array $criteria, array $orderBy = null)
- * @method PunishmentPoints[]    findAll()
- * @method PunishmentPoints[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method PenaltyPointsAward|null find($id, $lockMode = null, $lockVersion = null)
+ * @method PenaltyPointsAward|null findOneBy(array $criteria, array $orderBy = null)
+ * @method PenaltyPointsAward[]    findAll()
+ * @method PenaltyPointsAward[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PunishmentPointsRepository extends ServiceEntityRepository
+class PenaltyPointsAwardRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PunishmentPoints::class);
+        parent::__construct($registry, PenaltyPointsAward::class);
     }
 
     /**
-     * @return PunishmentPoints[] Returns an array of PunishmentPoints objects.
+     * @return PenaltyPointsAward[] Returns an array of PenaltyPointsAward objects.
      */
-    public function findPunihsmentPointsByRace(Race $race): array
+    public function findPenaltyPointsAwardsByRace(Race $race): array
     {
         return $this->createQueryBuilder('pp')
             ->where('pp.race = :race')
@@ -36,7 +36,7 @@ class PunishmentPointsRepository extends ServiceEntityRepository
     }
 
     //    /**
-    //     * @return PunishmentPoints[] Returns an array of PunishmentPoints objects
+    //     * @return PenaltyPointsAward[] Returns an array of PenaltyPointsAward objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -50,7 +50,7 @@ class PunishmentPointsRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?PunishmentPoints
+    //    public function findOneBySomeField($value): ?PenaltyPointsAward
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

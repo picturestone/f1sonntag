@@ -40,10 +40,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $raceResultBets;
 
     /**
-     * @var Collection<int, PunishmentPoints>
+     * @var Collection<int, PenaltyPointsAward>
      */
-    #[ORM\OneToMany(targetEntity: PunishmentPoints::class, mappedBy: 'user')]
-    private Collection $punishmentPoints;
+    #[ORM\OneToMany(targetEntity: PenaltyPointsAward::class, mappedBy: 'user')]
+    private Collection $penaltyPointsAward;
 
     /**
      * @var Collection<int, WorldChampionBet>
@@ -63,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->raceResultBets = new ArrayCollection();
-        $this->punishmentPoints = new ArrayCollection();
+        $this->penaltyPointsAward = new ArrayCollection();
         $this->worldChampionBets = new ArrayCollection();
     }
 
@@ -176,29 +176,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, PunishmentPoints>
+     * @return Collection<int, PenaltyPointsAward>
      */
-    public function getPunishmentPoints(): Collection
+    public function getPenaltyPointsAward(): Collection
     {
-        return $this->punishmentPoints;
+        return $this->penaltyPointsAward;
     }
 
-    public function addPunishmentPoint(PunishmentPoints $punishmentPoint): static
+    public function addPenaltyPointsAward(PenaltyPointsAward $penaltyPointsAward): static
     {
-        if (!$this->punishmentPoints->contains($punishmentPoint)) {
-            $this->punishmentPoints->add($punishmentPoint);
-            $punishmentPoint->setUser($this);
+        if (!$this->penaltyPointsAward->contains($penaltyPointsAward)) {
+            $this->penaltyPointsAward->add($penaltyPointsAward);
+            $penaltyPointsAward->setUser($this);
         }
 
         return $this;
     }
 
-    public function removePunishmentPoint(PunishmentPoints $punishmentPoint): static
+    public function removePenaltyPointsAward(PenaltyPointsAward $penaltyPointsAward): static
     {
-        if ($this->punishmentPoints->removeElement($punishmentPoint)) {
+        if ($this->penaltyPointsAward->removeElement($penaltyPointsAward)) {
             // set the owning side to null (unless already changed)
-            if ($punishmentPoint->getUser() === $this) {
-                $punishmentPoint->setUser(null);
+            if ($penaltyPointsAward->getUser() === $this) {
+                $penaltyPointsAward->setUser(null);
             }
         }
 
