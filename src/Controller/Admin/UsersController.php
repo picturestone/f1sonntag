@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -140,6 +141,10 @@ class UsersController extends AbstractController
 
         if (!$user) {
             return throw $this->createNotFoundException('This user does not exist');
+        }
+
+        if (in_array(User::ROLE_ADMIN, $user->getRoles())) {
+            return throw new BadRequestHttpException('Admin users cannot be deleted');
         }
 
         $this->entityManager->remove($user);
