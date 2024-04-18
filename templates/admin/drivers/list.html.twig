@@ -46,7 +46,11 @@
                             <span>{{ driver.lastName }}</span>
                         </td>
                         <td>
-                            <span>{{ driver.team.name }}</span>
+                            {% set teamName = '-' %}
+                            {% if driver.team %}
+                                {% set teamName = driver.team.name|default('-') %}
+                            {% endif %}
+                            <span>{{ teamName }}</span>
                         </td>
                         <td>
                             {% include 'includes/isActiveIcon.html.twig' with { 'isActive': driver.isActive } %}
