@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PunishmentPoints
 {
     #[ORM\Column]
-    private ?int $punishmentPoints = 0;
+    private ?int $penaltyPoints = 0;
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
@@ -19,14 +19,14 @@ class PunishmentPoints
     #[ORM\ManyToOne(inversedBy: 'punishmentPoints')]
     private ?Race $race = null;
 
-    public function getPunishmentPoints(): ?int
+    public function getPenaltyPoints(): ?int
     {
-        return $this->punishmentPoints;
+        return $this->penaltyPoints;
     }
 
-    public function setPunishmentPoints(int $punishmentPoints): static
+    public function setPenaltyPoints(int $penaltyPoints): static
     {
-        $this->punishmentPoints = $punishmentPoints;
+        $this->penaltyPoints = $penaltyPoints;
 
         return $this;
     }

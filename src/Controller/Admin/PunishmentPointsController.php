@@ -88,7 +88,7 @@ class PunishmentPointsController extends AbstractController
                 $points = $formData[$userId];
 
                 if ($points) {
-                    $punishmentPoints->setPunishmentPoints($points);
+                    $punishmentPoints->setPenaltyPoints($points);
                 }
 
                 $this->entityManager->persist($punishmentPoints);
@@ -238,7 +238,7 @@ class PunishmentPointsController extends AbstractController
                     'min' => 0
                 ]
             ];
-            $points = $punishmentPoints->getPunishmentPoints();
+            $points = $punishmentPoints->getPenaltyPoints();
 
             if ($points) {
                 $options['data'] = $points;
