@@ -29,7 +29,7 @@
                 {% for driver in drivers %}
                     <tr>
                         <td class="col--icon-button">
-                            {% set deleteModalId = 'driver-delete-modal-' ~ driver.id %}
+                            {% set deleteModalId = 'drivers-delete-modal-' ~ driver.id %}
                             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ deleteModalId }}">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -60,13 +60,13 @@
     {% for driver in drivers %}
         {% set driverName = (driver.firstName|default('') ~ ' ' ~ driver.lastName|default(''))|trim %}
 
-        {% set deleteModalId = 'driver-delete-modal-' ~ driver.id %}
+        {% set deleteModalId = 'drivers-delete-modal-' ~ driver.id %}
         {% set titleText = 'Fahrer "' ~ driverName ~ '" löschen?'  %}
 
         {% set bodyHtml %}
             <p>Soll der Fahrer <u>{{ driverName }}</u> wirklich gelöscht werden? Das Löschen <u>kann nicht rückgängig gemacht werden.</u></p>
 
-            <p>Folgende Daten, die mit dem Faher zusammenhängen, werden dabei mitgelöscht:</p>
+            <p>Folgende Daten, die mit diesem Faher zusammenhängen, werden dabei mitgelöscht:</p>
 
             <ul>
                 <li>Rennergebnisse und Wetten darauf</li>
@@ -75,7 +75,7 @@
             </ul>
 
             <div class="alert alert-danger" role="alert">
-                Die <b>Rangliste</b> kann sich dadurch für vergangene Saisonen <b>rückwirkend verändern!</b>
+                Die <b>Rangliste</b> kann sich dadurch für die aktuelle und auch vergangene Saisonen <b>rückwirkend verändern!</b>
             </div>
 
             <p>Fahrer, die zumindest in einem Rennen mitgefahren sind, sollten nicht gelöscht, sondern in der <a href="{{ path('app_admin_drivers_edit', {id: driver.id}) }}">"Fahrer bearbeiten"-Oberfläche</a> auf inaktiv gesetzt werden.</p>

@@ -27,9 +27,11 @@
                 {% for race in races %}
                     <tr>
                         <td class="col--icon-button">
-                            <a class="btn btn-danger" href="{{ path('app_admin_races_delete', {id: race.id}) }}">
+                            {% set deleteModalId = 'races-delete-modal-' ~ race.id %}
+
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ deleteModalId }}">
                                 <i class="bi bi-trash"></i>
-                            </a>
+                            </button>
                         </td>
                         <td class="col--icon-button">
                             <a class="btn btn-primary" href="{{ path('app_admin_races_edit', {id: race.id}) }}">
@@ -53,5 +55,33 @@
             </tbody>
         </table>
     </div>
+
+    {% for race in races %}
+        {% set deleteModalId = 'races-delete-modal-' ~ race.id %}
+        {% set titleText = 'Rennen "' ~ race.name ~ '" der Saison "' ~ season.name ~ '" löschen?'  %}
+
+        {% set bodyHtml %}
+            <p>Soll das Rennen <u>{{ race.name }}</u> der Saison <u>{{ season.name }}</u> wirklich gelöscht werden? Das Löschen <u>kann nicht rückgängig gemacht werden.</u></p>
+
+            <p>Folgende Daten, die mit diesem Rennen zusammenhängen, werden dabei mitgelöscht:</p>
+
+            <ul>
+                <li>Rennergebnisse und Wetten darauf</li>
+                <li>Strafpunkte</li>
+            </ul>
+
+            <div class="alert alert-danger" role="alert">
+                Die <b>Rangliste</b> kann sich dadurch für die aktuelle und auch vergangene Saisonen <b>rückwirkend verändern!</b>
+            </div>
+        {% endset %}
+
+        {% include 'includes/deleteConfirmModal.html.twig' with {
+            'id': deleteModalId,
+            'titleText': titleText,
+            'bodyHtml': bodyHtml,
+            'deleteHref': path('app_admin_races_delete', {id: race.id}),
+            'deleteText': 'Rennen permanent löschen'
+        } %}
+    {% endfor %}
 </div>
 {% endblock %}
