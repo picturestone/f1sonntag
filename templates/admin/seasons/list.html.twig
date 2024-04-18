@@ -10,8 +10,6 @@
 
     {# TODO implement modal for delete buttons according to https://getbootstrap.com/docs/5.0/components/modal/#live-demo - do that for all lists. #}
 
-    {# TODO implement cancel button for all add and edit screen. #}
-
     <div>
         <a class="btn btn-primary" href="{{ path('app_admin_seasons_new') }}">Hinzufügen</a>
 
@@ -33,6 +31,7 @@
                     <th class="col--icon-button" scope="col"></th>
                     <th class="col--icon-button" scope="col"></th>
                     <th scope="col">Name</th>
+                    <th scope="col">Weltmeister</th>
                     <th scope="col">Aktiv</th>
                 </tr>
             </thead>
@@ -62,6 +61,14 @@
                         </td>
                         <td>
                             <span>{{ season.name }}</span>
+                        </td>
+                        <td>
+                            {% set worldChampion = season.worldChampion|default('') %}
+                            {% if worldChampion %}
+                                <span>{{ worldChampion.firstName|default('') }} {{ worldChampion.lastName|default('') }}</span>
+                            {% else %}
+                                <span>-</span>
+                            {% endif %}
                         </td>
                         <td>
                             {% include 'includes/isActiveIcon.html.twig' with { 'isActive': season.isActive } %}

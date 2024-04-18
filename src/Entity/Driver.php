@@ -46,17 +46,17 @@ class Driver
     private ?bool $isActive = true;
 
     /**
-     * @var Collection<int, WorldChampion>
+     * @var Collection<int, Season>
      */
-    #[ORM\OneToMany(targetEntity: WorldChampion::class, mappedBy: 'driver')]
-    private Collection $worldChampions;
+    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'worldChampion')]
+    private Collection $worldChampionSeasons;
 
     public function __construct()
     {
         $this->raceResults = new ArrayCollection();
         $this->raceResultBets = new ArrayCollection();
         $this->worldChampionBets = new ArrayCollection();
-        $this->worldChampions = new ArrayCollection();
+        $this->worldChampionSeasons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -203,29 +203,29 @@ class Driver
     }
 
     /**
-     * @return Collection<int, WorldChampion>
+     * @return Collection<int, Season>
      */
-    public function getWorldChampions(): Collection
+    public function getWorldChampionSeasons(): Collection
     {
-        return $this->worldChampions;
+        return $this->worldChampionSeasons;
     }
 
-    public function addWorldChampion(WorldChampion $worldChampion): static
+    public function addWorldChampionSeason(Season $worldChampionSeason): static
     {
-        if (!$this->worldChampions->contains($worldChampion)) {
-            $this->worldChampions->add($worldChampion);
-            $worldChampion->setDriver($this);
+        if (!$this->worldChampionSeasons->contains($worldChampionSeason)) {
+            $this->worldChampionSeasons->add($worldChampionSeason);
+            $worldChampionSeason->setWorldChampion($this);
         }
 
         return $this;
     }
 
-    public function removeWorldChampion(WorldChampion $worldChampion): static
+    public function removeWorldChampionSeason(Season $worldChampionSeason): static
     {
-        if ($this->worldChampions->removeElement($worldChampion)) {
+        if ($this->worldChampionSeasons->removeElement($worldChampionSeason)) {
             // set the owning side to null (unless already changed)
-            if ($worldChampion->getDriver() === $this) {
-                $worldChampion->setDriver(null);
+            if ($worldChampionSeason->getWorldChampion() === $this) {
+                $worldChampionSeason->setWorldChampion(null);
             }
         }
 

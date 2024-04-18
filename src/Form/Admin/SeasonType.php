@@ -2,7 +2,9 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Driver;
 use App\Entity\Season;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,6 +16,13 @@ class SeasonType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('worldChampion', EntityType::class, [
+                'required' => false,
+                'class' => Driver::class,
+                'choice_label' => function (Driver $driver): string {
+                    return $driver->getFirstName() . ' ' . $driver->getLastName();
+                }
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'
             ])
