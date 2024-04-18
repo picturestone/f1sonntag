@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\PositionBet;
+use App\Entity\RaceResultBet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PositionBet>
+ * @extends ServiceEntityRepository<RaceResultBet>
  *
- * @method PositionBet|null find($id, $lockMode = null, $lockVersion = null)
- * @method PositionBet|null findOneBy(array $criteria, array $orderBy = null)
- * @method PositionBet[]    findAll()
- * @method PositionBet[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RaceResultBet|null find($id, $lockMode = null, $lockVersion = null)
+ * @method RaceResultBet|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RaceResultBet[]    findAll()
+ * @method RaceResultBet[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PositionBetRepository extends ServiceEntityRepository
+class RaceResultBetRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, PositionBet::class);
+        parent::__construct($registry, RaceResultBet::class);
     }
 
     //    /**
-    //     * @return PositionBet[] Returns an array of PositionBet objects
+    //     * @return RaceResultBet[] Returns an array of RaceResultBet objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -36,7 +36,7 @@ class PositionBetRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?PositionBet
+    //    public function findOneBySomeField($value): ?RaceResultBet
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

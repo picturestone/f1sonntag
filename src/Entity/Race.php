@@ -35,10 +35,10 @@ class Race
     private Collection $raceResults;
 
     /**
-     * @var Collection<int, PositionBet>
+     * @var Collection<int, RaceResultBet>
      */
-    #[ORM\OneToMany(targetEntity: PositionBet::class, mappedBy: 'race')]
-    private Collection $positionBets;
+    #[ORM\OneToMany(targetEntity: RaceResultBet::class, mappedBy: 'race')]
+    private Collection $raceResultBets;
 
     /**
      * @var Collection<int, PunishmentPoints>
@@ -52,7 +52,7 @@ class Race
     public function __construct()
     {
         $this->raceResults = new ArrayCollection();
-        $this->positionBets = new ArrayCollection();
+        $this->raceResultBets = new ArrayCollection();
         $this->punishmentPoints = new ArrayCollection();
     }
 
@@ -140,29 +140,29 @@ class Race
     }
 
     /**
-     * @return Collection<int, PositionBet>
+     * @return Collection<int, RaceResultBet>
      */
-    public function getPositionBets(): Collection
+    public function getRaceResultBets(): Collection
     {
-        return $this->positionBets;
+        return $this->raceResultBets;
     }
 
-    public function addPositionBet(PositionBet $positionBet): static
+    public function addRaceResultBet(RaceResultBet $raceResultBet): static
     {
-        if (!$this->positionBets->contains($positionBet)) {
-            $this->positionBets->add($positionBet);
-            $positionBet->setRace($this);
+        if (!$this->raceResultBets->contains($raceResultBet)) {
+            $this->raceResultBets->add($raceResultBet);
+            $raceResultBet->setRace($this);
         }
 
         return $this;
     }
 
-    public function removePositionBet(PositionBet $positionBet): static
+    public function removeRaceResultBet(RaceResultBet $raceResultBet): static
     {
-        if ($this->positionBets->removeElement($positionBet)) {
+        if ($this->raceResultBets->removeElement($raceResultBet)) {
             // set the owning side to null (unless already changed)
-            if ($positionBet->getRace() === $this) {
-                $positionBet->setRace(null);
+            if ($raceResultBet->getRace() === $this) {
+                $raceResultBet->setRace(null);
             }
         }
 

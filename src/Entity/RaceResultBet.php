@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\PositionBetRepository;
+use App\Repository\RaceResultBetRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PositionBetRepository::class)]
-class PositionBet
+#[ORM\Entity(repositoryClass: RaceResultBetRepository::class)]
+class RaceResultBet
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,13 +16,13 @@ class PositionBet
     #[ORM\Column]
     private ?int $position = null;
 
-    #[ORM\ManyToOne(inversedBy: 'positionBets')]
+    #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'positionBets')]
+    #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
     private ?Driver $driver = null;
 
-    #[ORM\ManyToOne(inversedBy: 'positionBets')]
+    #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
     private ?Race $race = null;
 
     public function getId(): ?int

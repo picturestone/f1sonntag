@@ -34,10 +34,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     /**
-     * @var Collection<int, PositionBet>
+     * @var Collection<int, RaceResultBet>
      */
-    #[ORM\OneToMany(targetEntity: PositionBet::class, mappedBy: 'user')]
-    private Collection $positionBets;
+    #[ORM\OneToMany(targetEntity: RaceResultBet::class, mappedBy: 'user')]
+    private Collection $raceResultBets;
 
     /**
      * @var Collection<int, PunishmentPoints>
@@ -62,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->positionBets = new ArrayCollection();
+        $this->raceResultBets = new ArrayCollection();
         $this->punishmentPoints = new ArrayCollection();
         $this->worldChampionBets = new ArrayCollection();
     }
@@ -146,29 +146,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, PositionBet>
+     * @return Collection<int, RaceResultBet>
      */
-    public function getPositionBets(): Collection
+    public function getRaceResultBets(): Collection
     {
-        return $this->positionBets;
+        return $this->raceResultBets;
     }
 
-    public function addPositionBet(PositionBet $positionBet): static
+    public function addRaceResultBet(RaceResultBet $raceResultBet): static
     {
-        if (!$this->positionBets->contains($positionBet)) {
-            $this->positionBets->add($positionBet);
-            $positionBet->setUser($this);
+        if (!$this->raceResultBets->contains($raceResultBet)) {
+            $this->raceResultBets->add($raceResultBet);
+            $raceResultBet->setUser($this);
         }
 
         return $this;
     }
 
-    public function removePositionBet(PositionBet $positionBet): static
+    public function removeRaceResultBet(RaceResultBet $raceResultBet): static
     {
-        if ($this->positionBets->removeElement($positionBet)) {
+        if ($this->raceResultBets->removeElement($raceResultBet)) {
             // set the owning side to null (unless already changed)
-            if ($positionBet->getUser() === $this) {
-                $positionBet->setUser(null);
+            if ($raceResultBet->getUser() === $this) {
+                $raceResultBet->setUser(null);
             }
         }
 
