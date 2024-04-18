@@ -22,6 +22,7 @@ class Driver
     private ?string $lastName = null;
 
     #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'drivers')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Team $team = null;
 
     /**
@@ -48,7 +49,7 @@ class Driver
     /**
      * @var Collection<int, Season>
      */
-    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'worldChampion')]
+    #[ORM\OneToMany(targetEntity: Season::class, mappedBy: 'worldChampion', cascade: ['remove'])]
     private Collection $worldChampionSeasons;
 
     public function __construct()

@@ -13,10 +13,12 @@ class RaceResult
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'raceResults')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Driver $driver = null;
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'raceResults')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Race $race = null;
 
     public function getPosition(): ?int

@@ -47,6 +47,7 @@ class Race
     private Collection $penaltyPointsAward;
 
     #[ORM\ManyToOne(inversedBy: 'races')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Season $season = null;
 
     public function __construct()

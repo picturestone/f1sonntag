@@ -17,12 +17,15 @@ class RaceResultBet
     private ?int $position = null;
 
     #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Driver $driver = null;
 
     #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Race $race = null;
 
     public function getId(): ?int

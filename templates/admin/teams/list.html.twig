@@ -22,9 +22,11 @@
                 {% for team in teams %}
                     <tr>
                         <td class="col--icon-button">
-                            <a class="btn btn-danger" href="{{ path('app_admin_teams_delete', {id: team.id}) }}">
+                            {% set deleteModalId = 'teams-delete-modal-' ~ team.id %}
+
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ deleteModalId }}">
                                 <i class="bi bi-trash"></i>
-                            </a>
+                            </button>
                         </td>
                         <td class="col--icon-button">
                             <a class="btn btn-primary" href="{{ path('app_admin_teams_edit', {id: team.id}) }}">
@@ -39,5 +41,28 @@
             </tbody>
         </table>
     </div>
+
+    {% for team in teams %}
+        {% set deleteModalId = 'teams-delete-modal-' ~ team.id %}
+        {% set titleText = 'Team "' ~ team.name ~ '" löschen?'  %}
+
+        {% set bodyHtml %}
+            <p>Soll das Team <u>{{ team.name }}</u> wirklich gelöscht werden? Das Löschen <u>kann nicht rückgängig gemacht werden.</u></p>
+
+            <p>Folgende Daten, die mit diesem Team zusammenhängen, werden dabei mitgelöscht:</p>
+
+            <ul>
+                <li>Zuweisung zu den Fahrern des Teams (die Fahrer bleiben bestehen, diese gehören dann nur keinem Team mehr an)</li>
+            </ul>
+        {% endset %}
+
+        {% include 'includes/deleteConfirmModal.html.twig' with {
+            'id': deleteModalId,
+            'titleText': titleText,
+            'bodyHtml': bodyHtml,
+            'deleteHref': path('app_admin_teams_delete', {id: team.id}),
+            'deleteText': 'Team permanent löschen'
+        } %}
+    {% endfor %}
 </div>
 {% endblock %}

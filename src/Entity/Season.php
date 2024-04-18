@@ -34,6 +34,7 @@ class Season
     private ?bool $isActive = false;
 
     #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'worldChampionSeasons')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Driver $worldChampion = null;
 
     public function __construct()

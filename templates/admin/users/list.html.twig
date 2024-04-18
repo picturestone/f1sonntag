@@ -29,9 +29,20 @@
                 {% for user in users %}
                     <tr>
                         <td class="col--icon-button">
-                            <a class="btn btn-danger" href="{{ path('app_admin_users_delete', {id: user.id}) }}">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            {% if ROLE['ADMIN'] in user.roles %}
+                                <div data-bs-toggle="tooltip"
+                                     data-bs-placement="right"
+                                     title="Administratoren können nicht gelöscht werden. Entferne zuerst die Administrator-Rechte vom Benutzer.">
+                                    <button class="btn btn-danger" disabled>
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            {% else %}
+                                {% set deleteModalId = 'users-delete-modal-' ~ user.id %}
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ deleteModalId }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            {% endif %}
                         </td>
                         <td class="col--icon-button">
                             <a class="btn btn-primary" href="{{ path('app_admin_users_edit', {id: user.id}) }}">
@@ -63,5 +74,38 @@
             </tbody>
         </table>
     </div>
+
+    {% for user in users %}
+        {% set userName = (user.firstName|default('') ~ ' ' ~ user.lastName|default(''))|trim %}
+
+        {% set deleteModalId = 'users-delete-modal-' ~ user.id %}
+        {% set titleText = 'Benutzer "' ~ userName ~ '" löschen?'  %}
+
+        {% set bodyHtml %}
+            <p>Soll der Benutzer <u>{{ userName }}</u> wirklich gelöscht werden? Das Löschen <u>kann nicht rückgängig gemacht werden.</u></p>
+
+            <p>Folgende Daten, die mit diesem Benutzer zusammenhängen, werden dabei mitgelöscht:</p>
+
+            <ul>
+                <li>Wetten auf Rennergebnisse</li>
+                <li>Wetten auf Weltmeister-Titel</li>
+                <li>Strafpunkte</li>
+            </ul>
+
+            <div class="alert alert-danger" role="alert">
+                Die <b>Rangliste</b> kann sich dadurch für die aktuelle und auch vergangene Saisonen <b>rückwirkend verändern!</b>
+            </div>
+
+            <p>Benutzer, die zumindest bei einer Saison mitgewettet haben, sollten nicht gelöscht, sondern in der <a href="{{ path('app_admin_users_edit', {id: user.id}) }}">"Benutzer bearbeiten"-Oberfläche</a> auf inaktiv gesetzt werden.</p>
+        {% endset %}
+
+        {% include 'includes/deleteConfirmModal.html.twig' with {
+            'id': deleteModalId,
+            'titleText': titleText,
+            'bodyHtml': bodyHtml,
+            'deleteHref': path('app_admin_users_delete', {id: user.id}),
+            'deleteText': 'Benutzer permanent löschen'
+        } %}
+    {% endfor %}
 </div>
 {% endblock %}

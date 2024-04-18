@@ -39,7 +39,11 @@
                         <span>{{ raceResult.driver.lastName }}</span>
                     </td>
                     <td>
-                        <span>{{ raceResult.driver.team.name }}</span>
+                        {% set teamName = '-' %}
+                        {% if raceResult.driver.team %}
+                            {% set teamName = raceResult.driver.team.name|default('-') %}
+                        {% endif %}
+                        <span>{{ teamName }}</span>
                     </td>
                     <td>
                         {{ form_widget(form[raceResult.driver.id], {

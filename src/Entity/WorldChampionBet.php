@@ -14,12 +14,15 @@ class WorldChampionBet
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'worldChampionBets')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Driver $driver = null;
 
     #[ORM\ManyToOne(inversedBy: 'worldChampionBets')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'worldChampionBets')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Season $season = null;
 
     public function getId(): ?int

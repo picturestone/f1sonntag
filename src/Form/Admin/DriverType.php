@@ -18,6 +18,7 @@ class DriverType extends AbstractType
             ->add('firstName')
             ->add('lastName')
             ->add('team', EntityType::class, [
+                'required' => false,
                 'class' => Team::class,
                 'choice_label' => 'name',
             ])

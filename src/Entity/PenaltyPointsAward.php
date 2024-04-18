@@ -13,10 +13,12 @@ class PenaltyPointsAward
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'penaltyPointsAward')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Id]
     #[ORM\ManyToOne(inversedBy: 'penaltyPointsAward')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Race $race = null;
 
     public function getPenaltyPoints(): ?int
