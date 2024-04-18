@@ -47,6 +47,10 @@ class RaceResultsController extends AbstractController
         $season = $activeSeasons[0];
         $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
+        if (count($races) === 0) {
+            return $this->render('admin/raceResults/createRace.html.twig');
+        }
+
         return $this->render('admin/raceResults/list.html.twig', [
             'races' => $races,
             'season' => $season

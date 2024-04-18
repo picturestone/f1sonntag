@@ -50,6 +50,10 @@ class PenaltyPointsAwardsController extends AbstractController
         $season = $activeSeasons[0];
         $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
+        if (count($races) === 0) {
+            return $this->render('admin/penaltyPointsAward/createRace.html.twig');
+        }
+
         return $this->render('admin/penaltyPointsAward/list.html.twig', [
             'races' => $races,
             'season' => $season
