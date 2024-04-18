@@ -56,6 +56,7 @@ class SeasonsController extends AbstractController
             $this->setSeasonToActive($season->getId());
             $this->entityManager->flush();
             $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateCustomSuccessToast('Aktive Saison geändert'));
 
             return $this->redirectToRoute('app_admin_seasons_list');
         }
@@ -78,7 +79,7 @@ class SeasonsController extends AbstractController
             $id = $formValues['season_active']['activeSeasonId'];
             $this->setSeasonToActive($id);
             $this->entityManager->flush();
-            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateCustomSuccessToast('Aktive Saison geändert'));
 
             return $this->redirectToRoute('app_admin_seasons_list');
         }
