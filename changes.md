@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Removed WorldChampion entity, added world champion relation to season. [#19]
 -   Refactored entities, added WorldChampion entity. [#18]
 -   Added flash messages for user feedback in admin. [#17]
 -   Added punishment points entries editing in admin. [#16]
