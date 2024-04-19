@@ -1,0 +1,23 @@
+{% extends 'userbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Rennübersicht</h1>
+
+    {% set isUserAdmin = false %}
+    {% if app.user is defined and ROLE['ADMIN'] in app.user.roles %}
+        {% set isUserAdmin = true %}
+    {% endif %}
+
+    <div>
+        {% if isUserAdmin %}
+            Damit Tipps für ein Rennen eingetragen werden können muss zuerst eine Saison erstellt (oder eine existierende aktiviert) werden. Erledige das <a href="{{ path('app_admin_seasons_list') }}">hier</a>.
+        {% else %}
+            Damit Tipps für Rennen eingetragen werden können muss ein Administrator zuerst eine Saison erstellen. Wende Dich diesbezüglich an einen Administrator.
+        {% endif %}
+    </div>
+
+    <div>
+    </div>
+</div>
+{% endblock %}

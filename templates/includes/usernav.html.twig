@@ -10,7 +10,7 @@
                     <a class="nav-link" aria-current="page" href="#">Rangliste</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Rennübersicht</a>
+                    <a class="nav-link" href="{{ path('app_race_result_bets_list') }}">Rennübersicht</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Weltmeister-Tipp</a>
@@ -26,7 +26,7 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" href="#">Passwort ändern</a></li>
                         {% if app.user is defined and ROLE['ADMIN'] in app.user.roles %}
-                            <li><a class="dropdown-item" href="#">Administration</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_race_results_list') }}">Administration</a></li>
                         {% endif %}
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
