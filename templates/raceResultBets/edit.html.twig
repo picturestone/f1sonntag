@@ -1,16 +1,14 @@
-{% extends 'adminbase.html.twig' %}
+{% extends 'userbase.html.twig' %}
 
 {% form_theme form 'bootstrap_5_horizontal_layout.html.twig' %}
 
 {% block body %}
 <div class="container-xl">
-    <h1>Rennergebnisse bearbeiten - {{ race.name}} - {{ season.name }}</h1>
+    <h1>Tipp abgeben - {{ race.name}} - {{ season.name }}</h1>
 
-    <p>Hier können die Rennergebnisse eingetragen werden. Falls Fahrer in der Teilnehmerliste fehlen oder Fahrer aufgelistet sind, die nicht am Rennen teilgenommen haben, kann die Teilnehmerliste mit dem "Teilnehmerliste bearbeiten"-Button angepasst werden.</p>
+    <p>Gib für 3 Fahrer deinen Tipp ab.</p>
 
-    <a class="btn btn-secondary" href="{{ path('app_admin_race_results_entries', {id: race.id}) }}">Teilnehmerliste bearbeiten</a>
-
-    {% set formId = 'raceResultForm' %}
+    {% set formId = 'raceResultBetsForm' %}
 
     {{ form_start(form, {
         'method': 'POST',
@@ -32,23 +30,23 @@
             </thead>
 
             <tbody>
-            {% for raceResult in raceResults %}
+            {% for raceResultBet in raceResultBets %}
                 <tr>
                     <td>
-                        <span>{{ raceResult.driver.firstName }}</span>
+                        <span>{{ raceResultBet.driver.firstName }}</span>
                     </td>
                     <td>
-                        <span>{{ raceResult.driver.lastName }}</span>
+                        <span>{{ raceResultBet.driver.lastName }}</span>
                     </td>
                     <td>
                         {% set teamName = '-' %}
-                        {% if raceResult.driver.team %}
-                            {% set teamName = raceResult.driver.team.name|default('-') %}
+                        {% if raceResultBet.driver.team %}
+                            {% set teamName = raceResultBet.driver.team.name|default('-') %}
                         {% endif %}
                         <span>{{ teamName }}</span>
                     </td>
                     <td>
-                        {{ form_widget(form[raceResult.driver.id], {
+                        {{ form_widget(form[raceResultBet.driver.id], {
                             'attr': {
                                 'form': formId
                             }

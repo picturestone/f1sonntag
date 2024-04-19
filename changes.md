@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added race result bets. [#21]
 -   Added delete modals in admin and deleting cascades. [#20] 
 -   Removed WorldChampion entity, added world champion relation to season. [#19]
 -   Refactored entities, added WorldChampion entity. [#18]
