@@ -6,6 +6,7 @@ use App\Dto\ToastDto;
 
 class ToastFactory
 {
+    // TODO move to src/toast
     public static function generateCustomSuccessToast(string $text) {
         $toast = new ToastDto();
         $toast->setText($text);

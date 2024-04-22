@@ -44,7 +44,7 @@ class Race
      * @var Collection<int, PenaltyPointsAward>
      */
     #[ORM\OneToMany(targetEntity: PenaltyPointsAward::class, mappedBy: 'race')]
-    private Collection $penaltyPointsAward;
+    private Collection $penaltyPointsAwards;
 
     #[ORM\ManyToOne(inversedBy: 'races')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -54,7 +54,7 @@ class Race
     {
         $this->raceResults = new ArrayCollection();
         $this->raceResultBets = new ArrayCollection();
-        $this->penaltyPointsAward = new ArrayCollection();
+        $this->penaltyPointsAwards = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,15 +173,15 @@ class Race
     /**
      * @return Collection<int, PenaltyPointsAward>
      */
-    public function getPenaltyPointsAward(): Collection
+    public function getPenaltyPointsAwards(): Collection
     {
-        return $this->penaltyPointsAward;
+        return $this->penaltyPointsAwards;
     }
 
     public function addPenaltyPointsAward(PenaltyPointsAward $penaltyPointsAward): static
     {
-        if (!$this->penaltyPointsAward->contains($penaltyPointsAward)) {
-            $this->penaltyPointsAward->add($penaltyPointsAward);
+        if (!$this->penaltyPointsAwards->contains($penaltyPointsAward)) {
+            $this->penaltyPointsAwards->add($penaltyPointsAward);
             $penaltyPointsAward->setRace($this);
         }
 
@@ -190,7 +190,7 @@ class Race
 
     public function removePenaltyPointsAward(PenaltyPointsAward $penaltyPointsAward): static
     {
-        if ($this->penaltyPointsAward->removeElement($penaltyPointsAward)) {
+        if ($this->penaltyPointsAwards->removeElement($penaltyPointsAward)) {
             // set the owning side to null (unless already changed)
             if ($penaltyPointsAward->getRace() === $this) {
                 $penaltyPointsAward->setRace(null);

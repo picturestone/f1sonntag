@@ -12,7 +12,7 @@ class RaceResult
     private ?int $position = 0;
 
     #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'raceResults')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'raceResults')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Driver $driver = null;
 

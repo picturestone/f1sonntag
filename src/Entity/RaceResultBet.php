@@ -16,11 +16,11 @@ class RaceResultBet
     #[ORM\Column]
     private ?int $position = null;
 
-    #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'raceResultBets')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'raceResultBets')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'raceResultBets')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Driver $driver = null;
 

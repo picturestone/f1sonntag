@@ -1,0 +1,101 @@
+{% extends 'userbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Tipps - {{ race.name}} - {{ season.name }}</h1>
+
+    <p>Tipps für {{ race.name}} - {{ season.name }}</p>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle table-borderless">
+            <thead class="table-light">
+                <tr class="border-bottom border-dark">
+                    <th scope="col">Name</th>
+                    <th scope="col">Fahrer</th>
+                    <th scope="col">Team</th>
+                    <th class="text-end" scope="col">Tipp</th>
+                    <th class="text-end" scope="col">Platz</th>
+                    <th class="text-end" scope="col">Punkte</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% set rowStyle = '' %}
+
+                {% for raceScoreCalculator in resultsForRace.raceScoreCalculatorsOfRace %}
+                    {# Check if we display rows of a new user or if its still #}
+                    {% set user = raceScoreCalculator.user %}
+                    {% set wasNameDisplayed = false %}
+
+                    {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
+                        {% set driver = raceResultBetScoreCalculator.raceResult.driver %}
+
+                        <tr class="{{ rowStyle }}">
+                            <td>
+                                {% if loop.first %}
+                                    <span>{{ user.firstName }} {{ user.lastName }}</span>
+                                    {% set wasNameDisplayed = true %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span>{{ driver.firstName }} {{ driver.lastName }}</span>
+                            </td>
+                            <td>
+                                <span>{{ driver.team.name|default('-') }}</span>
+                            </td>
+                            <td class="text-end">
+                                <span>{{ raceResultBetScoreCalculator.raceResultBet.position }}</span>
+                            </td>
+                            <td class="text-end">
+                                <span>{{ raceResultBetScoreCalculator.raceResult.position }}</span>
+                            </td>
+                            <td class="text-end">
+                                <span>{{ raceResultBetScoreCalculator.score }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    {% set penaltyPointsAward = raceScoreCalculator.penaltyPointsAwardOfUser %}
+                    {% if penaltyPointsAward.penaltyPoints|default('') %}
+                        <tr class="{{ rowStyle }}">
+                            <td>
+                                {% if wasNameDisplayed == false %}
+                                    <span>{{ user.firstName }} {{ user.lastName }}</span>
+                                    {% set wasNameDisplayed = true %}
+                                {% endif %}
+                            </td>
+                            <td colspan="4">
+                                <span>Strafpunkte</span>
+                            </td>
+                            <td class="text-end">
+                                <span>{{ penaltyPointsAward.penaltyPoints }}</span>
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    {% if raceScoreCalculator.score is not null %}
+                        <tr class="{{ rowStyle }} border-bottom border-dark">
+                            <td>
+                                {% if wasNameDisplayed == false %}
+                                    <span>{{ user.firstName }} {{ user.lastName }}</span>
+                                    {% set wasNameDisplayed = true %}
+                                {% endif %}
+                            </td>
+                            <td colspan="4" class="border-top border-dark">
+                                <b>Summe</b>
+                            </td>
+                            <td class="text-end border-top border-dark">
+                                <span>{{ raceScoreCalculator.score }}</span>
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    {% if wasNameDisplayed %}
+                        {% set rowStyle = rowStyle|length > 0 ? '' : 'table-light' %}
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

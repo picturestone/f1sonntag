@@ -3,20 +3,19 @@
 namespace App\Controller;
 
 use App\Dto\ToastDto;
-use App\Entity\Driver;
 use App\Entity\Race;
-use App\Entity\RaceResult;
 use App\Entity\RaceResultBet;
+use App\Entity\Season;
 use App\Entity\User;
 use App\Repository\DriverRepository;
 use App\Repository\RaceRepository;
 use App\Repository\RaceResultBetRepository;
-use App\Repository\RaceResultRepository;
 use App\Repository\SeasonRepository;
+use App\Repository\UserRepository;
+use App\ScoreCalculation\ResultsForRace;
+use App\ScoreCalculation\ScoreCalculationService;
 use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Exception\InvalidArgumentException;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,11 +29,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(User::ROLE_USER)]
 class RaceResultBetsController extends AbstractController
 {
+    // TODO consider making this configurable in yaml.
     final public const NO_OF_BETS_PER_USER_PER_RACE = 3;
 
     public function __construct(
         private readonly EntityManagerInterface  $entityManager,
         private readonly SeasonRepository $seasonRepository,
+        private readonly UserRepository $userRepository,
         private readonly RaceResultBetRepository $raceResultBetRepository,
         private readonly RaceRepository $raceRepository,
         private readonly DriverRepository $driverRepository
@@ -51,14 +52,27 @@ class RaceResultBetsController extends AbstractController
         }
 
         $season = $activeSeasons[0];
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        if (!$user) {
+            return throw $this->createAccessDeniedException('Must be logged in for this operation');
+        }
+
         $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
 
         if (count($races) === 0) {
             return $this->render('raceResultBets/createRace.html.twig');
         }
 
+        // TODO rename hasUserRaceResultBetsForRace to isBettingPossible, return false if user has bet already, or if
+        // race start - time now < 5 minutes. Make 5 minutes configurable.
         return $this->render('raceResultBets/list.html.twig', [
-            'races' => $races,
+            'raceInfos' => array_map(function($race) use ($user) {
+                $raceInfo['race'] = $race;
+                $raceInfo['hasUserRaceResultBetsForRace'] = $this->hasUserRaceResultBetsForRace($race, $user);
+                return $raceInfo;
+            }, $races),
             'season' => $season
         ]);
     }
@@ -86,6 +100,12 @@ class RaceResultBetsController extends AbstractController
         }
 
         $raceResultBets = $this->getRaceResultBetsForAllActiveDrivers($race, $user);
+
+        if (count($raceResultBets) > 0) {
+            // User already bet. We show him the bet overview instead.
+            $scoreCalculator = new ScoreCalculationService($this->seasonRepository, $this->userRepository, $season);
+            return $this->renderRaceResultBetsDetail($race, $season, $scoreCalculator->getResultsForRace($race));
+        }
 
         // Build form.
         $formBuilder = $this->generateRaceResultBetsFormBuilder($raceResultBets);
@@ -153,6 +173,18 @@ class RaceResultBetsController extends AbstractController
 
     /**
      * @param Race $race
+     * @return Response
+     */
+    private function renderRaceResultBetsDetail(Race $race, Season $season, ResultsForRace $resultsForRace): Response {
+        return $this->render('raceResultBets/detail.html.twig', [
+            'resultsForRace' => $resultsForRace,
+            'race' => $race,
+            'season' => $season
+        ]);
+    }
+
+    /**
+     * @param Race $race
      * @param User $user
      */
     private function removeOldRaceResults(Race $race, User $user): void
@@ -186,6 +218,14 @@ class RaceResultBetsController extends AbstractController
         }
 
         return $raceResultBets;
+    }
+
+
+    private function hasUserRaceResultBetsForRace(Race $race, User $user): bool {
+        // Find bets for the race of the currently logged in user if bets exists.
+        $raceResultBets = $this->raceResultBetRepository->findRaceResultBetssByRaceAndUser($race, $user);
+
+        return count($raceResultBets) > 0;
     }
 
     /**
