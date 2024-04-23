@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Race;
 use App\Entity\Season;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +21,27 @@ class SeasonRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Season::class);
+    }
+
+    public function findSeasonWithDataForScores(int $seasonId): ?Season
+    {
+        /** @var Season $season */
+        $season = $this->createQueryBuilder('s')
+            ->leftJoin('s.races', 'r')
+            ->leftJoin('r.raceResults', 'rr')
+            ->leftJoin('r.raceResultBets', 'rrb')
+            ->leftJoin('r.penaltyPointsAwards', 'ppa')
+            ->where('s.id = :seasonId')
+            ->setParameter('seasonId', $seasonId)
+            ->addSelect('r')
+            ->addSelect('rr')
+            ->addSelect('rrb')
+            ->addSelect('ppa')
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        return $season;
     }
 
     //    /**

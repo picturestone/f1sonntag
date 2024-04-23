@@ -9,15 +9,15 @@ use Doctrine\ORM\Mapping as ORM;
 class PenaltyPointsAward
 {
     #[ORM\Column]
-    private ?int $penaltyPoints = 0;
+    private ?int $penaltyPoints = null;
 
     #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'penaltyPointsAward')]
+    #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'penaltyPointsAwards')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'penaltyPointsAward')]
+    #[ORM\ManyToOne(inversedBy: 'penaltyPointsAwards')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Race $race = null;
 

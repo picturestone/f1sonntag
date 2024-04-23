@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, PenaltyPointsAward>
      */
     #[ORM\OneToMany(targetEntity: PenaltyPointsAward::class, mappedBy: 'user')]
-    private Collection $penaltyPointsAward;
+    private Collection $penaltyPointsAwards;
 
     /**
      * @var Collection<int, WorldChampionBet>
@@ -63,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->raceResultBets = new ArrayCollection();
-        $this->penaltyPointsAward = new ArrayCollection();
+        $this->penaltyPointsAwards = new ArrayCollection();
         $this->worldChampionBets = new ArrayCollection();
     }
 
@@ -178,15 +178,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, PenaltyPointsAward>
      */
-    public function getPenaltyPointsAward(): Collection
+    public function getPenaltyPointsAwards(): Collection
     {
-        return $this->penaltyPointsAward;
+        return $this->penaltyPointsAwards;
     }
 
     public function addPenaltyPointsAward(PenaltyPointsAward $penaltyPointsAward): static
     {
-        if (!$this->penaltyPointsAward->contains($penaltyPointsAward)) {
-            $this->penaltyPointsAward->add($penaltyPointsAward);
+        if (!$this->penaltyPointsAwards->contains($penaltyPointsAward)) {
+            $this->penaltyPointsAwards->add($penaltyPointsAward);
             $penaltyPointsAward->setUser($this);
         }
 
@@ -195,7 +195,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removePenaltyPointsAward(PenaltyPointsAward $penaltyPointsAward): static
     {
-        if ($this->penaltyPointsAward->removeElement($penaltyPointsAward)) {
+        if ($this->penaltyPointsAwards->removeElement($penaltyPointsAward)) {
             // set the owning side to null (unless already changed)
             if ($penaltyPointsAward->getUser() === $this) {
                 $penaltyPointsAward->setUser(null);

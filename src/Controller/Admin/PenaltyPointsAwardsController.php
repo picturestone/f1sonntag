@@ -238,6 +238,7 @@ class PenaltyPointsAwardsController extends AbstractController
     {
         $formBuilder = $this->createFormBuilder();
 
+        // TODO consider making optional like in race result bets controller.
         foreach ($penaltyPointsAwards as $penaltyPointsAward) {
             $options = [
                 'scale' => 0,

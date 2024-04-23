@@ -19,7 +19,8 @@
             </thead>
 
             <tbody>
-                {% for race in races %}
+                {% for raceInfo in raceInfos %}
+                    {% set race = raceInfo.race %}
                     <tr>
                         <td>
                             <span>{{ race.name }}</span>
@@ -34,8 +35,12 @@
                             <span>{{ race.startTime|date('H:i') }}</span>
                         </td>
                         <td>
-                            <a class="btn btn-primary" href="{{ path('app_race_result_bets', {id: race.id}) }}">
-                                Tipp abgeben
+                            <a class="btn btn-primary text-nowrap" href="{{ path('app_race_result_bets', {id: race.id}) }}">
+                                {% if raceInfo.hasUserRaceResultBetsForRace %}
+                                    Tipps ansehen
+                                {% else %}
+                                    Tipp abgeben
+                                {% endif %}
                             </a>
                         </td>
                     </tr>
