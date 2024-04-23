@@ -238,12 +238,11 @@ class PenaltyPointsAwardsController extends AbstractController
     {
         $formBuilder = $this->createFormBuilder();
 
-        // TODO make optional.
+        // TODO consider making optional like in race result bets controller.
         foreach ($penaltyPointsAwards as $penaltyPointsAward) {
             $options = [
-                'required' => false,
                 'scale' => 0,
-                'empty_data' => null,
+                'empty_data' => 0,
                 'attr' => [
                     'min' => 0
                 ]
@@ -253,7 +252,7 @@ class PenaltyPointsAwardsController extends AbstractController
             if ($points) {
                 $options['data'] = $points;
             } else {
-                $options['data'] = null;
+                $options['data'] = 0;
             }
 
             $formBuilder->add($penaltyPointsAward->getUser()->getId(), NumberType::class, $options);
