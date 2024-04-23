@@ -99,15 +99,14 @@ class RaceResultBetsController extends AbstractController
             return throw $this->createAccessDeniedException('Must be logged in for this operation');
         }
 
-        $raceResultBets = $this->getRaceResultBetsForAllActiveDrivers($race, $user);
-
-        if (count($raceResultBets) > 0) {
+        if ($this->hasUserRaceResultBetsForRace($race, $user)) {
             // User already bet. We show him the bet overview instead.
             $scoreCalculator = new ScoreCalculationService($this->seasonRepository, $this->userRepository, $season);
             return $this->renderRaceResultBetsDetail($race, $season, $scoreCalculator->getResultsForRace($race));
         }
 
         // Build form.
+        $raceResultBets = $this->getRaceResultBetsForAllActiveDrivers($race, $user);
         $formBuilder = $this->generateRaceResultBetsFormBuilder($raceResultBets);
         $formBuilder->setAction($this->generateUrl('app_race_result_bets', ['id' => $id]));
         $form = $formBuilder->getForm();

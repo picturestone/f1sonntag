@@ -21,7 +21,7 @@ class ScoreCalculationService
 
     public function getResultsForRace(Race $race): ResultsForRace
     {
-        $seasonToScore = $this->seasonRepository->findSeasonWithSingleRaceDataForScores($this->season->getId(), $race);
+        $seasonToScore = $this->seasonRepository->findSeasonWithDataForScores($this->season->getId());
         /** @var Collection<int, User> $users */
         $users = new ArrayCollection($this->userRepository->findAll());
         $calculator = new SeasonScoreCalculator($seasonToScore, $users);

@@ -16,6 +16,8 @@ class RaceScoreCalculator
      * @var Collection<int, RaceResultBetScoreCalculator>
      */
     private Collection $raceResultBetScoreCalculators;
+    private ?int $score;
+    private ?PenaltyPointsAward $penaltyPointsAward;
 
     public function __construct(
         private Race $race,
@@ -25,6 +27,8 @@ class RaceScoreCalculator
     ) {
         $this->raceResultBetScoreCalculators = new ArrayCollection();
         $this->generateRaceResultBetScoreCalculators();
+        $this->penaltyPointsAward = $this->findPenaltyPointsAwardOfUser();
+        $this->score = $this->calculateScore();
     }
 
     public function getRace(): Race
@@ -32,21 +36,9 @@ class RaceScoreCalculator
         return $this->race;
     }
 
-    public function setRace(Race $race): void
-    {
-        $this->race = $race;
-        $this->generateRaceResultBetScoreCalculators();
-    }
-
     public function getUser(): User
     {
         return $this->user;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
-        $this->generateRaceResultBetScoreCalculators();
     }
 
     public function getIsScoreDiscarded(): bool
@@ -83,7 +75,7 @@ class RaceScoreCalculator
         /** @var RaceResultBet $raceResultBet */
         foreach ($raceResultBetsOfUser as $raceResultBet) {
             $raceResult = $this->getRaceResultForRaceResultBet($raceResultBet);
-            $raceResultBetScoreCalculator = new RaceResultBetScoreCalculator($raceResult, $raceResultBet);
+            $raceResultBetScoreCalculator = new RaceResultBetScoreCalculator($raceResultBet, $raceResult);
             $this->raceResultBetScoreCalculators[] = $raceResultBetScoreCalculator;
         }
     }
@@ -112,7 +104,11 @@ class RaceScoreCalculator
         return $raceResultBetsOfUser;
     }
 
-    public function getPenaltyPointsAwardOfUser(): ?PenaltyPointsAward {
+    public function getPenaltyPointsAward(): ?PenaltyPointsAward {
+        return $this->penaltyPointsAward;
+    }
+
+    private function findPenaltyPointsAwardOfUser(): ?PenaltyPointsAward {
         /** @var Collection<int, PenaltyPointsAward> $penaltyPointsAwards */
         $penaltyPointsAwards = $this->race->getPenaltyPointsAwards();
         $penaltyPointsAwardsOfUser = $penaltyPointsAwards->filter(
@@ -124,6 +120,10 @@ class RaceScoreCalculator
     }
 
     public function getScore(): ?int {
+        return $this->score;
+    }
+
+    private function calculateScore(): ?int {
         $score = null;
 
         // Add all scores from race result bets.
@@ -136,7 +136,7 @@ class RaceScoreCalculator
         }
 
         // Add penalty points if they exist.
-        $penaltyPointsAward = $this->getPenaltyPointsAwardOfUser();
+        $penaltyPointsAward = $this->getPenaltyPointsAward();
         if ($penaltyPointsAward) {
             $penaltyPoints = $penaltyPointsAward->getPenaltyPoints();
 

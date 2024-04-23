@@ -23,22 +23,16 @@ class SeasonRepository extends ServiceEntityRepository
         parent::__construct($registry, Season::class);
     }
 
-    public function findSeasonWithSingleRaceDataForScores(int $seasonId, Race $race): ?Season
+    public function findSeasonWithDataForScores(int $seasonId): ?Season
     {
         /** @var Season $season */
         $season = $this->createQueryBuilder('s')
-            ->join('s.races', 'r')
-            ->join('r.raceResults', 'rr')
-            ->join('r.raceResultBets', 'rrb')
-            ->join('r.penaltyPointsAwards', 'ppa')
+            ->leftJoin('s.races', 'r')
+            ->leftJoin('r.raceResults', 'rr')
+            ->leftJoin('r.raceResultBets', 'rrb')
+            ->leftJoin('r.penaltyPointsAwards', 'ppa')
             ->where('s.id = :seasonId')
-            ->andWhere('r.id = :raceId')
-            ->andWhere('rr.race = :race')
-            ->andWhere('rrb.race = :race')
-            ->andWhere('ppa.race = :race')
             ->setParameter('seasonId', $seasonId)
-            ->setParameter('raceId', $race->getId())
-            ->setParameter('race', $race)
             ->addSelect('r')
             ->addSelect('rr')
             ->addSelect('rrb')

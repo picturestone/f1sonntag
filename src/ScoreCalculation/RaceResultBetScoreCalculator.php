@@ -8,12 +8,12 @@ use App\Entity\RaceResultBet;
 class RaceResultBetScoreCalculator
 {
     public function __construct(
-        private ?RaceResult $raceResult = null,
-        private ?RaceResultBet $raceResultBet = null
+        private RaceResultBet $raceResultBet,
+        private ?RaceResult $raceResult = null
     ) {
     }
 
-    public function getRaceResult(): RaceResult
+    public function getRaceResult(): ?RaceResult
     {
         return $this->raceResult;
     }
@@ -41,14 +41,10 @@ class RaceResultBetScoreCalculator
     public function getScore(): ?int {
         $score = null;
         $racePosition = null;
-        $betPosition = null;
+        $betPosition = $this->raceResultBet->getPosition();
 
         if ($this->raceResult) {
             $racePosition = $this->raceResult->getPosition();
-        }
-
-        if ($this->raceResultBet) {
-            $betPosition = $this->raceResultBet->getPosition();
         }
 
         if ($racePosition !== null && $betPosition !== null) {

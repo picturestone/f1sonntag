@@ -89,7 +89,8 @@ class ResultsForUser
         $raceScoreCalculatorsOfUser = $allRaceScoreCalculators->filter(
             function(RaceScoreCalculator $raceScoreCalculator) {
                 return $raceScoreCalculator->getUser()->getId() === $this->user->getId();
-            });
+            }
+        );
 
         return $raceScoreCalculatorsOfUser;
     }

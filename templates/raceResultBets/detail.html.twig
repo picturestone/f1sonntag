@@ -23,17 +23,55 @@
                 {% set rowStyle = '' %}
 
                 {% for raceScoreCalculator in resultsForRace.raceScoreCalculatorsOfRace %}
-                    {# Check if we display rows of a new user or if its still #}
                     {% set user = raceScoreCalculator.user %}
+                    {% set userDisplay %}
+                        <span>{{ user.firstName }} {{ user.lastName }}</span>
+                    {% endset %}
                     {% set wasNameDisplayed = false %}
 
-                    {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
-                        {% set driver = raceResultBetScoreCalculator.raceResult.driver %}
+                    {# Check if the race score a daily winner and style accordingly. #}
+                    {% set bestOfTheRaceScoreShare = raceScoreCalculator.bestOfTheRaceScoreShare %}
+                    {% if bestOfTheRaceScoreShare > 0 %}
+                        {% set specialRowStyle = 'table-success' %}
+                        {% set userDisplay %}
+                            {% set tooltipTitle = bestOfTheRaceScoreShare < 1
+                                ? bestOfTheRaceScoreShare ~ ' Tagessieg-Punkte'
+                                : '1 Tagessieg-Punkt'
+                            %}
+                            <span data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="{{ tooltipTitle }}">
+                                {{ user.firstName }} {{ user.lastName }} <i class="bi bi-info-circle-fill"></i>
+                            </span>
+                        {% endset %}
+                    {% endif %}
 
-                        <tr class="{{ rowStyle }}">
+                    {# Check if the race score is discarded and style accordingly. #}
+                    {% set isScoreDiscarded = raceScoreCalculator.isScoreDiscarded %}
+                    {% if isScoreDiscarded %}
+                        {% set userDisplay %}
+                            <span data-bs-toggle="tooltip"
+                                  data-bs-placement="right"
+                                  title="Streichresultat">
+                                <span class="text-decoration-line-through">
+                                    {{ user.firstName }} {{ user.lastName }}
+                                </span>
+                                <i class="bi bi-info-circle-fill"></i>
+                            </span>
+                        {% endset %}
+                    {% endif %}
+
+                    {% set isBetShown = false %}
+                    {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
+                        {% set isBetShown = true %}
+                        {% set raceResult = raceResultBetScoreCalculator.raceResult|default('') %}
+                        {% set raceResultBet = raceResultBetScoreCalculator.raceResultBet|default('') %}
+                        {% set driver = raceResultBet.driver %}
+
+                        <tr class="{{ specialRowStyle|default(rowStyle) }}">
                             <td>
                                 {% if loop.first %}
-                                    <span>{{ user.firstName }} {{ user.lastName }}</span>
+                                    {{ userDisplay|raw }}
                                     {% set wasNameDisplayed = true %}
                                 {% endif %}
                             </td>
@@ -44,23 +82,25 @@
                                 <span>{{ driver.team.name|default('-') }}</span>
                             </td>
                             <td class="text-end">
-                                <span>{{ raceResultBetScoreCalculator.raceResultBet.position }}</span>
+                                <span>{{ raceResultBet.position }}</span>
                             </td>
                             <td class="text-end">
-                                <span>{{ raceResultBetScoreCalculator.raceResult.position }}</span>
+                                <span>{{ raceResult.position|default('-') }}</span>
                             </td>
                             <td class="text-end">
-                                <span>{{ raceResultBetScoreCalculator.score }}</span>
+                                <span>{{ raceResultBetScoreCalculator.score|default('-') }}</span>
                             </td>
                         </tr>
                     {% endfor %}
 
-                    {% set penaltyPointsAward = raceScoreCalculator.penaltyPointsAwardOfUser %}
-                    {% if penaltyPointsAward.penaltyPoints|default('') %}
-                        <tr class="{{ rowStyle }}">
+                    {% set isPenaltyPointsAwardShow = false %}
+                    {% set penaltyPointsAward = raceScoreCalculator.penaltyPointsAward %}
+                    {% if penaltyPointsAward.penaltyPoints is defined %}
+                        {% set isPenaltyPointsAwardShow = true %}
+                        <tr class="{{ specialRowStyle|default(rowStyle) }}">
                             <td>
                                 {% if wasNameDisplayed == false %}
-                                    <span>{{ user.firstName }} {{ user.lastName }}</span>
+                                    {{ userDisplay|raw }}
                                     {% set wasNameDisplayed = true %}
                                 {% endif %}
                             </td>
@@ -73,11 +113,11 @@
                         </tr>
                     {% endif %}
 
-                    {% if raceScoreCalculator.score is not null %}
-                        <tr class="{{ rowStyle }} border-bottom border-dark">
+                    {% if isBetShown or isPenaltyPointsAwardShow %}
+                        <tr class="{{ specialRowStyle|default(rowStyle) }} border-bottom border-dark">
                             <td>
                                 {% if wasNameDisplayed == false %}
-                                    <span>{{ user.firstName }} {{ user.lastName }}</span>
+                                    {{ userDisplay|raw }}
                                     {% set wasNameDisplayed = true %}
                                 {% endif %}
                             </td>
@@ -85,7 +125,7 @@
                                 <b>Summe</b>
                             </td>
                             <td class="text-end border-top border-dark">
-                                <span>{{ raceScoreCalculator.score }}</span>
+                                <span>{{ raceScoreCalculator.score|default('-') }}</span>
                             </td>
                         </tr>
                     {% endif %}
