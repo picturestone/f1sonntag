@@ -24,42 +24,44 @@
 
                 {% for raceScoreCalculator in resultsForRace.raceScoreCalculatorsOfRace %}
                     {% set user = raceScoreCalculator.user %}
-                    {% set userDisplay %}
-                        <span>{{ user.firstName }} {{ user.lastName }}</span>
-                    {% endset %}
+                    {% set usernameClasses = '' %}
                     {% set wasNameDisplayed = false %}
 
                     {# Check if the race score a daily winner and style accordingly. #}
                     {% set bestOfTheRaceScoreShare = raceScoreCalculator.bestOfTheRaceScoreShare %}
+                    {% set bestOfTheRaceTooltip = '' %}
                     {% if bestOfTheRaceScoreShare > 0 %}
                         {% set specialRowStyle = 'table-success' %}
-                        {% set userDisplay %}
+                        {% set bestOfTheRaceTooltip %}
                             {% set tooltipTitle = bestOfTheRaceScoreShare < 1
                                 ? bestOfTheRaceScoreShare ~ ' Tagessieg-Punkte'
                                 : '1 Tagessieg-Punkt'
                             %}
-                            <span data-bs-toggle="tooltip"
-                                  data-bs-placement="right"
-                                  title="{{ tooltipTitle }}">
-                                {{ user.firstName }} {{ user.lastName }} <i class="bi bi-info-circle-fill"></i>
-                            </span>
+                            <i class="bi bi-info-circle-fill"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="{{ tooltipTitle }}"></i>
                         {% endset %}
                     {% endif %}
 
                     {# Check if the race score is discarded and style accordingly. #}
                     {% set isScoreDiscarded = raceScoreCalculator.isScoreDiscarded %}
+                    {% set isScoreDiscardedTooltip = '' %}
                     {% if isScoreDiscarded %}
-                        {% set userDisplay %}
-                            <span data-bs-toggle="tooltip"
-                                  data-bs-placement="right"
-                                  title="Streichresultat">
-                                <span class="text-decoration-line-through">
-                                    {{ user.firstName }} {{ user.lastName }}
-                                </span>
-                                <i class="bi bi-info-circle-fill"></i>
-                            </span>
+                        {% set usernameClasses = 'text-decoration-line-through' %}
+                        {% set isScoreDiscardedTooltip %}
+                            <i class="bi bi-info-circle-fill"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="right"
+                               title="Streichresultat"></i>
                         {% endset %}
                     {% endif %}
+
+                    {% set userDisplay %}
+                        <span class="{{ usernameClasses }}">{{ user.firstName }} {{ user.lastName }}</span>
+                        {{ bestOfTheRaceTooltip|raw }}
+                        {{ isScoreDiscardedTooltip|raw }}
+                    {% endset %}
 
                     {% set isBetShown = false %}
                     {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
