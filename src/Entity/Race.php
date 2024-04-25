@@ -22,12 +22,6 @@ class Race
     #[ORM\Column(length: 255)]
     private ?string $place = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $startDate = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $startTime = null;
-
     /**
      * @var Collection<int, RaceResult>
      */
@@ -49,6 +43,9 @@ class Race
     #[ORM\ManyToOne(inversedBy: 'races')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Season $season = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $startDateTime = null;
 
     public function __construct()
     {
@@ -88,24 +85,30 @@ class Race
 
     public function getStartDate(): ?\DateTimeInterface
     {
-        return $this->startDate;
+        $format = 'Y-m-d';
+        $date = $this->startDateTime->format($format);
+        return \DateTimeImmutable::createFromFormat($format, $date);
     }
 
     public function setStartDate(\DateTimeInterface $startDate): static
     {
-        $this->startDate = $startDate;
+        $format = 'Y-m-d';
+        $this->startDateTime = $this->startDateTime->modify($startDate->format($format));
 
         return $this;
     }
 
     public function getStartTime(): ?\DateTimeInterface
     {
-        return $this->startTime;
+        $format = 'H:i:s';
+        $date = $this->startDateTime->format($format);
+        return \DateTimeImmutable::createFromFormat($format, $date);
     }
 
     public function setStartTime(\DateTimeInterface $startTime): static
     {
-        $this->startTime = $startTime;
+        $format = 'H:i:s';
+        $this->startDateTime = $this->startDateTime->modify($startTime->format($format));
 
         return $this;
     }
@@ -208,6 +211,18 @@ class Race
     public function setSeason(?Season $season): static
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getStartDateTime(): ?\DateTimeImmutable
+    {
+        return $this->startDateTime;
+    }
+
+    public function setStartDateTime(\DateTimeImmutable $startDateTime): static
+    {
+        $this->startDateTime = $startDateTime;
 
         return $this;
     }

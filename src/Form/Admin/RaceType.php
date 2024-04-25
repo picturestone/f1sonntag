@@ -4,7 +4,10 @@ namespace App\Form\Admin;
 
 use App\Entity\Race;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,10 +18,10 @@ class RaceType extends AbstractType
         $builder
             ->add('name')
             ->add('place')
-            ->add('startDate', null, [
+            ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('startTime', null, [
+            ->add('startTime', TimeType::class, [
                 'widget' => 'single_text',
             ])
             ->add('submit', SubmitType::class, [

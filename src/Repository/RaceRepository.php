@@ -43,8 +43,7 @@ class RaceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->where('r.season = :season')
             ->setParameter('season', $season)
-            ->addOrderBy('r.startDate', 'ASC')
-            ->addOrderBy('r.startTime', 'ASC')
+            ->addOrderBy('r.startDateTime', 'ASC')
             ->getQuery()
             ->getResult()
             ;
