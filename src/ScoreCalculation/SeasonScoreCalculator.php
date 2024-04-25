@@ -66,8 +66,9 @@ class SeasonScoreCalculator
 
         foreach ($this->users as $user) {
             // Filter for race score calculators of user.
+            $raceScoreCalculators = &$this->raceScoreCalculators;
             /** @var Collection<int, RaceScoreCalculator) $raceScoreCalculatorsOfUser */
-            $raceScoreCalculatorsOfUser = $this->raceScoreCalculators->filter(
+            $raceScoreCalculatorsOfUser = $raceScoreCalculators->filter(
                 function(RaceScoreCalculator $raceScoreCalculator) use ($user) {
                     return $raceScoreCalculator->getUser()->getId() === $user->getId();
                 }
@@ -77,7 +78,7 @@ class SeasonScoreCalculator
             if ($raceScoreCalculatorsOfUser->count() > 0) {
                 // TODO something now isnt quite right with $raceScoreCalculatorsOfUser - if i take the filtering out
                 // of the ResultsForUser i dont have scores anymore on http://localhost:8000/user-result-bets, but still
-                // on http://localhost:8000/race-result-bets/3. 
+                // on http://localhost:8000/race-result-bets/3.
                 $this->resultsForUsers->set($user->getId(), new ResultsForUser(
                     $user,
                     $raceScoreCalculatorsOfUser

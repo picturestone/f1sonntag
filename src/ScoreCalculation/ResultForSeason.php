@@ -85,15 +85,15 @@ class ResultForSeason
                 ? $this->totalPenaltyPoints + $penaltyPoints
                 : $this->totalPenaltyPoints;
 
-            // Add up total score.
-            $score = $raceScoreCalculator->getScore();
-            $this->totalScore = $score !== null
-                ? $this->totalScore + $score
-                : $this->totalScore;
-
-            // Add race calculator to discarded results if it is a discarded result.
             if ($raceScoreCalculator->isScoreDiscarded()) {
+                // If the race result is discarded, add it to the discarded results.
                 $this->discardedResults->add($raceScoreCalculator);
+            } else {
+                // If the race result is not discarded, add the total score up.
+                $score = $raceScoreCalculator->getScore();
+                $this->totalScore = $score !== null
+                    ? $this->totalScore + $score
+                    : $this->totalScore;
             }
         }
     }

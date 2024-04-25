@@ -21,11 +21,11 @@ class ResultsForUser
 
     public function __construct(
         private User $user,
-        /** @var Collection<int, RaceScoreCalculator> $allRaceScoreCalculators */
-        Collection &$allRaceScoreCalculators
+        /** @var Collection<int, RaceScoreCalculator> $raceScoreCalculatorsOfUser */
+        Collection &$raceScoreCalculatorsOfUser
     ) {
         $this->raceScoreCalculatorsOfUser = new ArrayCollection();
-        $this->updateRaceScoreCalculatorsDiscardData($allRaceScoreCalculators);
+        $this->updateRaceScoreCalculatorsDiscardData($raceScoreCalculatorsOfUser);
         // TODO make private variables and set their values in constructor, like with ResultsForRace.
         // THis entity is for user details. Similiar to race.
     }
@@ -41,17 +41,11 @@ class ResultsForUser
     }
 
     /**
-     * @param Collection<int, RaceScoreCalculator> $allRaceScoreCalculators
+     * @param Collection<int, RaceScoreCalculator> $raceScoreCalculatorsOfUser
      * @return void
      */
-    private function updateRaceScoreCalculatorsDiscardData(Collection &$allRaceScoreCalculators): void {
-        // Filter all race score calculators
-        $this->raceScoreCalculatorsOfUser = $this->filterRaceScoreCalculatorsByUser($allRaceScoreCalculators);
-
-        // TODO at this point the object was already created, this should be checked before the constructor.
-        if ($this->raceScoreCalculatorsOfUser->count() === 0) {
-            return;
-        }
+    private function updateRaceScoreCalculatorsDiscardData(Collection &$raceScoreCalculatorsOfUser): void {
+        $this->raceScoreCalculatorsOfUser = $raceScoreCalculatorsOfUser;
 
         // Find the discarded race score calculators from the users race score calculators..
         /** @var Collection<int, RaceScoreCalculator> $scoreSortedRaceScoreCalculators */

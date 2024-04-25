@@ -4,7 +4,7 @@
 <div class="container-xl">
     <h1>Rangliste - {{ season.name }}</h1>
 
-    <p>Rangliste die Saison "{{ season.name }}"</p>
+    <p>Rangliste für die Saison "{{ season.name }}"</p>
 
     <div class="table-responsive">
         <table class="table table-hover table-sm align-middle">
@@ -49,9 +49,9 @@
                         {% endfor %}
 
                         {# Add empty tds up to maxNoOfDiscardedResults so all users have the same number of tds for discarded results. #}
-                        {% set noOfMissingDiscardedResults = resultForSeason.discardedResults|length - maxNoOfDiscardedResults %}
+                        {% set noOfMissingDiscardedResults = maxNoOfDiscardedResults - resultForSeason.discardedResults|length  %}
                         {% for i in range(0, maxNoOfDiscardedResults)|slice(0, noOfMissingDiscardedResults) %}
-                            <td>-</td>
+                            <td class="text-end">-</td>
                         {% endfor %}
 
                         <td class="text-end">
