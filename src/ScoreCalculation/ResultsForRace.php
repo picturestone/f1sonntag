@@ -6,6 +6,10 @@ use App\Entity\Race;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * Represents the betting that happend for a single race - so all users of one race for one season are considered here.
+ * This is allows finding out who had the best scores of a race.
+ */
 class ResultsForRace
 {
     /** @var Collection<int, RaceScoreCalculator> $raceScoreCalculatorsOfRace */

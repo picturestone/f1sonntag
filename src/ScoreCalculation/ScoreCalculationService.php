@@ -10,6 +10,15 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * This is the interface provided to the outside regardings core calculation. It provides methods to get scores for
+ * various situations:
+ * - for a race and how well all the users did in the race
+ * - for a user and how well they did in all the individual races
+ * - for an overview of how well every user did in the season
+ *
+ * To provide that, the calculation service grabs the data it needs from the database.
+ */
 class ScoreCalculationService
 {
     public function __construct(
@@ -21,10 +30,7 @@ class ScoreCalculationService
 
     public function getResultsForRace(Race $race): ResultsForRace
     {
-        $seasonToScore = $this->seasonRepository->findSeasonWithDataForScores($this->season->getId());
-        /** @var Collection<int, User> $users */
-        $users = new ArrayCollection($this->userRepository->findAll());
-        $calculator = new SeasonScoreCalculator($seasonToScore, $users);
+        $calculator = $this->createSeasonScoreCalculator();
 
         return $calculator->getResultsForRace($race);
     }
@@ -33,7 +39,21 @@ class ScoreCalculationService
 
     }
 
-    public function getResultsForSeason() {
+    /**
+     * @return Collection<int, ResultForSeason>
+     */
+    public function getResultsForSeason(): Collection {
+        $calculator = $this->createSeasonScoreCalculator();
 
+        return $calculator->getResultsForSeason();
+    }
+
+    private function createSeasonScoreCalculator(): SeasonScoreCalculator {
+        $seasonToScore = $this->seasonRepository->findSeasonWithDataForScores($this->season->getId());
+        /** @var Collection<int, User> $users */
+        $users = new ArrayCollection($this->userRepository->findAll());
+        $calculator = new SeasonScoreCalculator($seasonToScore, $users);
+
+        return $calculator;
     }
 }

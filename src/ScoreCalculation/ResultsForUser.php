@@ -6,6 +6,11 @@ use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * Represents the betting that happend for a single user - so all race of one user for one season are considered here.
+ * This is allows finding out which results were the worst for a single user - and marking them as scores which are
+ * to be discarded in the season overview.
+ */
 class ResultsForUser
 {
     // TODO consider making this configurable in yaml.
@@ -21,6 +26,8 @@ class ResultsForUser
     ) {
         $this->raceScoreCalculatorsOfUser = new ArrayCollection();
         $this->updateRaceScoreCalculatorsDiscardData($allRaceScoreCalculators);
+        // TODO make private variables and set their values in constructor, like with ResultsForRace.
+        // THis entity is for user details. Similiar to race.
     }
 
     public function getRaceScoreCalculatorsOfUser(): Collection
@@ -41,6 +48,7 @@ class ResultsForUser
         // Filter all race score calculators
         $this->raceScoreCalculatorsOfUser = $this->filterRaceScoreCalculatorsByUser($allRaceScoreCalculators);
 
+        // TODO at this point the object was already created, this should be checked before the constructor.
         if ($this->raceScoreCalculatorsOfUser->count() === 0) {
             return;
         }
