@@ -5,6 +5,11 @@ namespace App\ScoreCalculation;
 use App\Entity\RaceResult;
 use App\Entity\RaceResultBet;
 
+/**
+ * Represents a single bet for a race for a user. This class looks at what position a specific driver should be in
+ * according to the users bet, and what position the driver really got in the race. With this info, the difference in
+ * positions between the bet result and the real result is calculated.
+ */
 class RaceResultBetScoreCalculator
 {
     public function __construct(

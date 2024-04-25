@@ -96,8 +96,8 @@
                     {% endfor %}
 
                     {% set isPenaltyPointsAwardShow = false %}
-                    {% set penaltyPointsAward = raceScoreCalculator.penaltyPointsAward %}
-                    {% if penaltyPointsAward.penaltyPoints is defined %}
+                    {% set penaltyPoints = raceScoreCalculator.penaltyPoints %}
+                    {% if penaltyPoints is not null %}
                         {% set isPenaltyPointsAwardShow = true %}
                         <tr class="{{ specialRowStyle|default(rowStyle) }}">
                             <td>
@@ -110,7 +110,7 @@
                                 <span>Strafpunkte</span>
                             </td>
                             <td class="text-end">
-                                <span>{{ penaltyPointsAward.penaltyPoints }}</span>
+                                <span>{{ penaltyPoints }}</span>
                             </td>
                         </tr>
                     {% endif %}

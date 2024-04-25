@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
     <div class="container-xl">
-        <a class="navbar-brand" href="#">F1Sonntag</a>
+        <a class="navbar-brand" href="#">F1Sonntag - Administration</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -46,7 +46,7 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownSettings">
                         <li><a class="dropdown-item" href="#">Passwort ändern</a></li>
                         {% if app.user is defined and ROLE['USER'] in app.user.roles %}
-                            <li><a class="dropdown-item" href="{{ path('app_race_result_bets_list') }}">User-Modus</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_user_result_bets_list') }}">User-Modus</a></li>
                         {% endif %}
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>

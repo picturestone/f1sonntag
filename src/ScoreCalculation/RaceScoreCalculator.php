@@ -10,6 +10,14 @@ use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * Represents the betting data for a single race for a single user. This class stores if the betting went bad for the
+ * user and should be discarded, and it keeps track of how many "best of the race" points this race was worth for a
+ * user. Also, it keeps track of the penalty points a user got for this race.
+ *
+ * There is 1 "best of the race" per race which goes to the user who had the best betting score in that race. If there
+ * are multiple users which share an equally good score the point is split up between those users.
+ */
 class RaceScoreCalculator
 {
     /**
@@ -17,17 +25,19 @@ class RaceScoreCalculator
      */
     private Collection $raceResultBetScoreCalculators;
     private ?int $score;
+    private ?int $scoreWithoutPenaltyPoints;
     private ?PenaltyPointsAward $penaltyPointsAward;
 
     public function __construct(
         private Race $race,
         private User $user,
         private bool $isScoreDiscarded = false,
-        private float $bestOfTheRaceScoreShare = 0
+        private ?float $bestOfTheRaceScoreShare = null
     ) {
         $this->raceResultBetScoreCalculators = new ArrayCollection();
         $this->generateRaceResultBetScoreCalculators();
         $this->penaltyPointsAward = $this->findPenaltyPointsAwardOfUser();
+        $this->scoreWithoutPenaltyPoints = $this->calculateScoreWithoutPenaltyPoints();
         $this->score = $this->calculateScore();
     }
 
@@ -41,7 +51,7 @@ class RaceScoreCalculator
         return $this->user;
     }
 
-    public function getIsScoreDiscarded(): bool
+    public function isScoreDiscarded(): bool
     {
         return $this->isScoreDiscarded;
     }
@@ -51,12 +61,12 @@ class RaceScoreCalculator
         $this->isScoreDiscarded = $isScoreDiscarded;
     }
 
-    public function getBestOfTheRaceScoreShare(): float
+    public function getBestOfTheRaceScoreShare(): ?float
     {
         return $this->bestOfTheRaceScoreShare;
     }
 
-    public function setBestOfTheRaceScoreShare(float $bestOfTheRaceScoreShare): void
+    public function setBestOfTheRaceScoreShare(?float $bestOfTheRaceScoreShare): void
     {
         $this->bestOfTheRaceScoreShare = $bestOfTheRaceScoreShare;
     }
@@ -76,7 +86,7 @@ class RaceScoreCalculator
         foreach ($raceResultBetsOfUser as $raceResultBet) {
             $raceResult = $this->getRaceResultForRaceResultBet($raceResultBet);
             $raceResultBetScoreCalculator = new RaceResultBetScoreCalculator($raceResultBet, $raceResult);
-            $this->raceResultBetScoreCalculators[] = $raceResultBetScoreCalculator;
+            $this->raceResultBetScoreCalculators->add($raceResultBetScoreCalculator);
         }
     }
 
@@ -119,11 +129,15 @@ class RaceScoreCalculator
         return $penaltyPointsAwardsOfUser->count() > 0 ? $penaltyPointsAwardsOfUser->first() : null;
     }
 
-    public function getScore(): ?int {
-        return $this->score;
+    public function getPenaltyPoints(): ?int {
+        return $this->penaltyPointsAward ? $this->penaltyPointsAward->getPenaltyPoints() : null;
     }
 
-    private function calculateScore(): ?int {
+    public function getScoreWithoutPenaltyPoints(): ?int {
+        return $this->scoreWithoutPenaltyPoints;
+    }
+
+    private function calculateScoreWithoutPenaltyPoints(): ?int {
         $score = null;
 
         // Add all scores from race result bets.
@@ -135,15 +149,23 @@ class RaceScoreCalculator
             }
         }
 
-        // Add penalty points if they exist.
-        $penaltyPointsAward = $this->getPenaltyPointsAward();
-        if ($penaltyPointsAward) {
-            $penaltyPoints = $penaltyPointsAward->getPenaltyPoints();
+        return $score;
+    }
 
-            if ($penaltyPoints !== null) {
-                $score = $score + $penaltyPoints;
-            }
-        }
+    public function getScore(): ?int {
+        return $this->score;
+    }
+
+    private function calculateScore(): ?int {
+        $score = null;
+
+        // Add all scores from race result bets.
+        $scoreWithoutPenaltyPoints = $this->getScoreWithoutPenaltyPoints();
+        $score = $scoreWithoutPenaltyPoints !== null ? $score + $scoreWithoutPenaltyPoints : $score;
+
+        // Add penalty points if they exist.
+        $penaltyPoints = $this->getPenaltyPoints();
+        $score = $penaltyPoints !== null ? $score + $penaltyPoints : $score;
 
         return $score;
     }

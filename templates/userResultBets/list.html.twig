@@ -1,0 +1,70 @@
+{% extends 'userbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Rangliste - {{ season.name }}</h1>
+
+    <p>Rangliste für die Saison "{{ season.name }}"</p>
+
+    {% if resultsForSeason|length == 0 %}
+        <div>In dieser Saison liegen noch keine Ergebnisse vor.</div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th class="text-end" scope="col">Tagessiege</th>
+                    <th class="text-end" scope="col">Punkte</th>
+                    <th class="text-end" scope="col">Strafpunkte</th>
+                    {% set maxNoOfDiscardedResults = max(resultsForSeason|map(res => res.discardedResults|default([])|length)) %}
+                    <th class="text-end" scope="col" colspan="{{ maxNoOfDiscardedResults }}">Streichresultate</th>
+                    <th class="text-end" scope="col">Gesamtpunkte</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for resultForSeason in resultsForSeason %}
+                    <tr>
+                        <th scope="row">
+                            <span>{{ loop.index }}</span>
+                        </th>
+                        <td>
+                            {% set user = resultForSeason.user %}
+                            <span>{{ user.firstName }} {{ user.lastName }}</span>
+                        </td>
+                        <td class="text-end">
+                            <span>{{ resultForSeason.totalBestOfTheRaceScore|default('-') }}</span>
+                        </td>
+                        <td class="text-end">
+                            <span>{{ resultForSeason.totalScoreWithoutPenaltyPoints|default('-') }}</span>
+                        </td>
+                        <td class="text-end">
+                            <span>{{ resultForSeason.totalPenaltyPoints|default('-') }}</span>
+                        </td>
+
+                        {# Show discarded results. #}
+                        {% for discardedResult in resultForSeason.discardedResults|default([]) %}
+                            <td class="text-end">
+                                <span>{{ discardedResult.score|default('-') }}</span>
+                            </td>
+                        {% endfor %}
+
+                        {# Add empty tds up to maxNoOfDiscardedResults so all users have the same number of tds for discarded results. #}
+                        {% set noOfMissingDiscardedResults = maxNoOfDiscardedResults - resultForSeason.discardedResults|length  %}
+                        {% for i in range(0, maxNoOfDiscardedResults)|slice(0, noOfMissingDiscardedResults) %}
+                            <td class="text-end">-</td>
+                        {% endfor %}
+
+                        <td class="text-end">
+                            <span>{{ resultForSeason.totalScore|default('-') }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
