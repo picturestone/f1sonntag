@@ -18,10 +18,10 @@ class ResultsForRace
     public function __construct(
         private Race $race,
         /** @var Collection<int, RaceScoreCalculator> $allRaceScoreCalculators */
-        Collection &$allRaceScoreCalculators
+        Collection &$raceScoreCalculatorsOfRace
     ) {
         $this->raceScoreCalculatorsOfRace = new ArrayCollection();
-        $this->updateRaceScoreCalculatorsDailyWinScoreData($allRaceScoreCalculators);
+        $this->updateRaceScoreCalculatorsDailyWinScoreData($raceScoreCalculatorsOfRace);
     }
 
     public function getRaceScoreCalculatorsOfRace(): Collection
@@ -35,16 +35,11 @@ class ResultsForRace
     }
 
     /**
-     * @param Collection<int, RaceScoreCalculator> $allRaceScoreCalculators
+     * @param Collection<int, RaceScoreCalculator> $raceScoreCalculatorsOfRace
      * @return void
      */
-    private function updateRaceScoreCalculatorsDailyWinScoreData(Collection &$allRaceScoreCalculators): void {
-        // Filter all race score calculators
-        $this->raceScoreCalculatorsOfRace = $this->filterRaceScoreCalculatorsByRace($allRaceScoreCalculators);
-
-        if ($this->raceScoreCalculatorsOfRace->count() === 0) {
-            return;
-        }
+    private function updateRaceScoreCalculatorsDailyWinScoreData(Collection &$raceScoreCalculatorsOfRace): void {
+        $this->raceScoreCalculatorsOfRace = $raceScoreCalculatorsOfRace;
 
         // Order the race score calculators of this race so we can find the lowest score.
         /** @var Collection<int, RaceScoreCalculator> $scoreSortedRaceScoreCalculators */
@@ -84,22 +79,6 @@ class ResultsForRace
                 $raceScoreCalculatorWithBestScore->setBestOfTheRaceScoreShare($scoreForDailyWin);
             }
         }
-    }
-
-    /**
-     * @param Collection<int, RaceScoreCalculator> $allRaceScoreCalculators
-     * @return Collection<int, RaceScoreCalculator>
-     */
-    private function filterRaceScoreCalculatorsByRace(Collection &$allRaceScoreCalculators): Collection
-    {
-        /** @var Collection<int, RaceScoreCalculator> $raceScoreCalculatorsOfRace */
-        $raceScoreCalculatorsOfRace = $allRaceScoreCalculators->filter(
-            function(RaceScoreCalculator $raceScoreCalculator) {
-                return $raceScoreCalculator->getRace()->getId() === $this->race->getId();
-            }
-        );
-
-        return $raceScoreCalculatorsOfRace;
     }
 
     /**

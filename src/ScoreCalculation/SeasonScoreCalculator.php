@@ -45,7 +45,7 @@ class SeasonScoreCalculator
         return $this->season;
     }
 
-    public function getResultsForUser(User $user): ResultsForRace
+    public function getResultsForUser(User $user): ResultsForUser
     {
         return $this->resultsForUsers->get($user->getId());
     }
@@ -87,14 +87,23 @@ class SeasonScoreCalculator
     private function updateResultsForRaces(): void {
         $this->resultsForRaces->clear();
 
-        // TODO Only add ResultsForUser if the race has raceScoreCalculators? Same as with updateResultsForUsers.
-        // Also remove the filtering for the race then in the ResultsForRace, just like in ResultsForUser.
-
         foreach ($this->season->getRaces() as $race) {
-            $this->resultsForRaces->set($race->getId(), new ResultsForRace(
-                $race,
-                $this->raceScoreCalculators
-            ));
+            // Filter for race score calculators of race.
+            $raceScoreCalculators = &$this->raceScoreCalculators;
+            /** @var Collection<int, RaceScoreCalculator) $raceScoreCalculatorsOfRace */
+            $raceScoreCalculatorsOfRace = $raceScoreCalculators->filter(
+                function(RaceScoreCalculator $raceScoreCalculator) use ($race) {
+                    return $raceScoreCalculator->getRace()->getId() === $race->getId();
+                }
+            );
+
+            // Only add ResultsForRace if the race has raceScoreCalculators.
+            if ($raceScoreCalculatorsOfRace->count() > 0) {
+                $this->resultsForRaces->set($race->getId(), new ResultsForRace(
+                    $race,
+                    $raceScoreCalculatorsOfRace
+                ));
+            }
         }
     }
 
@@ -122,11 +131,11 @@ class SeasonScoreCalculator
                 if ($bestOfTheRaceScoreA == $bestOfTheRaceScoreB) return 0;
 
                 // The one with more "best of the race" score is better.
-                return ($bestOfTheRaceScoreA < $bestOfTheRaceScoreB) ? -1 : 1;
+                return ($bestOfTheRaceScoreA > $bestOfTheRaceScoreB) ? -1 : 1;
             }
 
             // Ihe one with less score is better.
-            return ($scoreA > $scoreB) ? -1 : 1;
+            return ($scoreA < $scoreB) ? -1 : 1;
         });
         $this->resultsForSeason = new ArrayCollection(iterator_to_array($iterator));
 
