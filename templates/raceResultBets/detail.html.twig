@@ -23,6 +23,7 @@
                 {% set rowStyle = '' %}
 
                 {% for raceScoreCalculator in resultsForRace.raceScoreCalculatorsOfRace %}
+                    {% set specialRowStyle = '' %}
                     {% set user = raceScoreCalculator.user %}
                     {% set usernameClasses = '' %}
                     {% set wasNameDisplayed = false %}

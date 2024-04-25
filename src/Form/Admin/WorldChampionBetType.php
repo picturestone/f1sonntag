@@ -19,15 +19,19 @@ class WorldChampionBetType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $activeDrivers = $this->driverRepository->findBy(['isActive' => true]);
+
         $options =  [
             'class' => Driver::class,
-            'choice_label' => 'name',
+            'choices' => $activeDrivers,
+            'choice_label' => function (Driver $driver): string {
+                return $driver->getFirstName() . ' ' . $driver->getLastName();
+            }
         ];
-
-        $activeDrivers = $this->driverRepository->findBy(['isActive' => true]);
-        if ($activeDrivers) {
-            $options['data'] = $activeDrivers[0];
-        }
+//
+//        if ($activeDrivers) {
+//            $options['data'] = $activeDrivers[0];
+//        }
 
         $builder
             ->add('driverId', EntityType::class, $options)

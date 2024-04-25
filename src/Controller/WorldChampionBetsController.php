@@ -8,6 +8,8 @@ use App\Entity\User;
 use App\Entity\WorldChampionBet;
 use App\Form\Admin\SeasonActiveType;
 use App\Form\Admin\SeasonType;
+use App\Form\Admin\WorldChampionBetType;
+use App\Repository\DriverRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\WorldChampionBetRepository;
 use App\Service\ToastFactory;
@@ -25,6 +27,7 @@ class WorldChampionBetsController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly SeasonRepository $seasonRepository,
+        private readonly DriverRepository $driverRepository,
         private readonly WorldChampionBetRepository $worldChampionBetRepository
     ) {
     }
@@ -55,24 +58,65 @@ class WorldChampionBetsController extends AbstractController
     }
 
     #[Route('/world-champion-bets/edit', name: 'app_world_champion_bets_edit', methods: ['GET', 'POST'])]
-    public function editActiveSeason(Request $request): Response
+    public function edit(Request $request): Response
     {
-        $form = $this->createForm(SeasonActiveType::class, null, [
-            'action' => $this->generateUrl('app_world_champion_bets_list'),
+        $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
+
+        if (!$activeSeasons) {
+            return $this->render('worldChampionBets/createSeason.html.twig');
+        }
+
+        $season = $activeSeasons[0];
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        if (!$user) {
+            return throw $this->createAccessDeniedException('Must be logged in for this operation');
+        }
+
+        $worldChampionBet = $this->worldChampionBetRepository->findOneBy([
+            'season' => $season,
+            'user' => $user
+        ]);
+
+        $data = null;
+        if ($worldChampionBet !== null) {
+            $data = [
+                'driverId' => $worldChampionBet->getDriver()
+            ];
+        }
+
+        $form = $this->createForm(WorldChampionBetType::class, $data, [
+            'action' => $this->generateUrl('app_world_champion_bets_edit'),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $formValues = $request->request->all();
-            $id = $formValues['season_active']['activeSeasonId'];
-            $this->setSeasonToActive($id);
-            $this->entityManager->flush();
-            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateCustomSuccessToast('Aktive Saison geändert'));
+            $driverId = $formValues['world_champion_bet']['driverId'];
 
-            return $this->redirectToRoute('app_admin_seasons_list');
+            $driver = $this->driverRepository->find($driverId);
+            if (!$driver) {
+                return throw $this->createNotFoundException('This driver does not exist');
+            }
+
+            if ($worldChampionBet) {
+                $worldChampionBet->setDriver($driver);
+            } else {
+                $worldChampionBet = new WorldChampionBet();
+                $worldChampionBet->setDriver($driver);
+                $worldChampionBet->setUser($user);
+                $worldChampionBet->setSeason($season);
+            }
+
+            $this->entityManager->persist($worldChampionBet);
+            $this->entityManager->flush();
+            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
+
+            return $this->redirectToRoute('app_world_champion_bets_list');
         }
 
-        return $this->render('admin/seasons/editActiveSeason.html.twig', [
+        return $this->render('worldChampionBets/edit.html.twig', [
             'form' => $form,
         ]);
     }
