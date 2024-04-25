@@ -121,6 +121,7 @@ class WorldChampionBetsController extends AbstractController
         ]);
     }
 
+    // TODO implement.
     private function isBettingPossible(Race $race, User $user): bool {
         $isBettingPossible = true;
 
