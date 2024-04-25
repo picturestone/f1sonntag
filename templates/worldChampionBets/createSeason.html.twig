@@ -1,0 +1,20 @@
+{% extends 'userbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Weltmeister-Tipps</h1>
+
+    {% set isUserAdmin = false %}
+    {% if app.user is defined and ROLE['ADMIN'] in app.user.roles %}
+        {% set isUserAdmin = true %}
+    {% endif %}
+
+    <div>
+        {% if isUserAdmin %}
+            Damit Weltmeister-Tipps eingetragen werden können muss zuerst eine Saison erstellt (oder eine existierende aktiviert) werden. Erledige das <a href="{{ path('app_admin_seasons_list') }}">hier</a>.
+        {% else %}
+            Damit Weltmeister-Tipps eingetragen werden können muss ein Administrator zuerst eine Saison erstellen. Wende Dich diesbezüglich an einen Administrator.
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
