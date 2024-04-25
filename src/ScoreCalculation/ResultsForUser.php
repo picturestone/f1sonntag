@@ -80,20 +80,4 @@ class ResultsForUser
             }
         }
     }
-
-    /**
-     * @param Collection<int, RaceScoreCalculator) $allRaceScoreCalculators
-     * @return Collection<int, RaceScoreCalculator)
-     */
-    private function filterRaceScoreCalculatorsByUser(Collection &$allRaceScoreCalculators): Collection
-    {
-        /** @var Collection<int, RaceScoreCalculator) $raceScoreCalculatorsOfUser */
-        $raceScoreCalculatorsOfUser = $allRaceScoreCalculators->filter(
-            function(RaceScoreCalculator $raceScoreCalculator) {
-                return $raceScoreCalculator->getUser()->getId() === $this->user->getId();
-            }
-        );
-
-        return $raceScoreCalculatorsOfUser;
-    }
 }
