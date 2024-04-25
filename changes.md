@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added user result details. [#24]
 -   Added user result overview. [#23]
 -   Added point calculation. [#22]
 -   Added race result bets. [#21]

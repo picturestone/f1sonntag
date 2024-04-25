@@ -26,8 +26,6 @@ class ResultsForUser
     ) {
         $this->raceScoreCalculatorsOfUser = new ArrayCollection();
         $this->updateRaceScoreCalculatorsDiscardData($raceScoreCalculatorsOfUser);
-        // TODO make private variables and set their values in constructor, like with ResultsForRace.
-        // THis entity is for user details. Similiar to race.
     }
 
     public function getRaceScoreCalculatorsOfUser(): Collection

@@ -35,8 +35,10 @@ class ScoreCalculationService
         return $calculator->getResultsForRace($race);
     }
 
-    public function getResultsForUser(User $user) {
+    public function getResultsForUser(User $user): ResultsForUser {
+        $calculator = $this->createSeasonScoreCalculator();
 
+        return $calculator->getResultsForUser($user);
     }
 
     /**

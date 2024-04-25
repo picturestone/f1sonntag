@@ -2,15 +2,15 @@
 
 {% block body %}
 <div class="container-xl">
-    <h1>Tipps - {{ race.name}} - {{ season.name }}</h1>
+    <h1>Tipps von {{ user.firstName }} {{ user.lastName}} - {{ season.name }}</h1>
 
-    <p>Tipps für {{ race.name}} - {{ season.name }}</p>
+    <p>Tipps von {{ user.firstName }} {{ user.lastName}} - {{ season.name }}</p>
 
     <div class="table-responsive">
         <table class="table table-sm align-middle table-borderless">
             <thead class="table-light">
                 <tr class="border-bottom border-dark">
-                    <th scope="col">Name</th>
+                    <th scope="col">Rennen</th>
                     <th scope="col">Fahrer</th>
                     <th scope="col">Team</th>
                     <th class="text-end" scope="col">Tipp</th>
@@ -22,9 +22,9 @@
             <tbody class="text-nowrap">
                 {% set rowStyle = '' %}
 
-                {% for raceScoreCalculator in resultsForRace.raceScoreCalculatorsOfRace %}
-                    {% set user = raceScoreCalculator.user %}
-                    {% set usernameClasses = '' %}
+                {% for raceScoreCalculator in resultsForUser.raceScoreCalculatorsOfUser %}
+                    {% set race = raceScoreCalculator.race %}
+                    {% set racenameClasses = '' %}
                     {% set wasNameDisplayed = false %}
 
                     {# Check if the race score a daily winner and style accordingly. #}
@@ -44,11 +44,11 @@
                         {% endset %}
                     {% endif %}
 
-                    {# Check if the race score is discarded and style accordingly. #}
+                    {# Check if the race score is discarded and style accordingly.#}
                     {% set isScoreDiscarded = raceScoreCalculator.isScoreDiscarded %}
                     {% set isScoreDiscardedTooltip = '' %}
                     {% if isScoreDiscarded %}
-                        {% set usernameClasses = 'text-decoration-line-through' %}
+                        {% set racenameClasses = 'text-decoration-line-through' %}
                         {% set isScoreDiscardedTooltip %}
                             <i class="bi bi-info-circle-fill"
                                data-bs-toggle="tooltip"
@@ -57,9 +57,9 @@
                         {% endset %}
                     {% endif %}
 
-                    {% set userDisplay %}
-                        <a href="{{ path('app_user_result_bets_detail', {id: user.id}) }}"
-                          class="{{ usernameClasses }}">{{ user.firstName }} {{ user.lastName }}</a>
+                    {% set raceDisplay %}
+                        <a href="{{ path('app_race_result_bets', {id: race.id}) }}"
+                           class="{{ racenameClasses }}">{{ race.name }} - {{ race.place }}</a>
                         {{ bestOfTheRaceTooltip|raw }}
                         {{ isScoreDiscardedTooltip|raw }}
                     {% endset %}
@@ -74,7 +74,7 @@
                         <tr class="{{ specialRowStyle|default(rowStyle) }}">
                             <td>
                                 {% if loop.first %}
-                                    {{ userDisplay|raw }}
+                                    {{ raceDisplay|raw }}
                                     {% set wasNameDisplayed = true %}
                                 {% endif %}
                             </td>
@@ -103,7 +103,7 @@
                         <tr class="{{ specialRowStyle|default(rowStyle) }}">
                             <td>
                                 {% if wasNameDisplayed == false %}
-                                    {{ userDisplay|raw }}
+                                    {{ raceDisplay|raw }}
                                     {% set wasNameDisplayed = true %}
                                 {% endif %}
                             </td>
@@ -120,7 +120,7 @@
                         <tr class="{{ specialRowStyle|default(rowStyle) }} border-bottom border-dark">
                             <td>
                                 {% if wasNameDisplayed == false %}
-                                    {{ userDisplay|raw }}
+                                    {{ raceDisplay|raw }}
                                     {% set wasNameDisplayed = true %}
                                 {% endif %}
                             </td>

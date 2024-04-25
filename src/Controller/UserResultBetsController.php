@@ -63,12 +63,25 @@ class UserResultBetsController extends AbstractController
     #[Route('/user-result-bets/{id}', name: 'app_user_result_bets_detail', methods: ['GET'])]
     public function detail(Request $request, $id): Response
     {
+        $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
+        if (!$activeSeasons) {
+            return $this->render('raceResultBets/createSeason.html.twig');
+        }
 
-        return $this->render('userResultBets/edit.html.twig', [
-            'form' => $form,
-            'raceResultBets' => $raceResultBets,
-            'race' => $race,
+        $season = $activeSeasons[0];
+        $user = $this->userRepository->find($id);
+
+        if (!$user) {
+            return throw $this->createNotFoundException('This user does not exist');
+        }
+
+        $scoreCalculator = new ScoreCalculationService($this->seasonRepository, $this->userRepository, $season);
+        $resultsForUser = $scoreCalculator->getResultsForUser($user);
+
+        return $this->render('userResultBets/detail.html.twig', [
+            'resultsForUser' => $resultsForUser,
+            'user' => $user,
             'season' => $season
         ]);
     }

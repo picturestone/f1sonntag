@@ -24,15 +24,17 @@
                 </tr>
                 </thead>
 
-                <tbody>
+                <tbody class="text-nowrap">
                 {% for resultForSeason in resultsForSeason %}
                     <tr>
                         <th scope="row">
                             <span>{{ loop.index }}</span>
                         </th>
-                        <td class="text-nowrap">
+                        <td>
                             {% set user = resultForSeason.user %}
-                            <span>{{ user.firstName }} {{ user.lastName }}</span>
+                            <a href="{{ path('app_user_result_bets_detail', {id: user.id}) }}">
+                                {{ user.firstName }} {{ user.lastName }}
+                            </a>
                         </td>
                         <td class="text-end">
                             <span>{{ resultForSeason.totalBestOfTheRaceScore|default('-') }}</span>

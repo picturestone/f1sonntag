@@ -97,7 +97,7 @@ class RaceResultBetsController extends AbstractController
             return throw $this->createAccessDeniedException('Must be logged in for this operation');
         }
 
-        if ($this->isBettingPossible($race, $user)) {
+        if (!$this->isBettingPossible($race, $user)) {
             // User already bet. We show him the bet overview instead.
             $scoreCalculator = new ScoreCalculationService($this->seasonRepository, $this->userRepository, $season);
             return $this->renderRaceResultBetsDetail($race, $season, $scoreCalculator->getResultsForRace($race));
