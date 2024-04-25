@@ -65,12 +65,10 @@ class RaceResultBetsController extends AbstractController
             return $this->render('raceResultBets/createRace.html.twig');
         }
 
-        // TODO rename hasUserRaceResultBetsForRace to isBettingPossible, return false if user has bet already, or if
-        // race start - time now < 5 minutes. Make 5 minutes configurable.
         return $this->render('raceResultBets/list.html.twig', [
             'raceInfos' => array_map(function($race) use ($user) {
                 $raceInfo['race'] = $race;
-                $raceInfo['hasUserRaceResultBetsForRace'] = $this->hasUserRaceResultBetsForRace($race, $user);
+                $raceInfo['isBettingPossible'] = $this->isBettingPossible($race, $user);
                 return $raceInfo;
             }, $races),
             'season' => $season
@@ -99,7 +97,7 @@ class RaceResultBetsController extends AbstractController
             return throw $this->createAccessDeniedException('Must be logged in for this operation');
         }
 
-        if ($this->hasUserRaceResultBetsForRace($race, $user)) {
+        if ($this->isBettingPossible($race, $user)) {
             // User already bet. We show him the bet overview instead.
             $scoreCalculator = new ScoreCalculationService($this->seasonRepository, $this->userRepository, $season);
             return $this->renderRaceResultBetsDetail($race, $season, $scoreCalculator->getResultsForRace($race));
@@ -219,12 +217,19 @@ class RaceResultBetsController extends AbstractController
         return $raceResultBets;
     }
 
+    private function isBettingPossible(Race $race, User $user): bool {
+        $isBettingPossible = true;
 
-    private function hasUserRaceResultBetsForRace(Race $race, User $user): bool {
-        // Find bets for the race of the currently logged in user if bets exists.
+        // Find bets for the race of the currently logged in user if bets exists. If the user already has bets they
+        // can no longer bet.
         $raceResultBets = $this->raceResultBetRepository->findRaceResultBetssByRaceAndUser($race, $user);
+        if (count($raceResultBets) > 0) {
+            $isBettingPossible = false;
+        }
 
-        return count($raceResultBets) > 0;
+        // TODO if race start - time now < 5 minutes. Make 5 minutes configurable.
+
+        return $isBettingPossible;
     }
 
     /**

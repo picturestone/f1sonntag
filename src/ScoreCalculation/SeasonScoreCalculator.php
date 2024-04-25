@@ -131,11 +131,11 @@ class SeasonScoreCalculator
                 if ($bestOfTheRaceScoreA == $bestOfTheRaceScoreB) return 0;
 
                 // The one with more "best of the race" score is better.
-                return ($bestOfTheRaceScoreA < $bestOfTheRaceScoreB) ? -1 : 1;
+                return ($bestOfTheRaceScoreA > $bestOfTheRaceScoreB) ? -1 : 1;
             }
 
             // Ihe one with less score is better.
-            return ($scoreA > $scoreB) ? -1 : 1;
+            return ($scoreA < $scoreB) ? -1 : 1;
         });
         $this->resultsForSeason = new ArrayCollection(iterator_to_array($iterator));
 
