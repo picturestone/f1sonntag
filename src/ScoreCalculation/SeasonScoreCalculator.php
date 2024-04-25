@@ -76,9 +76,6 @@ class SeasonScoreCalculator
 
             // Only add ResultsForUser if the user has raceScoreCalculators.
             if ($raceScoreCalculatorsOfUser->count() > 0) {
-                // TODO something now isnt quite right with $raceScoreCalculatorsOfUser - if i take the filtering out
-                // of the ResultsForUser i dont have scores anymore on http://localhost:8000/user-result-bets, but still
-                // on http://localhost:8000/race-result-bets/3.
                 $this->resultsForUsers->set($user->getId(), new ResultsForUser(
                     $user,
                     $raceScoreCalculatorsOfUser
@@ -89,6 +86,9 @@ class SeasonScoreCalculator
 
     private function updateResultsForRaces(): void {
         $this->resultsForRaces->clear();
+
+        // TODO Only add ResultsForUser if the race has raceScoreCalculators? Same as with updateResultsForUsers.
+        // Also remove the filtering for the race then in the ResultsForRace, just like in ResultsForUser.
 
         foreach ($this->season->getRaces() as $race) {
             $this->resultsForRaces->set($race->getId(), new ResultsForRace(
