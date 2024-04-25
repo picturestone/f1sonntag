@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Season;
 use App\Entity\WorldChampionBet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,19 @@ class WorldChampionBetRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, WorldChampionBet::class);
+    }
+
+    /**
+     * @return WorldChampionBet[] Returns an array of WorldChampionBet objects.
+     */
+    public function findWorldChampionBetsBySeason(Season $season): array
+    {
+        return $this->createQueryBuilder('wcb')
+            ->where('wcb.season = :season')
+            ->setParameter('season', $season)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     //    /**

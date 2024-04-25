@@ -1,0 +1,57 @@
+{% extends 'userbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Weltmeister-Tipps - {{ season.name }}</h1>
+
+    <p>Weltmeister-Tipps für die Saison "{{ season.name }}"</p>
+
+    {% set worldChampion = season.worldChampion %}
+
+    {% if worldChampion == null %}
+        <p>Der Weltmeister für diese Saison wurde noch nicht entschieden.</p>
+    {% else %}
+        <p><b>{{ worldChampion.firstName }} {{ worldChampion.lastName }} {{ worldChampion.team ? '(' ~ worldChampion.team.name ~ ')' : '' }}</b> ist Weltmeister!</p>
+    {% endif %}
+
+    {% if worldChampionBets|length == 0 %}
+        <div>In dieser Saison liegen noch keine Weltmeister-Tipps vor.</div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Fahrer</th>
+                    <th scope="col">Team</th>
+                </tr>
+                </thead>
+
+                <tbody class="text-nowrap">
+                {% for worldChampionBet in worldChampionBets %}
+                    {% set user = worldChampionBet.user %}
+                    {% set driver = worldChampionBet.driver %}
+
+                    {% set classAttr = '' %}
+                    {% if worldChampion != null and driver.id == worldChampion.id %}
+                        {% set classAttr = ' class="table-success"' %}
+                    {% endif %}
+
+                    <tr{{ classAttr|raw }}>
+                        <td>
+                            <span>{{ user.firstName }} {{ user.lastName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ driver.firstName }} {{ driver.lastName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ driver.team.name|default('-') }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
