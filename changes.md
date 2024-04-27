@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added user change password. [#27]
 -   Added time constraints. [#26]
 -   Added world champion bets. [#25]
 -   Added user result details. [#24]
