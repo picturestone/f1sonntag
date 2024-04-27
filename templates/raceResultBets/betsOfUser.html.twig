@@ -1,0 +1,43 @@
+{% extends 'userbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Abgegebene Tipps - {{ race.name}} - {{ season.name }}</h1>
+
+    {% if raceResultBets|default([])|length %}
+        <p>Abgegebene Tipps für {{ race.name}} - {{ season.name }}</p>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-sm align-middle">
+                <thead class="table-light">
+                <tr class="border-bottom border-dark">
+                    <th scope="col">Fahrer</th>
+                    <th scope="col">Team</th>
+                    <th class="text-end" scope="col">Tipp</th>
+                </tr>
+                </thead>
+
+                <tbody class="text-nowrap">
+                {% for raceResultBet in raceResultBets %}
+                    {% set driver = raceResultBet.driver %}
+                    <tr>
+                        <td>
+                            <span>{{ driver.firstName }} {{ driver.lastName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ driver.team.name|default('-') }}</span>
+                        </td>
+                        <td class="text-end">
+                            <span>{{ raceResultBet.position }}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Für dieses Rennen wurden keine Tipps abgegeben.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

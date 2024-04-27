@@ -38,7 +38,7 @@ class RacesController extends AbstractController
         }
 
         $season = $activeSeasons[0];
-        $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
+        $races = $this->raceRepository->findRacesBySeasonOrderByStartDateTime($season);
 
         return $this->render('admin/races/list.html.twig', [
             'races' => $races,
@@ -49,6 +49,7 @@ class RacesController extends AbstractController
     #[Route('/races/new', name: 'app_admin_races_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $defaultTimezone = $this->getParameter('F1SONNTAG_DEFAULT_TIMEZONE');
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
@@ -59,12 +60,14 @@ class RacesController extends AbstractController
         $race = new Race();
         $form = $this->createForm(RaceType::class, $race, [
             'action' => $this->generateUrl('app_admin_races_new'),
+            'view_timezone' => $defaultTimezone
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Race $race */
             $race = $form->getData();
+
             $race->setSeason($activeSeason);
             $this->entityManager->persist($race);
             $this->entityManager->flush();
@@ -82,6 +85,7 @@ class RacesController extends AbstractController
     #[Route('/races/edit/{id}', name: 'app_admin_races_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, $id): Response
     {
+        $defaultTimezone = $this->getParameter('F1SONNTAG_DEFAULT_TIMEZONE');
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
 
         if (!$activeSeasons) {
@@ -95,6 +99,7 @@ class RacesController extends AbstractController
         }
         $form = $this->createForm(RaceType::class, $race, [
             'action' => $this->generateUrl('app_admin_races_edit', ['id' => $id]),
+            'view_timezone' => $defaultTimezone
         ]);
         $form->handleRequest($request);
 

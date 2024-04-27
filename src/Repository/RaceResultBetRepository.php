@@ -26,7 +26,7 @@ class RaceResultBetRepository extends ServiceEntityRepository
     /**
      * @return RaceResultBet[] Returns an array of RaceResult objects.
      */
-    public function findRaceResultBetssByRaceAndUser(Race $race, User $user): array
+    public function findRaceResultBetsByRaceAndUser(Race $race, User $user): array
     {
         return $this->createQueryBuilder('rrb')
             ->where('rrb.race = :race')

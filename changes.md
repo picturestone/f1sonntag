@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Added time constraints. [#26]
 -   Added world champion bets. [#25]
 -   Added user result details. [#24]
 -   Added user result overview. [#23]

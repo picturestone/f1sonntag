@@ -28,7 +28,7 @@ class ScoreCalculationService
     ) {
     }
 
-    public function getResultsForRace(Race $race): ResultsForRace
+    public function getResultsForRace(Race $race): ?ResultsForRace
     {
         $calculator = $this->createSeasonScoreCalculator();
 

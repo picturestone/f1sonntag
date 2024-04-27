@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RaceRepository;
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -21,12 +22,6 @@ class Race
 
     #[ORM\Column(length: 255)]
     private ?string $place = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $startDate = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $startTime = null;
 
     /**
      * @var Collection<int, RaceResult>
@@ -50,11 +45,15 @@ class Race
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Season $season = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $startDateTime = null;
+
     public function __construct()
     {
         $this->raceResults = new ArrayCollection();
         $this->raceResultBets = new ArrayCollection();
         $this->penaltyPointsAwards = new ArrayCollection();
+        $startDateTime = new \DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 
     public function getId(): ?int
@@ -86,26 +85,14 @@ class Race
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDateTime(): ?\DateTimeImmutable
     {
-        return $this->startDate;
+        return $this->startDateTime;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): static
+    public function setStartDateTime(\DateTimeImmutable $startDateTime): static
     {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    public function getStartTime(): ?\DateTimeInterface
-    {
-        return $this->startTime;
-    }
-
-    public function setStartTime(\DateTimeInterface $startTime): static
-    {
-        $this->startTime = $startTime;
+        $this->startDateTime = $startDateTime;
 
         return $this;
     }

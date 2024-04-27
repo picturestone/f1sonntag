@@ -10,6 +10,8 @@ twig:
             STATE_SUCCESS: 'SUCCESS'
             STATE_ERROR: 'ERROR'
             STATE_WARNING: 'WARNING'
+    date:
+        timezone: '%env(F1SONNTAG_DEFAULT_TIMEZONE)%'
 
 when@test:
     twig:

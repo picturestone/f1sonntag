@@ -50,7 +50,7 @@ class SeasonScoreCalculator
         return $this->resultsForUsers->get($user->getId());
     }
 
-    public function getResultsForRace(Race $race): ResultsForRace
+    public function getResultsForRace(Race $race): ?ResultsForRace
     {
         return $this->resultsForRaces->get($race->getId());
     }
@@ -138,9 +138,6 @@ class SeasonScoreCalculator
             return ($scoreA < $scoreB) ? -1 : 1;
         });
         $this->resultsForSeason = new ArrayCollection(iterator_to_array($iterator));
-
-        // TODO check if the key of the resultsForSeason collection is still the user id or if its now not the user id
-        // anymore. Also check if sorting worked correctly.
     }
 
     /** @return Collection<int, RaceScoreCalculator> */

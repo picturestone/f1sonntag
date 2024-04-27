@@ -10,9 +10,11 @@ use App\Form\Admin\SeasonActiveType;
 use App\Form\Admin\SeasonType;
 use App\Form\Admin\WorldChampionBetType;
 use App\Repository\DriverRepository;
+use App\Repository\RaceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\WorldChampionBetRepository;
 use App\Service\ToastFactory;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +30,8 @@ class WorldChampionBetsController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly SeasonRepository $seasonRepository,
         private readonly DriverRepository $driverRepository,
-        private readonly WorldChampionBetRepository $worldChampionBetRepository
+        private readonly WorldChampionBetRepository $worldChampionBetRepository,
+        private readonly RaceRepository $raceRepository,
     ) {
     }
 
@@ -49,12 +52,31 @@ class WorldChampionBetsController extends AbstractController
             return throw $this->createAccessDeniedException('Must be logged in for this operation');
         }
 
-        $worldChampionBets = $this->worldChampionBetRepository->findWorldChampionBetsBySeason($season);
+        $firstRace = $this->raceRepository->findFirstRaceOfSeason($season);
+        if ($firstRace === null) {
+            return $this->render('worldChampionBets/createRace.html.twig');
+        }
 
-        return $this->render('worldChampionBets/list.html.twig', [
-            'worldChampionBets' => $worldChampionBets,
-            'season' => $season
-        ]);
+        $isTimePastBettingLimit = $this->isTimePastBettingLimit($season);
+
+        if ($isTimePastBettingLimit) {
+            $worldChampionBets = $this->worldChampionBetRepository->findWorldChampionBetsBySeason($season);
+
+            return $this->render('worldChampionBets/list.html.twig', [
+                'worldChampionBets' => $worldChampionBets,
+                'season' => $season
+            ]);
+        } else {
+            $worldChampionBet = $this->worldChampionBetRepository->findOneBy([
+                'user' => $user,
+                'season' => $season
+            ]);
+            return $this->render('worldChampionBets/betOfUser.html.twig', [
+                'worldChampionBet' => $worldChampionBet,
+                'season' => $season,
+                'firstRace' => $firstRace
+            ]);
+        }
     }
 
     #[Route('/world-champion-bets/edit', name: 'app_world_champion_bets_edit', methods: ['GET', 'POST'])]
@@ -92,26 +114,33 @@ class WorldChampionBetsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formValues = $request->request->all();
-            $driverId = $formValues['world_champion_bet']['driverId'];
+            if ($this->isTimePastBettingLimit($season)) {
+                // The user submitted the championship bet too late. show an error toast and go back to the list.
+                $errorMessage = 'Das Zeitfenster zum Abgeben eines Weltmeister-Tipps ist leider abgelaufen.';
 
-            $driver = $this->driverRepository->find($driverId);
-            if (!$driver) {
-                return throw $this->createNotFoundException('This driver does not exist');
-            }
-
-            if ($worldChampionBet) {
-                $worldChampionBet->setDriver($driver);
+                $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateCustomErrorToast($errorMessage));
             } else {
-                $worldChampionBet = new WorldChampionBet();
-                $worldChampionBet->setDriver($driver);
-                $worldChampionBet->setUser($user);
-                $worldChampionBet->setSeason($season);
-            }
+                $formValues = $request->request->all();
+                $driverId = $formValues['world_champion_bet']['driverId'];
 
-            $this->entityManager->persist($worldChampionBet);
-            $this->entityManager->flush();
-            $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
+                $driver = $this->driverRepository->find($driverId);
+                if (!$driver) {
+                    return throw $this->createNotFoundException('This driver does not exist');
+                }
+
+                if ($worldChampionBet) {
+                    $worldChampionBet->setDriver($driver);
+                } else {
+                    $worldChampionBet = new WorldChampionBet();
+                    $worldChampionBet->setDriver($driver);
+                    $worldChampionBet->setUser($user);
+                    $worldChampionBet->setSeason($season);
+                }
+
+                $this->entityManager->persist($worldChampionBet);
+                $this->entityManager->flush();
+                $this->addFlash(ToastDto::FLASH_TYPE, ToastFactory::generateSaveSuccessfulToast());
+            }
 
             return $this->redirectToRoute('app_world_champion_bets_list');
         }
@@ -121,19 +150,25 @@ class WorldChampionBetsController extends AbstractController
         ]);
     }
 
-    // TODO implement.
-    private function isBettingPossible(Race $race, User $user): bool {
-        $isBettingPossible = true;
+    /**
+     * Checks if the configured betting time limit allows betting on the world championship at the time of calling this
+     * function.
+     *
+     * @param Season $season
+     * @return bool
+     * @throws \Exception
+     */
+    private function isTimePastBettingLimit(Season $season): bool {
+        $isTimePastBettingLimit = false;
 
-        // Find bets for the race of the currently logged in user if bets exists. If the user already has bets they
-        // can no longer bet.
-        $raceResultBets = $this->raceResultBetRepository->findRaceResultBetssByRaceAndUser($race, $user);
-        if (count($raceResultBets) > 0) {
-            $isBettingPossible = false;
+        // If the race start is less than x minutes away, betting cannot take place anymore.
+        $now = new \DateTimeImmutable('now', new DateTimeZone('UTC'));
+        $firstRace = $this->raceRepository->findFirstRaceOfSeason($season);
+
+        if ($now > $firstRace->getStartDateTime()) {
+            $isTimePastBettingLimit = true;
         }
 
-        // TODO if race start - time now < 5 minutes. Make 5 minutes configurable.
-
-        return $isBettingPossible;
+        return $isTimePastBettingLimit;
     }
 }
