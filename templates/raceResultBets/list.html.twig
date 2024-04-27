@@ -29,10 +29,10 @@
                             <span>{{ race.place }}</span>
                         </td>
                         <td>
-                            <span>{{ race.startDate|date('d.m.Y') }}</span>
+                            <span>{{ race.startDateTime|date('d.m.Y') }}</span>
                         </td>
                         <td>
-                            <span>{{ race.startTime|date('H:i') }}</span>
+                            <span>{{ race.startDateTime|date('H:i') }}</span>
                         </td>
                         <td>
                             <a class="btn btn-primary text-nowrap" href="{{ path('app_race_result_bets', {id: race.id}) }}">

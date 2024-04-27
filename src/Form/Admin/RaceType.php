@@ -15,23 +15,20 @@ class RaceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $datePickerOptions = [
-            'widget' => 'single_text',
+        $dateTimePickerOptions = [
             'model_timezone' => 'UTC',
+            'date_widget' => 'single_text',
+            'time_widget' => 'single_text',
         ];
 
         if ($options['view_timezone']) {
-            $datePickerOptions['view_timezone'] = $options['view_timezone'];
+            $dateTimePickerOptions['view_timezone'] = $options['view_timezone'];
         }
-
-        $timePickerOptions = $datePickerOptions;
-        $timePickerOptions['reference_date'] = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
         $builder
             ->add('name')
             ->add('place')
-            ->add('startDate', DateType::class, $datePickerOptions)
-            ->add('startTime', TimeType::class, $timePickerOptions)
+            ->add('startDateTime', DateTimeType::class, $dateTimePickerOptions)
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'
             ])

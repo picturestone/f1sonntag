@@ -53,6 +53,7 @@ class Race
         $this->raceResults = new ArrayCollection();
         $this->raceResultBets = new ArrayCollection();
         $this->penaltyPointsAwards = new ArrayCollection();
+        $startDateTime = new \DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 
     public function getId(): ?int
@@ -84,43 +85,9 @@ class Race
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
-    {
-        $format = 'Y-m-d';
-        $date = $this->getStartDateTime()->format($format);
-        return \DateTimeImmutable::createFromFormat($format, $date);
-    }
-
-    public function setStartDate(\DateTimeInterface $startDate): static
-    {
-        $format = 'Y-m-d';
-        $this->startDateTime = $this->getStartDateTime()->modify($startDate->format($format));
-
-        return $this;
-    }
-
-    public function getStartTime(): ?\DateTimeInterface
-    {
-        $format = 'H:i:s';
-        $date = $this->getStartDateTime()->format($format);
-        return \DateTimeImmutable::createFromFormat($format, $date);
-    }
-
-    public function setStartTime(\DateTimeInterface $startTime): static
-    {
-        $format = 'H:i:s';
-        $this->startDateTime = $this->getStartDateTime()->modify($startTime->format($format));
-
-        return $this;
-    }
-
     public function getStartDateTime(): ?\DateTimeImmutable
     {
-        $startDateTime = $this->startDateTime;
-        if ($startDateTime === null) {
-            $startDateTime = new \DateTimeImmutable('now', new DateTimeZone('UTC'));
-        }
-        return $startDateTime;
+        return $this->startDateTime;
     }
 
     public function setStartDateTime(\DateTimeImmutable $startDateTime): static
@@ -228,23 +195,6 @@ class Race
     public function setSeason(?Season $season): static
     {
         $this->season = $season;
-
-        return $this;
-    }
-
-    /**
-     * Changes the interpretation of the start date time to a different timezone, so 2024-04-26 07:47:00 UCT can be
-     * changed to 2024-04-26 07:47:00 CET (instead of also changing the date time to 2024-04-26 09:47:00 CET).
-     *
-     * @param DateTimeZone $dateTimeZone
-     * @return $this
-     * @throws \Exception
-     */
-    public function setStartDateTimeTimezoneWithoutChangingDateTime(DateTimeZone $dateTimeZone): static
-    {
-        $format = 'Y-m-d H:i:s';
-        $startDateTimeString = $this->getStartDateTime()->format($format);
-        $this->startDateTime = new \DateTimeImmutable($startDateTimeString, $dateTimeZone);
 
         return $this;
     }
