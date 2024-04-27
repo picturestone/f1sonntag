@@ -24,7 +24,7 @@
                         Einstellungen
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Passwort ändern</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_user_users_change_password') }}">Passwort ändern</a></li>
                         {% if app.user is defined and ROLE['ADMIN'] in app.user.roles %}
                             <li><a class="dropdown-item" href="{{ path('app_admin_race_results_list') }}">Administration</a></li>
                         {% endif %}
