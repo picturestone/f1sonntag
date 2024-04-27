@@ -50,7 +50,7 @@ class SeasonScoreCalculator
         return $this->resultsForUsers->get($user->getId());
     }
 
-    public function getResultsForRace(Race $race): ResultsForRace
+    public function getResultsForRace(Race $race): ?ResultsForRace
     {
         return $this->resultsForRaces->get($race->getId());
     }

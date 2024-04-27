@@ -60,7 +60,7 @@ class RaceResultBetsController extends AbstractController
             return throw $this->createAccessDeniedException('Must be logged in for this operation');
         }
 
-        $races = $this->raceRepository->findRacesBySeasonOrderByStartDateAndStartTime($season);
+        $races = $this->raceRepository->findRacesBySeasonOrderByStartDateTime($season);
 
         if (count($races) === 0) {
             return $this->render('raceResultBets/createRace.html.twig');
@@ -288,7 +288,7 @@ class RaceResultBetsController extends AbstractController
     }
 
     /**
-     * Checks if a user has best for a race.
+     * Checks if a user has bets for a race.
      *
      * @param Race $race
      * @param User $user
