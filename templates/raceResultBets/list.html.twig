@@ -36,10 +36,12 @@
                         </td>
                         <td>
                             <a class="btn btn-primary text-nowrap" href="{{ path('app_race_result_bets', {id: race.id}) }}">
-                                {% if raceInfo.isBettingPossible %}
-                                    Tipp abgeben
+                                {% if raceInfo.isTimePastBettingLimit|default('') %}
+                                    Alle Tipps ansehen
+                                {% elseif raceInfo.isUserWithBetsForRace|default('')  %}
+                                    Eigene Tipps ansehen
                                 {% else %}
-                                    Tipps ansehen
+                                    Tipps abgeben
                                 {% endif %}
                             </a>
                         </td>

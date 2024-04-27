@@ -15,6 +15,14 @@ class ToastFactory
         return $toast;
     }
 
+    public static function generateCustomErrorToast(string $text) {
+        $toast = new ToastDto();
+        $toast->setText($text);
+        $toast->setState(ToastDto::STATE_ERROR);
+
+        return $toast;
+    }
+
     public static function generateSaveSuccessfulToast() {
         $toast = new ToastDto();
         $toast->setText('Speichern erfolgreich');
