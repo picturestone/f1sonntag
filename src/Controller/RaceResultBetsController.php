@@ -30,9 +30,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted(User::ROLE_USER)]
 class RaceResultBetsController extends AbstractController
 {
-    // TODO consider making this configurable in yaml.
-    final public const NO_OF_BETS_PER_USER_PER_RACE = 3;
-
     public function __construct(
         private readonly EntityManagerInterface  $entityManager,
         private readonly SeasonRepository $seasonRepository,
@@ -155,7 +152,8 @@ class RaceResultBetsController extends AbstractController
             return $raceResultBetPosition !== null;
         });
 
-        $noOfBetsRequired = RaceResultBetsController::NO_OF_BETS_PER_USER_PER_RACE;
+        $noOfBetsRequired = intval($this->getParameter('F1SONNTAG_NUMBER_OF_BETS_PER_USER_PER_RACE'));
+
         if (count($raceResultBetsData) !== $noOfBetsRequired) {
             $error = new FormError('Es müssen genau ' . $noOfBetsRequired . ' Tipps abgegeben werden.');
             $form->addError($error);

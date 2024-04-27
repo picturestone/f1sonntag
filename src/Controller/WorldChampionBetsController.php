@@ -169,9 +169,6 @@ class WorldChampionBetsController extends AbstractController
             $isTimePastBettingLimit = true;
         }
 
-        // TODO for testing only.
-        return false;
-
         return $isTimePastBettingLimit;
     }
 }
