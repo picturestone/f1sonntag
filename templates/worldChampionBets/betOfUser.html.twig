@@ -4,20 +4,15 @@
 <div class="container-xl">
     <h1>Abgegebener Weltmeister-Tipp - {{ season.name }}</h1>
 
-    {% set buttonText = '' %}
     {% if worldChampionBet|default('') %}
-        {% set buttonText = 'Bearbeiten' %}
         {% set drvier = worldChampionBet.driver %}
         <p>Abgegebener Weltmeister-Tipp - {{ season.name }}: <b>{{ drvier.firstName }} {{ drvier.lastName }} {{ drvier.team ? '(' ~ drvier.team.name ~ ')' : '' }}</b></p>
     {% else %}
-        {% set buttonText = 'Tipp abgeben' %}
-        <p>Noch kein Weltmeister-Tipp abgegeben. Es kann bis zum Start des ersten Rennens getippt werden.</p>
+        <p>Noch kein Weltmeister-Tipp abgegeben. Es kann bis zum Start des ersten Rennens ({{ firstRace.name }}, {{ firstRace.place }}, am {{ firstRace.startDateTime|date('d.m.Y') }} um {{ firstRace.startDateTime|date('H:i') }}) getippt werden.</p>
+
+        <div>
+            <a class="btn btn-primary" href="{{ path('app_world_champion_bets_add') }}">Tipp abgeben</a>
+        </div>
     {% endif %}
-
-    <div>
-        <a class="btn btn-primary" href="{{ path('app_world_champion_bets_edit') }}">{{ buttonText }}</a>
-    </div>
-
-{#    #}{# TODO show new button if there is no bet, show edit button if there is a bet. #}
 </div>
 {% endblock %}

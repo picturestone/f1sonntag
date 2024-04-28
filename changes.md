@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Locked world championship after adding. [#29]
 -   Improved forms and login screen. [#28]
 -   Added user change password. [#27]
 -   Added time constraints. [#26]

@@ -79,7 +79,7 @@ class WorldChampionBetsController extends AbstractController
         }
     }
 
-    #[Route('/world-champion-bets/edit', name: 'app_world_champion_bets_edit', methods: ['GET', 'POST'])]
+    #[Route('/world-champion-bets/add', name: 'app_world_champion_bets_add', methods: ['GET', 'POST'])]
     public function edit(Request $request): Response
     {
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
@@ -101,6 +101,10 @@ class WorldChampionBetsController extends AbstractController
             'user' => $user
         ]);
 
+        if ($worldChampionBet) {
+            return throw new BadRequestHttpException('A worldchampion bet has already been placed.');
+        }
+
         $data = null;
         if ($worldChampionBet !== null) {
             $data = [
@@ -109,7 +113,7 @@ class WorldChampionBetsController extends AbstractController
         }
 
         $form = $this->createForm(WorldChampionBetType::class, $data, [
-            'action' => $this->generateUrl('app_world_champion_bets_edit'),
+            'action' => $this->generateUrl('app_world_champion_bets_add'),
         ]);
         $form->handleRequest($request);
 
