@@ -15,13 +15,16 @@ class SeasonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => 'Name'
+            ])
             ->add('worldChampion', EntityType::class, [
                 'required' => false,
                 'class' => Driver::class,
                 'choice_label' => function (Driver $driver): string {
                     return $driver->getFirstName() . ' ' . $driver->getLastName();
-                }
+                },
+                'label' => 'Weltmeister'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'

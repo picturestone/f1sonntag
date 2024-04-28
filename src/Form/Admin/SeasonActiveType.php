@@ -20,6 +20,7 @@ class SeasonActiveType extends AbstractType
         $options =  [
             'class' => Season::class,
             'choice_label' => 'name',
+            'label' => 'Aktive Saison'
         ];
 
         $activeSeasons = $this->seasonRepository->findBy(['isActive' => true]);
