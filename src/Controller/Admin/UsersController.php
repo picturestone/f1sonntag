@@ -9,6 +9,8 @@ use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -178,14 +180,15 @@ class UsersController extends AbstractController
         $formBuilder = $this->createFormBuilder($user);
 
         $formBuilder
-            ->add('email')
-            ->add('firstName')
-            ->add('lastName')
-            ->add('isActive')
+            ->add('email', EmailType::class, ['label' => 'E-Mail-Adresse'])
+            ->add('firstName', TextType::class, ['label' => 'Vorname'])
+            ->add('lastName', TextType::class, ['label' => 'Nachname'])
+            ->add('isActive', null, ['label' => 'Ist Aktiv?'])
             ->add('isAdmin', CheckboxType::class, [
                 'mapped' => false,
                 'required' => false,
-                'data' => in_array(User::ROLE_ADMIN, $user->getRoles())
+                'data' => in_array(User::ROLE_ADMIN, $user->getRoles()),
+                'label' => 'Ist Administrator?'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'
@@ -203,18 +206,20 @@ class UsersController extends AbstractController
         $formBuilder = $this->createFormBuilder($user);
 
         $formBuilder
-            ->add('email')
-            ->add('plainPassword', TextType::class, [
+            ->add('email', EmailType::class, ['label' => 'E-Mail-Adresse'])
+            ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'required' => true,
+                'label' => 'Passwort'
             ])
-            ->add('firstName')
-            ->add('lastName')
-            ->add('isActive')
+            ->add('firstName', TextType::class, ['label' => 'Vorname'])
+            ->add('lastName', TextType::class, ['label' => 'Nachname'])
+            ->add('isActive', null, ['label' => 'Ist Aktiv?'])
             ->add('isAdmin', CheckboxType::class, [
                 'mapped' => false,
                 'required' => false,
-                'data' => in_array(User::ROLE_ADMIN, $user->getRoles())
+                'data' => in_array(User::ROLE_ADMIN, $user->getRoles()),
+                'label' => 'Ist Administrator?'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'

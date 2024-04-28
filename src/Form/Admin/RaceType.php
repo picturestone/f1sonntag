@@ -19,6 +19,7 @@ class RaceType extends AbstractType
             'model_timezone' => 'UTC',
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
+            'label' => 'Startzeitpunkt'
         ];
 
         if ($options['view_timezone']) {
@@ -26,8 +27,12 @@ class RaceType extends AbstractType
         }
 
         $builder
-            ->add('name')
-            ->add('place')
+            ->add('name', null, [
+                'label' => 'Name'
+            ])
+            ->add('place', null, [
+                'label' => 'Ort'
+            ])
             ->add('startDateTime', DateTimeType::class, $dateTimePickerOptions)
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'

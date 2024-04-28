@@ -2,25 +2,11 @@
 
 namespace App\Controller;
 
-use App\Dto\ToastDto;
-use App\Entity\Race;
-use App\Entity\RaceResultBet;
-use App\Entity\Season;
 use App\Entity\User;
-use App\Repository\DriverRepository;
-use App\Repository\RaceRepository;
-use App\Repository\RaceResultBetRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
-use App\ScoreCalculation\ResultsForRace;
 use App\ScoreCalculation\ScoreCalculationService;
-use App\Service\ToastFactory;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

@@ -26,12 +26,9 @@ class WorldChampionBetType extends AbstractType
             'choices' => $activeDrivers,
             'choice_label' => function (Driver $driver): string {
                 return $driver->getFirstName() . ' ' . $driver->getLastName();
-            }
+            },
+            'label' => 'Fahrer'
         ];
-//
-//        if ($activeDrivers) {
-//            $options['data'] = $activeDrivers[0];
-//        }
 
         $builder
             ->add('driverId', EntityType::class, $options)

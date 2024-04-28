@@ -4,18 +4,15 @@ namespace App\Controller;
 
 use App\Dto\ToastDto;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Service\ToastFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -70,9 +67,10 @@ class UsersController extends AbstractController
         $formBuilder = $this->createFormBuilder();
 
         $formBuilder
-            ->add('plainPassword', TextType::class, [
+            ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'required' => true,
+                'label' => 'Neues Passwort'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Speichern'

@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Improved forms and login screen. [#28]
 -   Added user change password. [#27]
 -   Added time constraints. [#26]
 -   Added world champion bets. [#25]
