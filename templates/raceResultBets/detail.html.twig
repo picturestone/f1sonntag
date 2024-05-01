@@ -6,7 +6,7 @@
 
     <p>Tipps für {{ race.name}} - {{ season.name }}</p>
 
-    {% if raceScoreCalculatorsOfRace|default('') %}
+    {% if resultsForRace.raceScoreCalculatorsOfRace|default('') %}
         <div class="table-responsive mt-4">
             <table class="table table-sm align-middle table-borderless">
                 <thead class="table-light">
