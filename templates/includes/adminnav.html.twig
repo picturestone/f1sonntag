@@ -44,7 +44,6 @@
                         Einstellungen
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownSettings">
-                        <li><a class="dropdown-item" href="#">Passwort ändern</a></li>
                         {% if app.user is defined and ROLE['USER'] in app.user.roles %}
                             <li><a class="dropdown-item" href="{{ path('app_user_result_bets_list') }}">Administration verlassen</a></li>
                         {% endif %}
