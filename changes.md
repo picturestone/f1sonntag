@@ -1,5 +1,6 @@
 ##### unreleased
 
+-   Hid bets from other users in user results bet detail view if betting timeout hasnt passed yet. [#31]
 -   Fixed race form styling. [#30]
 -   Locked world championship after adding. [#29]
 -   Improved forms and login screen. [#28]

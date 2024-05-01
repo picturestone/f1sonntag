@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PenaltyPointsAward
 {
     #[ORM\Column]
-    private ?int $penaltyPoints = null;
+    private ?int $penaltyPoints = 0;
 
     #[ORM\Id]
     #[ORM\ManyToOne(fetch: 'EAGER', inversedBy: 'penaltyPointsAwards')]

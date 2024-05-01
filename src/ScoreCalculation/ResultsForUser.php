@@ -33,6 +33,17 @@ class ResultsForUser
         return $this->raceScoreCalculatorsOfUser;
     }
 
+    /**
+     * @param Collection<int, RaceScoreCalculator> $raceScoreCalculatorsOfUser
+     * @return $this
+     */
+    public function setRaceScoreCalculatorsOfUser(Collection $raceScoreCalculatorsOfUser): static
+    {
+        $this->raceScoreCalculatorsOfUser = $raceScoreCalculatorsOfUser;
+
+        return $this;
+    }
+
     public function getUser(): User
     {
         return $this->user;

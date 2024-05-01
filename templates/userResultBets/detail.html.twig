@@ -2,9 +2,11 @@
 
 {% block body %}
 <div class="container-xl">
-    <h1>Tipps von {{ user.firstName }} {{ user.lastName}} - {{ season.name }}</h1>
+    <h1>Tipps von {{ forUser.firstName }} {{ forUser.lastName}} - {{ season.name }}</h1>
 
     <p>Hinweis: Hier werden nur Rennen angezeigt, die Einfluss auf die Punktezahl haben. Zukünftige Wetten werden nicht angezeigt, weil sich ohne zugehörige Rennresultate keine Punkte ergeben.</p>
+
+    {% set isViewingOwnUser = loggedInUser.id == forUser.id %}
 
     <div class="table-responsive mt-4">
         <table class="table table-sm align-middle table-borderless">
@@ -66,36 +68,40 @@
                     {% endset %}
 
                     {% set isBetShown = false %}
-                    {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
-                        {% set isBetShown = true %}
-                        {% set raceResult = raceResultBetScoreCalculator.raceResult|default('') %}
-                        {% set raceResultBet = raceResultBetScoreCalculator.raceResultBet|default('') %}
-                        {% set driver = raceResultBet.driver %}
+                    {# We only show the bets if the user is viewing their own bets, or if the betting time limit has passed. #}
+                    {# This way, noone can be influenced by the bets of other people. #}
+                    {% if isViewingOwnUser or now > race.startDateTime|date_modify(bettingTimeLimit) %}
+                        {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
+                            {% set isBetShown = true %}
+                            {% set raceResult = raceResultBetScoreCalculator.raceResult|default('') %}
+                            {% set raceResultBet = raceResultBetScoreCalculator.raceResultBet|default('') %}
+                            {% set driver = raceResultBet.driver %}
 
-                        <tr class="{{ specialRowStyle|default(rowStyle) }}">
-                            <td>
-                                {% if loop.first %}
-                                    {{ raceDisplay|raw }}
-                                    {% set wasNameDisplayed = true %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                <span>{{ driver.firstName }} {{ driver.lastName }}</span>
-                            </td>
-                            <td>
-                                <span>{{ driver.team.name|default('-') }}</span>
-                            </td>
-                            <td class="text-end">
-                                <span>{{ raceResultBet.position }}</span>
-                            </td>
-                            <td class="text-end">
-                                <span>{{ raceResult.position|default('-') }}</span>
-                            </td>
-                            <td class="text-end">
-                                <span>{{ raceResultBetScoreCalculator.score|default('-') }}</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                            <tr class="{{ specialRowStyle|default(rowStyle) }}">
+                                <td>
+                                    {% if loop.first %}
+                                        {{ raceDisplay|raw }}
+                                        {% set wasNameDisplayed = true %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span>{{ driver.firstName }} {{ driver.lastName }}</span>
+                                </td>
+                                <td>
+                                    <span>{{ driver.team.name|default('-') }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <span>{{ raceResultBet.position }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <span>{{ raceResult.position|default('-') }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <span>{{ raceResultBetScoreCalculator.score|default('-') }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
 
                     {% set isPenaltyPointsAwardShow = false %}
                     {% set penaltyPoints = raceScoreCalculator.penaltyPoints %}
