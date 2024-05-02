@@ -1,5 +1,9 @@
 ##### unreleased
 
+##### 2024-05-02 1.1.1
+
+-   Removed twig caching leading to bets not being shown correctly. [#33]
+
 ##### 2024-05-02 1.1.0
 
 -   Added server config. [#32]

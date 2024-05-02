@@ -12,6 +12,7 @@ twig:
             STATE_WARNING: 'WARNING'
     date:
         timezone: '%env(F1SONNTAG_DEFAULT_TIMEZONE)%'
+    cache: false
 
 when@test:
     twig:
