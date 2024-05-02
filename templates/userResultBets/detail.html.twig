@@ -24,7 +24,9 @@
             <tbody class="text-nowrap">
                 {% set rowStyle = '' %}
 
-                {% for raceScoreCalculator in resultsForUser.raceScoreCalculatorsOfUser %}
+                {% for raceScoreCalculator in resultsForUser.raceScoreCalculatorsOfUser|sort(
+                    (a, b) => a.race.startDateTime <=> b.race.startDateTime
+                ) %}
                     {% set specialRowStyle = '' %}
                     {% set race = raceScoreCalculator.race %}
                     {% set racenameClasses = '' %}

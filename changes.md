@@ -1,5 +1,9 @@
 ##### unreleased
 
+#### 2024-05-02 1.3.0
+
+-   Sorted race result bets detail and world championship list by user name, sorted user result bets by race date. [#35]
+
 #### 2024-05-02 1.2.0
 
 -   Removed unnecessary table heading from user results bet list. [#34]
