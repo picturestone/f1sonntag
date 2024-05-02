@@ -1,5 +1,7 @@
 ##### unreleased
 
+-   Added server config. [#32]
+
 ##### 2024-05-01 1.0.0
 
 -   Hid bets from other users in user results bet detail view if betting timeout hasnt passed yet. [#31]
