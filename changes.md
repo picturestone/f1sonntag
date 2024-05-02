@@ -1,5 +1,9 @@
 ##### unreleased
 
+#### 2024-05-02 1.2.0
+
+-   Removed unnecessary table heading from user results bet list. [#34]
+
 ##### 2024-05-02 1.1.1
 
 -   Removed twig caching leading to bets not being shown correctly. [#33]

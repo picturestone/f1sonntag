@@ -19,7 +19,9 @@
                     <th class="text-end" scope="col">Punkte</th>
                     <th class="text-end" scope="col">Strafpunkte</th>
                     {% set maxNoOfDiscardedResults = max(resultsForSeason|map(res => res.discardedResults|default([])|length)) %}
-                    <th class="text-end" scope="col" colspan="{{ maxNoOfDiscardedResults }}">Streichresultate</th>
+                    {% if maxNoOfDiscardedResults > 0 %}
+                        <th class="text-end" scope="col" colspan="{{ maxNoOfDiscardedResults }}">Streichresultate</th>
+                    {% endif %}
                     <th class="text-end" scope="col">Gesamtpunkte</th>
                 </tr>
                 </thead>
