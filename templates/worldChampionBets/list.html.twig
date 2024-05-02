@@ -28,7 +28,9 @@
                 </thead>
 
                 <tbody class="text-nowrap">
-                {% for worldChampionBet in worldChampionBets %}
+                {% for worldChampionBet in worldChampionBets|sort(
+                    (a, b) => a.user.firstname ~ a.user.lastname <=> b.user.firstname ~ b.user.lastname)
+                %}
                     {% set user = worldChampionBet.user %}
                     {% set driver = worldChampionBet.driver %}
 
