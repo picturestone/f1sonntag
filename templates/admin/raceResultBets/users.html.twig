@@ -1,0 +1,49 @@
+{% extends 'adminbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Tipps - {{ race.name }} - {{ season.name }}</h1>
+
+    <p>Tipps für die Saison "{{ season.name }}" - User auswählen, für den Tipps für das Rennen "{{ race.name }}" angepasst werden sollen.</p>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-hover table-sm align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Vorname</th>
+                    <th scope="col">Nachname</th>
+                    <th scope="col">E-Mail</th>
+                    <th scope="col">Aktiv</th>
+                    <th class="col--icon-button" scope="col"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user in users|sort(
+                    (a, b) => a.firstname ~ a.lastname <=> b.firstname ~ b.lastname
+                ) %}
+                    <tr>
+                        <td>
+                            <span>{{ user.firstName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ user.lastName }}</span>
+                        </td>
+                        <td>
+                            <span>{{ user.email }}</span>
+                        </td>
+                        <td>
+                            {% include 'includes/isActiveIcon.html.twig' with { 'isActive': user.isActive } %}
+                        </td>
+                        <td>
+                            <a class="btn btn-primary text-nowrap" href="{{ path('app_admin_race_result_bets_detail', {raceId: race.id, userId: user.id}) }}">
+                                Auswählen
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

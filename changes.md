@@ -1,5 +1,9 @@
 ##### unreleased
 
+#### 2024-05-06 1.4.0
+
+-   Added betting editing for other users in admin. [#36]
+
 #### 2024-05-02 1.3.0
 
 -   Sorted race result bets detail and world championship list by user name, sorted user result bets by race date. [#35]

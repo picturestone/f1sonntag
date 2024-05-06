@@ -26,7 +26,9 @@
             </thead>
 
             <tbody>
-                {% for user in users %}
+                {% for user in users|sort(
+                    (a, b) => a.firstname ~ a.lastname <=> b.firstname ~ b.lastname
+                ) %}
                     <tr>
                         <td class="col--icon-button">
                             {% if ROLE['ADMIN'] in user.roles %}

@@ -1,0 +1,47 @@
+{% extends 'adminbase.html.twig' %}
+
+{% block body %}
+<div class="container-xl">
+    <h1>Tipps - {{ season.name }}</h1>
+
+    <p>Tipps für die Saison "{{ season.name }}" - Rennen auswählen, für das Tipps angepasst werden sollen.</p>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-hover table-sm align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Ort</th>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Uhrzeit</th>
+                    <th class="col--icon-button" scope="col"></th>
+                </tr>
+            </thead>
+
+            <tbody class="text-nowrap">
+                {% for race in races %}
+                    <tr>
+                        <td>
+                            <span>{{ race.name }}</span>
+                        </td>
+                        <td>
+                            <span>{{ race.place }}</span>
+                        </td>
+                        <td>
+                            <span>{{ race.startDateTime|date('d.m.Y') }}</span>
+                        </td>
+                        <td>
+                            <span>{{ race.startDateTime|date('H:i') }}</span>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary text-nowrap" href="{{ path('app_admin_race_result_bets_users', {raceId: race.id}) }}">
+                                Auswählen
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
