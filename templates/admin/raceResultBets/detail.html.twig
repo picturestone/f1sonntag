@@ -1,0 +1,74 @@
+{% extends 'adminbase.html.twig' %}
+
+{% block body %}
+    <div class="container-xl">
+        <h1>Abgegebene Tipps - {{ race.name}} - {{ season.name }}</h1>
+
+        {% if raceResultBets|default([])|length %}
+            <p>Von {{ user.firstName }} {{ user.lastName }} abgegebene Tipps:</p>
+
+            <div class="table-responsive mt-4">
+                <table class="table table-hover table-sm align-middle">
+                    <thead class="table-light">
+                    <tr class="border-bottom border-dark">
+                        <th scope="col">Fahrer</th>
+                        <th scope="col">Team</th>
+                        <th class="text-end" scope="col">Tipp</th>
+                    </tr>
+                    </thead>
+
+                    <tbody class="text-nowrap">
+                    {% for raceResultBet in raceResultBets %}
+                        {% set driver = raceResultBet.driver %}
+                        <tr>
+                            <td>
+                                <span>{{ driver.firstName }} {{ driver.lastName }}</span>
+                            </td>
+                            <td>
+                                <span>{{ driver.team.name|default('-') }}</span>
+                            </td>
+                            <td class="text-end">
+                                <span>{{ raceResultBet.position }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% set deleteModalId = 'bets-delete-modal' %}
+
+            <div>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#{{ deleteModalId }}">
+                    <span>Tipps löschen</span>
+                </button>
+
+                <a class="btn btn-primary" href="{{ path('app_admin_race_result_bets_edit', {raceId: race.id, userId: user.id}) }}">Tipps bearbeiten</a>
+            </div>
+
+            {% set titleText = 'Wetten löschen?'  %}
+
+            {% set bodyHtml %}
+                <p>Sollen die Tipps von <u>{{ user.firstName }} {{ user.lastName }}</u> für das Rennen <u>{{ race.name }}</u> wirklich gelöscht werden? Das Löschen <u>kann nicht rückgängig gemacht werden.</u></p>
+
+                <div class="alert alert-danger" role="alert">
+                    Die <b>Rangliste</b> kann sich dadurch für die Saison "{{ season.name}}" <b>verändern!</b>
+                </div>
+            {% endset %}
+
+            {% include 'includes/deleteConfirmModal.html.twig' with {
+                'id': deleteModalId,
+                'titleText': titleText,
+                'bodyHtml': bodyHtml,
+                'deleteHref': path('app_admin_race_result_bets_delete', {raceId: race.id, userId: user.id}),
+                'deleteText': 'Tipps permanent löschen'
+            } %}
+        {% else %}
+            <p>Für dieses Rennen hat  {{ user.firstName }} {{ user.lastName }} keine Tipps abgegeben.</p>
+
+            <div>
+                <a class="btn btn-primary" href="{{ path('app_admin_race_result_bets_edit', {raceId: race.id, userId: user.id}) }}">Tipps hinzufügen</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
