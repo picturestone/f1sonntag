@@ -6,7 +6,25 @@
 
     <p>Tipps für {{ race.name}} - {{ season.name }}</p>
 
+    {% set isTableShown = false %}
+
     {% if resultsForRace.raceScoreCalculatorsOfRace|default('') %}
+        {# Go through all race score calculators. #}
+        {% for raceScoreCalculator in resultsForRace.raceScoreCalculatorsOfRace %}
+            {# If there are any bets for this race we want to show the table. #}
+            {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
+                {% set isTableShown = true %}
+            {% endfor %}
+
+            {# If there are any penalty points for this race we want to show the table. #}
+            {% set penaltyPoints = raceScoreCalculator.penaltyPoints %}
+            {% if penaltyPoints is not null %}
+                {% set isTableShown = true %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if isTableShown %}
         <div class="table-responsive mt-4">
             <table class="table table-sm align-middle table-borderless">
                 <thead class="table-light">

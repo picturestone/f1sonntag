@@ -152,11 +152,7 @@ class SeasonScoreCalculator
             foreach ($this->users as $user) {
                 $raceScoreCalculator = new RaceScoreCalculator($race, $user);
 
-                if ($raceScoreCalculator->getScore() !== null) {
-                    // Only add the race score calculator if it is relevant for the scoring (by bet or by penalty
-                    // points).
-                    $raceScoreCalculators->add($raceScoreCalculator);
-                }
+                $raceScoreCalculators->add($raceScoreCalculator);
             }
         }
 
