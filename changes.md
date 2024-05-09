@@ -1,5 +1,8 @@
 ##### unreleased
 
+#### 2024-05-09 1.5.0
+
+-   Fixed bug where race result bets would not be shown after race start as long as no race results were entered. [#38]
 -   Added new role for bets editing. [#37]
   - Set the `roles` column in the `user` table to `["ROLE_ADMIN","ROLE_BETS_EDIT"]` for users which should be able to change bets.
 
