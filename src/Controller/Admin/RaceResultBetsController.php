@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
-#[IsGranted(User::ROLE_ADMIN)]
+#[IsGranted(User::ROLE_BETS_EDIT)]
 class RaceResultBetsController extends AbstractController
 {
     public function __construct(

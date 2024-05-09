@@ -1,5 +1,8 @@
 ##### unreleased
 
+-   Added new role for bets editing. [#37]
+  - Set the `roles` column in the `user` table to `["ROLE_ADMIN","ROLE_BETS_EDIT"]` for users which should be able to change bets.
+
 #### 2024-05-06 1.4.0
 
 -   Added betting editing for other users in admin. [#36]
