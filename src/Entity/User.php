@@ -69,6 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     final public const ROLE_USER = 'ROLE_USER';
     final public const ROLE_ADMIN = 'ROLE_ADMIN';
+    final public const ROLE_BETS_EDIT = 'ROLE_BETS_EDIT';
 
     public function getId(): ?int
     {

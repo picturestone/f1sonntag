@@ -16,3 +16,9 @@ Steps:
 4. Add normal user: `php bin/console app:add-user`
 5. Start server: `symfony server:start` and open URL given in output (usually http://localhost:8000)
 6. Login (currently only admin can see things - after login with admin go to any admin page, e.g. http://localhost:8000/admin/teams - redirect from login to page is missing)
+
+Available roles:
+
+- User (automatically assigned)
+- Admin (CRUD for sers, data for the season, and race results)
+- BetsEdit (can CRUD bets for other users)

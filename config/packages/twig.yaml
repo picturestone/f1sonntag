@@ -5,6 +5,7 @@ twig:
         ROLE:
             USER: 'ROLE_USER'
             ADMIN: 'ROLE_ADMIN'
+            BETS_EDIT: 'ROLE_BETS_EDIT'
         TOAST:
             FLASH_TYPE: 'TOAST'
             STATE_SUCCESS: 'SUCCESS'
