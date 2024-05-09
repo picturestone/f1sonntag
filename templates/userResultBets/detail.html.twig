@@ -4,150 +4,170 @@
 <div class="container-xl">
     <h1>Tipps von {{ forUser.firstName }} {{ forUser.lastName}} - {{ season.name }}</h1>
 
-    <p>Hinweis: Hier werden nur Rennen angezeigt, die Einfluss auf die Punktezahl haben. Zukünftige Wetten werden nicht angezeigt, weil sich ohne zugehörige Rennresultate keine Punkte ergeben.</p>
-
     {% set isViewingOwnUser = loggedInUser.id == forUser.id %}
 
-    <div class="table-responsive mt-4">
-        <table class="table table-sm align-middle table-borderless">
-            <thead class="table-light">
-                <tr class="border-bottom border-dark">
-                    <th scope="col">Rennen</th>
-                    <th scope="col">Fahrer</th>
-                    <th scope="col">Team</th>
-                    <th class="text-end" scope="col">Tipp</th>
-                    <th class="text-end" scope="col">Platz</th>
-                    <th class="text-end" scope="col">Punkte</th>
-                </tr>
-            </thead>
+    {% set isTableShown = false %}
 
-            <tbody class="text-nowrap">
-                {% set rowStyle = '' %}
+    {% if resultsForUser.raceScoreCalculatorsOfUser|default('') %}
+        {# Go through all race score calculators. #}
+        {% for raceScoreCalculator in resultsForUser.raceScoreCalculatorsOfUser %}
+            {# If there are any bets for this race we want to show the table. #}
+            {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
+                {% set isTableShown = true %}
+            {% endfor %}
 
-                {% for raceScoreCalculator in resultsForUser.raceScoreCalculatorsOfUser|sort(
-                    (a, b) => a.race.startDateTime <=> b.race.startDateTime
-                ) %}
-                    {% set specialRowStyle = '' %}
-                    {% set race = raceScoreCalculator.race %}
-                    {% set racenameClasses = '' %}
-                    {% set wasNameDisplayed = false %}
+            {# If there are any penalty points for this race we want to show the table. #}
+            {% set penaltyPoints = raceScoreCalculator.penaltyPoints %}
+            {% if penaltyPoints is not null %}
+                {% set isTableShown = true %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 
-                    {# Check if the race score a daily winner and style accordingly. #}
-                    {% set bestOfTheRaceScoreShare = raceScoreCalculator.bestOfTheRaceScoreShare %}
-                    {% set bestOfTheRaceTooltip = '' %}
-                    {% if bestOfTheRaceScoreShare > 0 %}
-                        {% set specialRowStyle = 'table-success' %}
-                        {% set bestOfTheRaceTooltip %}
-                            {% set tooltipTitle = bestOfTheRaceScoreShare < 1
-                                ? bestOfTheRaceScoreShare ~ ' Tagessieg-Punkte'
-                                : '1 Tagessieg-Punkt'
-                            %}
-                            <i class="bi bi-info-circle-fill"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="right"
-                               title="{{ tooltipTitle }}"></i>
+    {% if isTableShown %}
+        <div class="table-responsive mt-4">
+            <table class="table table-sm align-middle table-borderless">
+                <thead class="table-light">
+                    <tr class="border-bottom border-dark">
+                        <th scope="col">Rennen</th>
+                        <th scope="col">Fahrer</th>
+                        <th scope="col">Team</th>
+                        <th class="text-end" scope="col">Tipp</th>
+                        <th class="text-end" scope="col">Platz</th>
+                        <th class="text-end" scope="col">Punkte</th>
+                    </tr>
+                </thead>
+
+                <tbody class="text-nowrap">
+                    {% set rowStyle = '' %}
+
+                    {% for raceScoreCalculator in resultsForUser.raceScoreCalculatorsOfUser|sort(
+                        (a, b) => a.race.startDateTime <=> b.race.startDateTime
+                    ) %}
+                        {% set specialRowStyle = '' %}
+                        {% set race = raceScoreCalculator.race %}
+                        {% set racenameClasses = '' %}
+                        {% set wasNameDisplayed = false %}
+
+                        {# Check if the race score a daily winner and style accordingly. #}
+                        {% set bestOfTheRaceScoreShare = raceScoreCalculator.bestOfTheRaceScoreShare %}
+                        {% set bestOfTheRaceTooltip = '' %}
+                        {% if bestOfTheRaceScoreShare > 0 %}
+                            {% set specialRowStyle = 'table-success' %}
+                            {% set bestOfTheRaceTooltip %}
+                                {% set tooltipTitle = bestOfTheRaceScoreShare < 1
+                                    ? bestOfTheRaceScoreShare ~ ' Tagessieg-Punkte'
+                                    : '1 Tagessieg-Punkt'
+                                %}
+                                <i class="bi bi-info-circle-fill"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="right"
+                                   title="{{ tooltipTitle }}"></i>
+                            {% endset %}
+                        {% endif %}
+
+                        {# Check if the race score is discarded and style accordingly.#}
+                        {% set isScoreDiscarded = raceScoreCalculator.isScoreDiscarded %}
+                        {% set isScoreDiscardedTooltip = '' %}
+                        {% if isScoreDiscarded %}
+                            {% set racenameClasses = 'text-decoration-line-through' %}
+                            {% set isScoreDiscardedTooltip %}
+                                <i class="bi bi-info-circle-fill"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="right"
+                                   title="Streichresultat"></i>
+                            {% endset %}
+                        {% endif %}
+
+                        {% set raceDisplay %}
+                            <a href="{{ path('app_race_result_bets', {id: race.id}) }}"
+                               class="{{ racenameClasses }}">{{ race.name }} - {{ race.place }}</a>
+                            {{ bestOfTheRaceTooltip|raw }}
+                            {{ isScoreDiscardedTooltip|raw }}
                         {% endset %}
-                    {% endif %}
 
-                    {# Check if the race score is discarded and style accordingly.#}
-                    {% set isScoreDiscarded = raceScoreCalculator.isScoreDiscarded %}
-                    {% set isScoreDiscardedTooltip = '' %}
-                    {% if isScoreDiscarded %}
-                        {% set racenameClasses = 'text-decoration-line-through' %}
-                        {% set isScoreDiscardedTooltip %}
-                            <i class="bi bi-info-circle-fill"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="right"
-                               title="Streichresultat"></i>
-                        {% endset %}
-                    {% endif %}
+                        {% set isBetShown = false %}
+                        {# We only show the bets if the user is viewing their own bets, or if the betting time limit has passed. #}
+                        {# This way, noone can be influenced by the bets of other people. #}
+                        {% if isViewingOwnUser or now > race.startDateTime|date_modify(bettingTimeLimit) %}
+                            {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
+                                {% set isBetShown = true %}
+                                {% set raceResult = raceResultBetScoreCalculator.raceResult|default('') %}
+                                {% set raceResultBet = raceResultBetScoreCalculator.raceResultBet|default('') %}
+                                {% set driver = raceResultBet.driver %}
 
-                    {% set raceDisplay %}
-                        <a href="{{ path('app_race_result_bets', {id: race.id}) }}"
-                           class="{{ racenameClasses }}">{{ race.name }} - {{ race.place }}</a>
-                        {{ bestOfTheRaceTooltip|raw }}
-                        {{ isScoreDiscardedTooltip|raw }}
-                    {% endset %}
+                                <tr class="{{ specialRowStyle|default(rowStyle) }}">
+                                    <td>
+                                        {% if loop.first %}
+                                            {{ raceDisplay|raw }}
+                                            {% set wasNameDisplayed = true %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span>{{ driver.firstName }} {{ driver.lastName }}</span>
+                                    </td>
+                                    <td>
+                                        <span>{{ driver.team.name|default('-') }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span>{{ raceResultBet.position }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span>{{ raceResult.position|default('-') }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span>{{ raceResultBetScoreCalculator.score|default('-') }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
 
-                    {% set isBetShown = false %}
-                    {# We only show the bets if the user is viewing their own bets, or if the betting time limit has passed. #}
-                    {# This way, noone can be influenced by the bets of other people. #}
-                    {% if isViewingOwnUser or now > race.startDateTime|date_modify(bettingTimeLimit) %}
-                        {% for raceResultBetScoreCalculator in raceScoreCalculator.raceResultBetScoreCalculators %}
-                            {% set isBetShown = true %}
-                            {% set raceResult = raceResultBetScoreCalculator.raceResult|default('') %}
-                            {% set raceResultBet = raceResultBetScoreCalculator.raceResultBet|default('') %}
-                            {% set driver = raceResultBet.driver %}
-
+                        {% set isPenaltyPointsAwardShow = false %}
+                        {% set penaltyPoints = raceScoreCalculator.penaltyPoints %}
+                        {% if penaltyPoints is not null %}
+                            {% set isPenaltyPointsAwardShow = true %}
                             <tr class="{{ specialRowStyle|default(rowStyle) }}">
                                 <td>
-                                    {% if loop.first %}
+                                    {% if wasNameDisplayed == false %}
                                         {{ raceDisplay|raw }}
                                         {% set wasNameDisplayed = true %}
                                     {% endif %}
                                 </td>
-                                <td>
-                                    <span>{{ driver.firstName }} {{ driver.lastName }}</span>
-                                </td>
-                                <td>
-                                    <span>{{ driver.team.name|default('-') }}</span>
+                                <td colspan="4">
+                                    <span>Strafpunkte</span>
                                 </td>
                                 <td class="text-end">
-                                    <span>{{ raceResultBet.position }}</span>
-                                </td>
-                                <td class="text-end">
-                                    <span>{{ raceResult.position|default('-') }}</span>
-                                </td>
-                                <td class="text-end">
-                                    <span>{{ raceResultBetScoreCalculator.score|default('-') }}</span>
+                                    <span>{{ penaltyPoints }}</span>
                                 </td>
                             </tr>
-                        {% endfor %}
-                    {% endif %}
+                        {% endif %}
 
-                    {% set isPenaltyPointsAwardShow = false %}
-                    {% set penaltyPoints = raceScoreCalculator.penaltyPoints %}
-                    {% if penaltyPoints is not null %}
-                        {% set isPenaltyPointsAwardShow = true %}
-                        <tr class="{{ specialRowStyle|default(rowStyle) }}">
-                            <td>
-                                {% if wasNameDisplayed == false %}
-                                    {{ raceDisplay|raw }}
-                                    {% set wasNameDisplayed = true %}
-                                {% endif %}
-                            </td>
-                            <td colspan="4">
-                                <span>Strafpunkte</span>
-                            </td>
-                            <td class="text-end">
-                                <span>{{ penaltyPoints }}</span>
-                            </td>
-                        </tr>
-                    {% endif %}
+                        {% if isBetShown or isPenaltyPointsAwardShow %}
+                            <tr class="{{ specialRowStyle|default(rowStyle) }} border-bottom border-dark">
+                                <td>
+                                    {% if wasNameDisplayed == false %}
+                                        {{ raceDisplay|raw }}
+                                        {% set wasNameDisplayed = true %}
+                                    {% endif %}
+                                </td>
+                                <td colspan="4" class="border-top border-dark">
+                                    <b>Summe</b>
+                                </td>
+                                <td class="text-end border-top border-dark">
+                                    <span>{{ raceScoreCalculator.score|default('-') }}</span>
+                                </td>
+                            </tr>
+                        {% endif %}
 
-                    {% if isBetShown or isPenaltyPointsAwardShow %}
-                        <tr class="{{ specialRowStyle|default(rowStyle) }} border-bottom border-dark">
-                            <td>
-                                {% if wasNameDisplayed == false %}
-                                    {{ raceDisplay|raw }}
-                                    {% set wasNameDisplayed = true %}
-                                {% endif %}
-                            </td>
-                            <td colspan="4" class="border-top border-dark">
-                                <b>Summe</b>
-                            </td>
-                            <td class="text-end border-top border-dark">
-                                <span>{{ raceScoreCalculator.score|default('-') }}</span>
-                            </td>
-                        </tr>
-                    {% endif %}
-
-                    {% if wasNameDisplayed %}
-                        {% set rowStyle = rowStyle|length > 0 ? '' : 'table-light' %}
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                        {% if wasNameDisplayed %}
+                            {% set rowStyle = rowStyle|length > 0 ? '' : 'table-light' %}
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Dieser User hat keine Tipps abgegeben.</p>
+    {% endif %}
 </div>
 {% endblock %}

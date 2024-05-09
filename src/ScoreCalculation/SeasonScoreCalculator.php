@@ -113,8 +113,20 @@ class SeasonScoreCalculator
         // Generate all the results for the season.
         foreach ($this->resultsForUsers as $resultsForUser) {
             $user = $resultsForUser->getUser();
-            $raceScoreCalculators = $resultsForUser->getRaceScoreCalculatorsOfUser();
-            $this->resultsForSeason->set($user->getId(), new ResultForSeason($user, $raceScoreCalculators));
+
+            // Get the race score calculators of the user which have an impact on the score.
+            $raceScoreCalculators = $resultsForUser
+                ->getRaceScoreCalculatorsOfUser()
+                ->filter(function(RaceScoreCalculator $raceScoreCalculator) {
+                    return $raceScoreCalculator->getScore() !== null;
+                });
+
+            // If a user does not have any race score calculators with score impacts they are irrelevant for the
+            // season results. This can happen for users which are strictly admin users and do not bet. If we dont
+            // filter these out admin users without bets will lead the scoring table.
+            if ($raceScoreCalculators->count() > 0) {
+                $this->resultsForSeason->set($user->getId(), new ResultForSeason($user, $raceScoreCalculators));
+            }
         }
 
         // Order the season results by score.
