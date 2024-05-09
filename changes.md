@@ -1,5 +1,9 @@
 ##### unreleased
 
+#### 2024-05-09 1.5.1
+
+-   Fixed bug where users with null score would lead the season scoring table. [#39]
+
 #### 2024-05-09 1.5.0
 
 -   Fixed bug where race result bets would not be shown after race start as long as no race results were entered. [#38]
