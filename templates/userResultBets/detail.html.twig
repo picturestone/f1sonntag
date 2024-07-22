@@ -56,7 +56,7 @@
                             {% set specialRowStyle = 'table-success' %}
                             {% set bestOfTheRaceTooltip %}
                                 {% set tooltipTitle = bestOfTheRaceScoreShare < 1
-                                    ? bestOfTheRaceScoreShare ~ ' Tagessieg-Punkte'
+                                    ? bestOfTheRaceScoreShare|round(2) ~ ' Tagessieg-Punkte'
                                     : '1 Tagessieg-Punkt'
                                 %}
                                 <i class="bi bi-info-circle-fill"

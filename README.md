@@ -22,3 +22,7 @@ Available roles:
 - User (automatically assigned)
 - Admin (CRUD for sers, data for the season, and race results)
 - BetsEdit (can CRUD bets for other users)
+
+## Updating
+
+To release log in on https://my.world4you.com/en/login, select "f1sonntag" on the top left dropdown, go to "webspace" on the left and either go to "ssh" and see the login data for the ssh connection, or go to "terminal" for an in-browser terminal. Pull from develop after merging new changes and do whatever is necessary.
