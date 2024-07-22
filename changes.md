@@ -1,5 +1,9 @@
 ##### unreleased
 
+#### 2024-07-22 1.5.2
+
+-   Rounded best of race scores to 2 decimal places when showing it in the frontend. [#40]
+
 #### 2024-05-09 1.5.1
 
 -   Fixed bug where users with null score would lead the season scoring table. [#39]

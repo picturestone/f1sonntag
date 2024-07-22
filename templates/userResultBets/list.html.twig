@@ -39,7 +39,14 @@
                             </a>
                         </td>
                         <td class="text-end">
-                            <span>{{ resultForSeason.totalBestOfTheRaceScore|default('-') }}</span>
+                            {% set totalBestOfTheRaceScore = resultForSeason.totalBestOfTheRaceScore %}
+                            {% if totalBestOfTheRaceScore %}
+                                {% set totalBestOfTheRaceScore = totalBestOfTheRaceScore|round(2) %}
+                            {% else %}
+                                {% set totalBestOfTheRaceScore = '-' %}
+                            {% endif %}
+
+                            <span>{{ totalBestOfTheRaceScore }}</span>
                         </td>
                         <td class="text-end">
                             <span>{{ resultForSeason.totalScoreWithoutPenaltyPoints|default('-') }}</span>
