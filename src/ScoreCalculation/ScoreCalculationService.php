@@ -53,7 +53,7 @@ class ScoreCalculationService
     private function createSeasonScoreCalculator(): SeasonScoreCalculator {
         $seasonToScore = $this->seasonRepository->findSeasonWithDataForScores($this->season->getId());
         /** @var Collection<int, User> $users */
-        $users = new ArrayCollection($this->userRepository->findAll());
+        $users = new ArrayCollection($this->userRepository->findActiveUsers());
         $calculator = new SeasonScoreCalculator($seasonToScore, $users);
 
         return $calculator;
