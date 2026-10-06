@@ -1,5 +1,13 @@
 ##### unreleased
 
+#### 2026-10-06 1.5.4
+
+-   Fixed bug where penalty points cannot be set to 0 after setting something other than 0. [#42]
+
+#### 2026-03-07 1.5.3
+
+-   Fixed seasons core calculation to only show active users. [#41]
+
 #### 2024-07-22 1.5.2
 
 -   Rounded best of race scores to 2 decimal places when showing it in the frontend. [#40]
