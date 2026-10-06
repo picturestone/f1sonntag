@@ -91,7 +91,7 @@ class PenaltyPointsAwardsController extends AbstractController
                 $userId = $penaltyPointsAward->getUser()->getId();
                 $penaltyPoints = $formData[$userId];
 
-                if ($penaltyPoints) {
+                if ($penaltyPoints !== null) {
                     $penaltyPointsAward->setPenaltyPoints($penaltyPoints);
                 }
 
